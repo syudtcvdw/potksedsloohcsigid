@@ -1,0 +1,75 @@
+@mixin anim-wave {
+    @keyframes wave {
+        from {
+            top: -100%
+        }
+        to {
+            top: 0
+        }
+    }
+}
+
+@mixin anim-spin {
+    @keyframes spin {
+        to {
+            transform: rotateY(180deg)
+        }
+    }
+}
+
+@mixin anim-volatile {
+    @keyframes volatile {
+        from {
+            top: -100%
+        }
+        to {
+            top: 100%;
+            opacity: .1;
+            transform: scaleX(.1)
+        }
+    }
+}
+
+@mixin anim-spin {
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+@mixin anim-mirage {
+    @keyframes mirage {
+        from {
+            transform: scale(0.1);
+            background: rgba(255, 255, 255, .8);
+        }
+    }
+}
+
+@mixin anim-walk {
+    @keyframes walk {
+        0% {
+            left: 30%;
+        }
+        95% {
+            opacity: 1;
+        }
+        100% {
+            left: 70%;
+            opacity: 0
+        }
+    }
+}
+
+@mixin anim-grow-notepad {
+    @keyframes grow-notepad {
+        from {
+            width: 40px;
+            height: 40px;
+        }
+    }
+}

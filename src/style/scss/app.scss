@@ -1,0 +1,34 @@
+/*!
+ * @author
+ * Banjo Mofesola Paul
+ * Chief Developer, Planet NEST
+ * mofesolapaul@planetnest.org
+ * Friday, 19th May, 2017 
+ */
+
+@import '_partials/mixins';
+@import '_partials/vars';
+@import '_partials/fonts';
+
+@include use-opensans;
+@include full-page-hack;
+@include font-smoothing-hack;
+@include mobile-device-touch-control;
+@include scrollbars(.5em, slategray, rgba($color-dracula,.69));
+
+* {
+    box-sizing: border-box;  
+}
+
+main {
+    height: 100%;
+    position: relative; 
+}
+
+body {
+    @include font-opensans; 
+}
+
+// specific
+@import '_specific/start';
+@import '_specific/home';

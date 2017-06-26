@@ -1,0 +1,22 @@
+@import '../_partials/mixins';
+
+.start-screen {
+    height: 100%;
+    position: relative;
+    
+    .select-mode {
+        @include vertical-align;
+        text-align: center;
+    }
+    
+    button {
+        background: dimgray;
+        color: #fff;
+        padding: 1rem;
+        border: none;
+        
+        &:hover {
+            background: darken(dimgray, 20%);
+        }
+    }
+}
