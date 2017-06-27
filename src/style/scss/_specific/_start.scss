@@ -1,22 +1,31 @@
-@import '../_partials/mixins';
+@import '../_partials/_fonts.scss';
+@import '../_partials/_mixins.scss';
+@import '../_partials/_vars.scss';
 
 .start-screen {
     height: 100%;
     position: relative;
+    background: $theme-sleekblack;
+    color: #fff; 
+    overflow-x: hidden;
     
     .select-mode {
-        @include vertical-align;
+        @include vertical-align(absolute);
+        width: 100%;
         text-align: center;
     }
     
     button {
-        background: dimgray;
-        color: #fff;
+        background: rgba(darken($theme-sleekblack, 5%), .5);
         padding: 1rem;
         border: none;
+        transition: 250ms;
+        color: inherit;
+        text-transform: uppercase;
         
         &:hover {
-            background: darken(dimgray, 20%);
+            background: rgba(#fff, .6);
+            color: $theme-sleekblack;
         }
     }
 }

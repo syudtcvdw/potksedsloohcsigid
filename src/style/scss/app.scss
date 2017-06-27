@@ -9,26 +9,46 @@
 @import '_partials/mixins';
 @import '_partials/vars';
 @import '_partials/fonts';
-
 @include use-opensans;
 @include full-page-hack;
 @include font-smoothing-hack;
 @include mobile-device-touch-control;
-@include scrollbars(.5em, slategray, rgba($color-dracula,.69));
-
+@include scrollbars(.5em, slategray, rgba($theme-sleekblack, .69));
 * {
-    box-sizing: border-box;  
+    box-sizing: border-box;
 }
 
 main {
     height: 100%;
-    position: relative; 
+    position: relative;
 }
 
 body {
-    @include font-opensans; 
+    @include font-opensans;
+}
+
+.footer-watermark {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    bottom: 1rem;
+    color: lighten($theme-sleekblack, 15%)
+}
+
+#tooltip {
+    z-index: 9999;
+    position: fixed;
+    position:absolute;
+	background:$theme-red;
+	color:#fff;
+	padding:1rem;
+    box-shadow: rgba(#000, .5) -2px 2px 5px, rgba(#000, .2) -4px 4px 10px;
+    animation: fadeInUp 250ms ease-in-out;
+    max-width: 260px;
+    word-wrap: break-word;
+    border-radius: 0 0 5px 5px
 }
 
 // specific
+@import '_specific/splash';
 @import '_specific/start';
-@import '_specific/home';

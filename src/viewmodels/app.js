@@ -1,9 +1,10 @@
 const {remote, BrowserWindow} = require('electron')
 const currentWindow = remote.getCurrentWindow()
-const sockets = require(__dirname + '/imports/sockets.js')
+const sockets = require(__dirname + '/imports/_sockets.js')
 
-require(__dirname + '/viewmodels/components/start-screen.js')
-require(__dirname + '/viewmodels/components/home-screen.js')
+// import components
+require(COMPONENT_PATH + 'splash-screen.js')
+require(COMPONENT_PATH + 'start-screen.js')
 
 // empty component
 ko
@@ -15,9 +16,10 @@ var VM = new function () {
 
     // props
     vm.db = null
+    vm.nonce = ""
 
     // observables
-    vm.view = ko.observable('start-screen')
+    vm.view = ko.observable('splash-screen')
     vm.MODE = ko.observable()
     vm.IP = ko.observable()
 
@@ -32,8 +34,10 @@ var VM = new function () {
         .subscribe((m) => {
             if (m == SERVER) {
                 // client connected
-                io = sockets.server().connect()
-                io.on('connection', (socket) => {
+                let _io = sockets
+                    .server()
+                    .connect()
+                _io.on('connection', (socket) => {
                     console.log("We got a client: " + socket.id)
                 })
 
@@ -45,15 +49,21 @@ var VM = new function () {
     vm
         .IP
         .subscribe((ip) => {
-            let _io = sockets.client(ip).connect()
+            let _io = sockets
+                .client(ip)
+                .connect()
             _io.on("welcome message", (m) => console.log(`From server: ${m}`))
         })
+    vm.view.subscribe((v) => {
+        
+    })
 
     // methods
 
     // TODO: make provision for state save for VMs, implement destroy()
 };
 
+// ko initializations
 ko.options.useOnlyNativeEvents = true
 ko.options.deferUpdates = true
 ko.applyBindings(VM)

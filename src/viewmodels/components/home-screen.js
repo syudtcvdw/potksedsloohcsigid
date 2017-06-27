@@ -1,13 +1,14 @@
+const {Component} = require(__dirname + '/_compo_.js')
 var exports = module.exports = {}
 
 var component = {
     viewModel: function (params) {
-        var vm = this;
+        var vm = new Component('home-screen')
         var socket;
         var db;
 
         // observables
-        vm.lastRun = ko.observable()
+        vm.txt = ko.observable("Holla")
         
         // subscriptions
         VM.IP.subscribe((ip) => {
@@ -21,7 +22,7 @@ var component = {
         
         // init
         if (VM.MODE() == SERVER) {
-            db = VM.db = require(__dirname + '/../../imports/db.js')
+            db = VM.db = require(__dirname + '/../../imports/_db.js')
             /*db.SchoolInfo.insert({name: "Test School"}, (err, newDoc) => {
                 console.log(err)
                 db.SchoolInfo.save(newDoc)
@@ -30,7 +31,9 @@ var component = {
                 console.log(err)
                 console.log(docs)
             })
-        }
+        }console.log(vm)
+
+        return vm
     },
     template: fs.readFileSync(TEMPLATES_PATH + 'home-screen.html', 'utf8')
 }

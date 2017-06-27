@@ -19,7 +19,7 @@ const {enableLiveReload} = require('electron-compile')
         // Create the browser window.
         mainWindow = new BrowserWindow({
             show: false,
-            backgroundColor: '#ffffff',
+            backgroundColor: '#232332',
             fullScreen: true,
             title: 'DigiSchools',
             autoHideMenuBar: true,

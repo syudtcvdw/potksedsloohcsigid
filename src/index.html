@@ -5,16 +5,16 @@
     <meta charset="utf-8">
     <title>Digischools</title>
     
-    <link rel="stylesheet" href="./style/third-party/normalize.css">
+    <link rel="stylesheet" href="./style/ext/normalize.css">
     <link rel="stylesheet" href="./style/css/app.css">
+    <link rel="stylesheet" href="./style/ext/animate.min.css"> 
 </head>
 
 <body>
-    <main data-bind="component: view"></main>
+    <main data-bind="component: {name: view, params: {data: nonce}}"></main>
 </body>
 
-<script src="./imports/ext/socket.io.js"></script>
-<script src="./imports/base.js"></script>
+<script src="./imports/_base.js"></script>
 <script src="./viewmodels/app.js"></script>
 
 </html>

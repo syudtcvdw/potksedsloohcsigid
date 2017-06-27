@@ -1,0 +1,34 @@
+@import '../_partials/_fonts.scss';
+@import '../_partials/_mixins.scss';
+@import '../_partials/_vars.scss';
+.splash-screen {
+    position: relative;
+    height: 100%;
+    background: $theme-sleekblack;
+    color: #fff;
+
+    * {
+        transition: opacity 1s
+    }
+
+    &.dismiss * {
+        opacity: 0;
+    }
+
+    .content {
+        @include vertical-align(absolute);
+        text-align: center;
+        width: 100%;
+        
+        img {
+            max-width: 50%;
+        }
+
+        #license {
+            span {
+                text-transform: uppercase;
+                color: palegreen
+            }
+        }
+    }
+}

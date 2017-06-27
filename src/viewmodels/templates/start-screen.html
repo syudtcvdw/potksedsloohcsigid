@@ -1,7 +1,13 @@
 <div class="start-screen">
 
-    <div class="select-mode">
-        <button data-bind="click: serverMode">Run in Server mode</button>
-        <button data-bind="click: clientMode">Run in Client mode</button>
+    <div class="select-mode animated fadeInRight">
+        <div>Select how you'd like to use Digischools on this device</div>
+        <br>
+        <button data-tooltip="{ 'offset': 10 }" data-bind="click: serverMode, attr: {title: serverDesc}">As Server</button>
+        <button data-tooltip="{ 'offset': 10 }" data-bind="click: clientMode, attr: {title: clientDesc}">As Client</button>
+    </div>
+
+    <div class="footer-watermark">
+        powered by NEST
     </div>
 </div>

@@ -1,12 +1,16 @@
-let fs = require('fs')
-let ko = require('knockout')
-let $ = require('jquery')
-let _ = require('lodash')
-
 const VIEWMODEL_PATH = __dirname + '/viewmodels/'
+const IMPORTS_PATH = __dirname + '/imports/'
+const COMPONENT_PATH = VIEWMODEL_PATH + 'components/'
 const TEMPLATES_PATH = VIEWMODEL_PATH + 'templates/'
 const SERVER = 'SERVER'
 const CLIENT = 'CLIENT'
+
+const fs = require('fs')
+const ko = require('knockout')
+const $ = require('jquery')
+const _ = require('lodash')
+const {ajs} = require(IMPORTS_PATH + 'ext/anim-js.min.js')
+const {Component} = require(COMPONENT_PATH + '_compo_.js')
 
 function _random(min, max) {
     return Math.ceil(Math.random() * (max - min) + min);
@@ -28,6 +32,27 @@ function _backslashCompliant(data) {
         if (m.length != p.length) return false;
     }
     return true;
+}
+
+/**
+ * Wrapper for fetching template for specified component
+ * @param {string} name 
+ */
+function _getComponentView(name) {
+    return fs.readFileSync(TEMPLATES_PATH + name + '.html', 'utf8')
+}
+
+/**
+ * Wrapper for loading a ko component
+ * @param {string} name 
+ * @param {object} component 
+ */
+function _loadComponent(name, component) {
+    let _c = {
+        viewModel: component,
+        template: _getComponentView(name)
+    }
+    ko.components.register(name, _c)
 }
 
 /**
