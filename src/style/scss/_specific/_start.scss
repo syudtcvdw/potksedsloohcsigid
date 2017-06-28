@@ -32,6 +32,9 @@
         max-width: 420px;
         margin: auto;
         color: #666;
+        animation: fadeInDown .5s ease-out;
+        position: relative;
+        overflow: hidden;
     }
     .title {
         border-bottom: solid 1px rgba($theme-black, .5);
@@ -46,6 +49,23 @@
             width: 50%;
             height: 1px;
             background: $theme-green;
+        }
+    }
+    .loading {
+        @include absolute-full;
+        background: rgba($theme-white, .8);
+        animation: fadeIn 250ms ease-out;
+        color: $theme-orange;
+        font-weight: bold;
+        text-align: center;
+        transition: 250ms ease-out;
+
+        &.opaque {
+            background: $theme-white
+        }
+
+        .content {
+            @include vertical-align;
         }
     }
 }

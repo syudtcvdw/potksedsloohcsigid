@@ -116,7 +116,7 @@ input, textarea {
     text-transform: uppercase;
     font-size: small;
     text-align: center;
-    transition: 250ms ease-in-out;
+    transition: 250ms ease-out;
     text-decoration: none;
     display: inline-block;
     &.btn-block {
@@ -143,12 +143,30 @@ input, textarea {
             background: $theme-orange
         }
     }
+    &.btn-inverse {
+        background: transparent;
+        border: rgba($theme-black, .1) solid 2px;
+        border-radius: 3px;
+
+        &:hover {
+            background: $theme-orange;
+            border-color: $theme-orange;
+            color: $theme-white;
+        }
+    }
+    &.btn-shift-down {
+        margin-top: .8rem;
+    }
 }
 
 .clearfix {
     content: '';
     display: table;
     clear: both;
+}
+
+.error {
+    color: $theme-red;
 }
 
 // specific

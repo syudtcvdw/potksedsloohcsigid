@@ -11,7 +11,9 @@ var vm = function (params) {
     vm.mode = ko.observable()
     vm.logonEmail = ko.observable()
     vm.logonPwd = ko.observable()
+    vm.logonErr = ko.observable()
     vm.serverIp = ko.observable()
+    vm.loading = ko.observable(false)
 
     // behaviours
     vm.serverMode = () => {
@@ -23,6 +25,16 @@ var vm = function (params) {
     vm.dismissLogon = () => {
         vm.mode(null)
         _.defer(() => (ajs(),tooltip.refresh())) // rebind anim-js and tooltips
+    }
+    vm.start = () => {
+        new Promise((resolve, reject) => {
+            vm.loading(true)
+            setTimeout(() => reject("Operation interrupted promisically"), 3000)
+        }).then().catch((s) => { vm.logonErr(s) })
+    }
+    vm.dismissLoading = () => {
+        vm.logonErr(null)
+        vm.loading(false)
     }
 
     // subscriptions

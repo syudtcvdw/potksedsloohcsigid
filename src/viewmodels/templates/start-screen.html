@@ -5,7 +5,8 @@
         <div>Select how you'd like to use Digischools on this device</div>
         <div class="btn-group">
             <a data-tooltip="{ 'offset': 10 }" data-bind="click: serverMode, attr: {title: serverDesc}" class="animated fadeInRight btn btn-orange">As Server</a>
-            <a data-tooltip="{ 'offset': 10 }" data-bind="click: clientMode, attr: {title: clientDesc}" class="anim-js fadeInRight btn btn-orange" data-ajs-delay="500ms">As Client</a>
+            <a data-tooltip="{ 'offset': 10 }" data-bind="click: clientMode, attr: {title: clientDesc}" class="anim-js fadeInRight btn btn-orange"
+                data-ajs-delay="500ms">As Client</a>
             <div class="clearfix"></div>
         </div>
     </div>
@@ -13,11 +14,14 @@
 
     <!-- ko if: mode -->
     <div class="logon-pane">
-        <div id="logon" class="animated fadeInDown">
+        <div id="logon">
             <h2 class="title" data-bind="text: mode() == SERVER? 'Authentication':'Connection'"></h2>
             <p>
-                <!-- ko if: mode() == SERVER -->Authentication credentials are necessary to start up the server. This process requires internet connection<!-- /ko -->
-                <!-- ko if: mode() == CLIENT -->Consult with the Admin to know the server address, this address is necessary to get you connected to the control workstation<!-- /ko -->
+                <!-- ko if: mode() == SERVER -->Authentication credentials are necessary to start up the server. This process requires internet connection
+                <!-- /ko -->
+                <!-- ko if: mode() == CLIENT -->Consult with the Admin to know the server address, this address is necessary to get you connected to the
+                control workstation
+                <!-- /ko -->
             </p>
             <!-- ko if: mode() == SERVER -->
             <input type="email" name="logon-email" data-bind="textInput: logonEmail" placeholder="enter logon email">
@@ -29,13 +33,25 @@
             <input type="text" name="server-ip" data-bind="textInput: serverIp" placeholder="enter server address">
             <!-- /ko -->
             <div>
-                <div class="col-6"><a class="btn btn-block btn-green" data-bind="text: mode() == SERVER? 'Authenticate':'Connect'"></a></div>
-                <div class="col-6"><a class="btn btn-block btn-red" data-bind="click: dismissLogon">Dismiss</a></div>
+                <div class="col-6"><a class="btn btn-block btn-green" data-bind="click: start, text: mode() == SERVER? 'Authenticate':'Connect'"></a></div>
+                <div class="col-6"><a class="btn btn-block btn-orange" data-bind="click: dismissLogon">Dismiss</a></div>
                 <div class="clearfix"></div>
             </div>
-            <div class="loading">
-                <img src="" alt="">
+            <!-- ko if: loading -->
+            <div class="loading" data-bind="css: { opaque: logonErr }">
+                <div class="content">
+                    <!-- ko ifnot: logonErr -->
+                    <img data-bind="ifnot: logonErr" src="resx/images/balls.gif" alt="">
+                    <!-- /ko -->
+                    <!-- ko if: logonErr -->
+                    <div class="animated fadeInUp">
+                        <div data-bind="text: logonErr"></div>
+                        <a class="btn btn-inverse btn-shift-down" data-bind="click: dismissLoading">Ok</a>
+                    </div>
+                    <!-- /ko -->
+                </div>
             </div>
+            <!-- /ko -->
         </div>
     </div>
     <!-- /ko -->
