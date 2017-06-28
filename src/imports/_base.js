@@ -1,7 +1,7 @@
-const VIEWMODEL_PATH = __dirname + '/viewmodels/'
+const VIEWMODELS_PATH = __dirname + '/viewmodels/'
 const IMPORTS_PATH = __dirname + '/imports/'
-const COMPONENT_PATH = VIEWMODEL_PATH + 'components/'
-const TEMPLATES_PATH = VIEWMODEL_PATH + 'templates/'
+const COMPONENTS_PATH = VIEWMODELS_PATH + 'components/'
+const TEMPLATES_PATH = VIEWMODELS_PATH + 'templates/'
 const SERVER = 'SERVER'
 const CLIENT = 'CLIENT'
 
@@ -10,7 +10,7 @@ const ko = require('knockout')
 const $ = require('jquery')
 const _ = require('lodash')
 const {ajs} = require(IMPORTS_PATH + 'ext/anim-js.min.js')
-const {Component} = require(COMPONENT_PATH + '_compo_.js')
+const {Component} = require(COMPONENTS_PATH + '_compo_.js')
 
 function _random(min, max) {
     return Math.ceil(Math.random() * (max - min) + min);

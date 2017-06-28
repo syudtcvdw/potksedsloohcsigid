@@ -1,20 +1,36 @@
+const {SchoolInfo} = require(IMPORTS_PATH + '_db.js')
+
 var vm = function (params) {
     let vm = this
 
     // props
-    vm.serverDesc = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse fuga officia magni veritatis fugit consectetur."
-    vm.clientDesc = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente facere architecto qui. Totam, tenetur velit."
+    vm.serverDesc = "Choose this option if this is the only workstation Digischools is running on in your institution, or if this is the control station for Digischools. If you have multiple deployments of Digischools on several workstations, all workstations need to be connected to the same network in order to communicate and share information back & forth."
+    vm.clientDesc = "Choose this option if there is another control workstation Digischools is running on in your institution. This workstation needs to be connected to the same network with the control workstation in order to communicate and share information back & forth."
+
+    // observables
+    vm.mode = ko.observable()
+    vm.logonEmail = ko.observable()
+    vm.logonPwd = ko.observable()
+    vm.serverIp = ko.observable()
 
     // behaviours
     vm.serverMode = () => {
-        VM.MODE("SERVER")
+        vm.mode(SERVER)
     }
     vm.clientMode = () => {
-        VM.MODE("CLIENT")
+        vm.mode(CLIENT)
     }
+    vm.dismissLogon = () => {
+        vm.mode(null)
+        _.defer(() => (ajs(),tooltip.refresh())) // rebind anim-js and tooltips
+    }
+
+    // subscriptions
+    vm.mode.subscribe(() => $('#tooltip').remove())
 
     // init
     _.defer(() => {
+        ajs()
         $('.start-screen').append("<script src='./imports/ext/tooltip.min.js'></script>")
         tooltip.refresh()
     })

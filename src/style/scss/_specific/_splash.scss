@@ -4,8 +4,8 @@
 .splash-screen {
     position: relative;
     height: 100%;
-    background: $theme-sleekblack;
-    color: #fff;
+    background: $theme-black;
+    color: $theme-white;
 
     * {
         transition: opacity 1s
@@ -16,7 +16,7 @@
     }
 
     .content {
-        @include vertical-align(absolute);
+        @include vertical-align;
         text-align: center;
         width: 100%;
         
@@ -27,7 +27,7 @@
         #license {
             span {
                 text-transform: uppercase;
-                color: palegreen
+                color: $theme-green
             }
         }
     }

@@ -13,9 +13,10 @@
 @include full-page-hack;
 @include font-smoothing-hack;
 @include mobile-device-touch-control;
-@include scrollbars(.5em, slategray, rgba($theme-sleekblack, .69));
+@include scrollbars(.5em, slategray, rgba($theme-black, .69));
 * {
     box-sizing: border-box;
+    cursor: default
 }
 
 main {
@@ -25,6 +26,7 @@ main {
 
 body {
     @include font-opensans;
+    overflow: hidden;
 }
 
 .footer-watermark {
@@ -32,21 +34,121 @@ body {
     width: 100%;
     text-align: center;
     bottom: 1rem;
-    color: lighten($theme-sleekblack, 15%)
+    color: lighten($theme-black, 15%)
 }
 
 #tooltip {
     z-index: 9999;
     position: fixed;
-    position:absolute;
-	background:$theme-red;
-	color:#fff;
-	padding:1rem;
-    box-shadow: rgba(#000, .5) -2px 2px 5px, rgba(#000, .2) -4px 4px 10px;
-    animation: fadeInUp 250ms ease-in-out;
-    max-width: 260px;
+    position: absolute;
+    background: $theme-orange;
+    color: $theme-white;
+    padding: 3px 1rem 1rem;
+    box-shadow: rgba($theme-black, .5) -2px 2px 5px, rgba($theme-black, .2) -4px 4px 10px;
+    animation: fadeIn 500ms ease-in-out;
+    max-width: 320px;
     word-wrap: break-word;
-    border-radius: 0 0 5px 5px
+    border-radius: 0 0 5px 5px;
+    text-align: justify;
+    line-height: 1.5;
+    &::before {
+        content: "\f059";
+        font-family: 'FontAwesome';
+        display: block;
+        text-align: right;
+    }
+}
+
+.anim-js {
+    visibility: hidden
+}
+
+@include headers {
+    font-weight: lighter
+}
+
+a.close {
+    display: block;
+    float: right;
+    padding: 5px;
+    opacity: .7;
+    &:hover {
+        opacity: 1
+    }
+}
+
+input,
+select,
+textarea {
+    background: $theme-white;
+    color: rgba($theme-black, .69);
+    border: solid 2px rgba($theme-black, .1);
+    padding: .7rem;
+    display: block;
+    transition: 250ms ease-in-out;
+    width: 100%;
+    margin: 5px 0;
+    border-radius: 3px;
+    &:focus {
+        outline: none;
+        box-shadow: rgba(lighten($theme-orange, 5%), .7) 0 0 3px;
+        border-color: transparent
+    }
+}
+
+input, textarea {
+    cursor: text
+}
+
+.col-6 {
+    float: left;
+    width: calc(50% - 2px);
+    &:first-child {
+        margin-right: 2px;
+    }
+    &:not(:first-child) {
+        margin-left: 2px;
+    }
+}
+
+.btn {
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: small;
+    text-align: center;
+    transition: 250ms ease-in-out;
+    text-decoration: none;
+    display: inline-block;
+    &.btn-block {
+        display: block;
+    }
+    &.btn-red {
+        background: lighten($theme-red, 5%);
+        color: $theme-white;
+        &:hover {
+            background: $theme-red
+        }
+    }
+    &.btn-green {
+        background: lighten($theme-green, 5%);
+        color: $theme-white;
+        &:hover {
+            background: $theme-green
+        }
+    }
+    &.btn-orange {
+        background: lighten($theme-orange, 5%);
+        color: $theme-white;
+        &:hover {
+            background: $theme-orange
+        }
+    }
+}
+
+.clearfix {
+    content: '';
+    display: table;
+    clear: both;
 }
 
 // specific

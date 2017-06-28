@@ -3,8 +3,8 @@ const currentWindow = remote.getCurrentWindow()
 const sockets = require(__dirname + '/imports/_sockets.js')
 
 // import components
-require(COMPONENT_PATH + 'splash-screen.js')
-require(COMPONENT_PATH + 'start-screen.js')
+require(COMPONENTS_PATH + 'splash-screen.js')
+require(COMPONENTS_PATH + 'start-screen.js')
 
 // empty component
 ko
@@ -15,8 +15,8 @@ var VM = new function () {
     var vm = this
 
     // props
-    vm.db = null
     vm.nonce = ""
+    vm.db = null
 
     // observables
     vm.view = ko.observable('splash-screen')

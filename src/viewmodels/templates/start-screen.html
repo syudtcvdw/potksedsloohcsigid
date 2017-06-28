@@ -1,11 +1,44 @@
 <div class="start-screen">
 
-    <div class="select-mode animated fadeInRight">
+    <!-- ko ifnot: mode -->
+    <div class="select-mode">
         <div>Select how you'd like to use Digischools on this device</div>
-        <br>
-        <button data-tooltip="{ 'offset': 10 }" data-bind="click: serverMode, attr: {title: serverDesc}">As Server</button>
-        <button data-tooltip="{ 'offset': 10 }" data-bind="click: clientMode, attr: {title: clientDesc}">As Client</button>
+        <div class="btn-group">
+            <a data-tooltip="{ 'offset': 10 }" data-bind="click: serverMode, attr: {title: serverDesc}" class="animated fadeInRight btn btn-orange">As Server</a>
+            <a data-tooltip="{ 'offset': 10 }" data-bind="click: clientMode, attr: {title: clientDesc}" class="anim-js fadeInRight btn btn-orange" data-ajs-delay="500ms">As Client</a>
+            <div class="clearfix"></div>
+        </div>
     </div>
+    <!-- /ko -->
+
+    <!-- ko if: mode -->
+    <div class="logon-pane">
+        <div id="logon" class="animated fadeInDown">
+            <h2 class="title" data-bind="text: mode() == SERVER? 'Authentication':'Connection'"></h2>
+            <p>
+                <!-- ko if: mode() == SERVER -->Authentication credentials are necessary to start up the server. This process requires internet connection<!-- /ko -->
+                <!-- ko if: mode() == CLIENT -->Consult with the Admin to know the server address, this address is necessary to get you connected to the control workstation<!-- /ko -->
+            </p>
+            <!-- ko if: mode() == SERVER -->
+            <input type="email" name="logon-email" data-bind="textInput: logonEmail" placeholder="enter logon email">
+            <div class="pwd-box">
+                <input type="password" name="logon-pwd" data-bind="textInput: logonPwd" placeholder="enter logon password">
+            </div>
+            <!-- /ko -->
+            <!-- ko if: mode() == CLIENT -->
+            <input type="text" name="server-ip" data-bind="textInput: serverIp" placeholder="enter server address">
+            <!-- /ko -->
+            <div>
+                <div class="col-6"><a class="btn btn-block btn-green" data-bind="text: mode() == SERVER? 'Authenticate':'Connect'"></a></div>
+                <div class="col-6"><a class="btn btn-block btn-red" data-bind="click: dismissLogon">Dismiss</a></div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="loading">
+                <img src="" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- /ko -->
 
     <div class="footer-watermark">
         powered by NEST
