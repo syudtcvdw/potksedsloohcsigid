@@ -15,16 +15,18 @@ var VM = new function () {
     var vm = this
 
     // props
-    vm.nonce = ""
     vm.db = null
+    vm.socket = null
 
     // observables
+    vm.pagedata = ko.observable()
     vm.view = ko.observable('splash-screen')
     vm.MODE = ko.observable()
     vm.IP = ko.observable()
 
     // behaviours
-    vm.loadView = (view) => {
+    vm.loadView = (view, data = {}) => {
+        vm.pagedata(data)
         vm.view(view)
     }
 
@@ -37,26 +39,23 @@ var VM = new function () {
                 let _io = sockets
                     .server()
                     .connect()
-                _io.on('connection', (socket) => {
-                    console.log("We got a client: " + socket.id)
-                })
-
-                vm.loadView('home-screen')
-                if (m == SERVER) 
-                    sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress()
+                    .then(() => sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress())
             }
         })
     vm
         .IP
         .subscribe((ip) => {
-            let _io = sockets
-                .client(ip)
-                .connect()
-            _io.on("welcome message", (m) => console.log(`From server: ${m}`))
+            if (vm.MODE() == SERVER) { // connect to self as client too
+                sockets
+                    .client(ip)
+                    .connect()
+                    .then((sock) => {
+                        vm.socket = sock
+                        console.log(`Connection successful: ${ip}`)
+                    })
+                    .catch((e) => console.log(`Connection error: ${e}`))
+            }
         })
-    vm.view.subscribe((v) => {
-        
-    })
 
     // methods
 

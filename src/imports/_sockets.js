@@ -46,24 +46,19 @@ function getSockets() {
          * Performs the socket connection, invokes errorCallback on error
          * @param {callback} errorCallback
          */
-        connect(errorCallback) {
+        connect() {
             if (_mode == 'SERVER') {
-                _control.listen(9192)
-                _io_server.on('connect_error', errorCallback || ((e) => console.log(`Connection error: ${e}`)))
-                _io_server.on('connection', (socket) => {
-                    console.log("New client connected: " + socket.id)
-                    socket.emit('welcome message', 'Welcome on board!!')
+                return new Promise((resolve, reject) => {
+                    _control.listen(9192)
+                    _server(_io_server) // start up the server leaflet
+                    resolve(_io_server)
                 })
-                return _io_server
             } else if (_mode == 'CLIENT') {
-                _io_client = new require('socket.io-client')('http://' + _ip + ':9192', {reconnectionAttempts: 1})
-                _io_client.on('connect_error', errorCallback || ((e) => console.log(`Connection error: ${e}`)))
-                _io_client.on('connect', () => {
-                    _io_client.on('welcome message', (m) => {
-                        console.log(`Connection to server successful`)
-                    })
+                return new Promise((resolve, reject) => {
+                    _io_client = new require('socket.io-client')('http://' + _ip + ':9192', {reconnectionAttempts: 1})
+                    _io_client.on('connect_error', e => reject(e))
+                    _io_client.on('connect', () => resolve(_io_client))
                 })
-                return _io_client
             } else {
                 throw "Chained calls expected, call server() or client() first - this helps the socket " +
                     "determine what mode to run in"
@@ -84,7 +79,6 @@ function getSockets() {
          * Gets ip address, expects callback bound to onIpReady beforehand
          */
         getIpAddress() {
-            console.log(Date.now())
             let ifs = require('os').networkInterfaces()
             var addresses = [];
             for (var k in ifs) {

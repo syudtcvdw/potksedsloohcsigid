@@ -8,28 +8,32 @@ exports.Component = function (name) {
     this._defined = false
     let _vm = {}
 
-    var _dispose = () => {
-        console.log(`Disposing component ${_vm.____name || ''}`)
-        ko
-            .utils
-            .arrayForEach(_vm, _disposeOne)
-    }
-
-    var _disposeOne = (propOrValue, value) => {
-        var disposable = value || propOrValue;
-
-        if (disposable && typeof disposable.dispose === "function") 
-            disposable.dispose()
-    }
-
     this.def = (options) => {
         if (!options) 
             throw "Please supply options (object)"
         if (typeof options === "function") {
-            options.____name = this._name
-            options.prototype.dispose = _dispose
-            options.prototype.disposeOne = _disposeOne
             _vm = options
+            ko
+                .utils
+                .extend(_vm.prototype, {
+                    ___name: this._name,
+                    dispose: function () {
+                        console.log(`Disposing ${this.___name} component`)
+                        ko
+                            .utils
+                            .objectForEach(this, this.disposeOne);
+                    },
+
+                    // little helper that handles being given a value or prop + value
+                    disposeOne: function (propOrValue, value) {
+                        var disposable = value || propOrValue;
+
+                        if (disposable && typeof disposable.dispose === "function") {
+                            console.log(`Disposing ...`)
+                            disposable.dispose();
+                        }
+                    }
+                })
         } else {
             for (let o in options) 
                 _vm[o] = options[o]

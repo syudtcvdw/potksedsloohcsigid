@@ -1,5 +1,6 @@
 <div class="start-screen">
 
+    <!-- ko if: seen -->
     <!-- ko ifnot: mode -->
     <div class="select-mode">
         <div>Select how you'd like to use Digischools on this device</div>
@@ -38,9 +39,9 @@
                 <div class="clearfix"></div>
             </div>
             <!-- ko if: loading -->
-            <div class="loading" data-bind="css: { opaque: logonErr }">
+            <div class="loading" data-bind="css: { opaque: logonErr() || enterName() }">
                 <div class="content">
-                    <!-- ko ifnot: logonErr -->
+                    <!-- ko ifnot: logonErr() || enterName() -->
                     <img data-bind="ifnot: logonErr" src="resx/images/balls.gif" alt="">
                     <!-- /ko -->
                     <!-- ko if: logonErr -->
@@ -49,11 +50,19 @@
                         <a class="btn btn-inverse btn-shift-down" data-bind="click: dismissLoading">Ok</a>
                     </div>
                     <!-- /ko -->
+                    <!-- ko if: enterName() && !logonErr() -->
+                    <div class="animated fadeInRight">
+                        <h4>Welcome, please enter your name</h4>
+                        <input type="text" name="admin-name" data-bind="textInput: adminName" placeholder="put your name here">
+                        <a class="btn btn-inverse btn-shift-down" data-bind="click: finishAuth">Finalize</a>
+                    </div>
+                    <!-- /ko -->
                 </div>
             </div>
             <!-- /ko -->
         </div>
     </div>
+    <!-- /ko -->
     <!-- /ko -->
 
     <div class="footer-watermark">
