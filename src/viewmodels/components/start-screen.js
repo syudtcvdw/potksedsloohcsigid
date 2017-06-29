@@ -82,8 +82,8 @@ var vm = function (params) {
                     console.log(`Connection successful: ${vm.serverIp()}`)
                     VM.IP(vm.serverIp())
                     DbSettings.i({
-                        label: 'runMode',
-                        value: vm.mode()
+                        label: 'serverIp',
+                        value: vm.serverIp()
                     })
                     vm.advance()
                 })
@@ -164,7 +164,10 @@ var vm = function (params) {
     } else {
         params.mode == SERVER
             ? VM.MODE(params.mode)
-            : (vm.mode(params.mode), vm.seen(true), vm.start());
+            : (DbSettings.findOne({label: 'serverIp'}).execAsync().then((data) => {
+                vm.serverIp(data.value)
+                vm.start()
+            }), vm.mode(params.mode), vm.seen(true))
     }
 }
 

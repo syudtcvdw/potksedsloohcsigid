@@ -1,5 +1,5 @@
 const axios = require('axios')
-const api = axios.create({baseURL: 'http://localhost/digischools-superadmin/api/v1/', timeout: 10000})
+const api = axios.create({baseURL: 'http://192.168.8.120/digischools-superadmin/api/v1/', timeout: 10000})
 const qs = require('qs')
 
 // POST wrapper
