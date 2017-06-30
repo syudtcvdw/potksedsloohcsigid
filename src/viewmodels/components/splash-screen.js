@@ -30,7 +30,7 @@ var vm = function (params) {
         vm.startPayload({mode: val})
     }).catch(err => {
         // first run
-        vm.startPayload({})
+        vm.startPayload({firstRun: true})
     })
 }
 

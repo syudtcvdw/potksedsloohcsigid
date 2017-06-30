@@ -135,6 +135,7 @@ var vm = function (params) {
     vm.advance = () => {
         vm.seen(false)
         VM.MODE(vm.mode())
+        VM.loadView('login-screen', params)
     }
 
     // methods
@@ -166,8 +167,9 @@ var vm = function (params) {
             tooltip.refresh()
         })
     } else {
+        vm.mode(params.mode)
         params.mode == SERVER
-            ? VM.MODE(params.mode)
+            ? vm.advance()
             : (DbSettings.findOne({label: 'serverIp'}).execAsync().then((data) => {
                 vm.serverIp(data.value)
                 vm.start()
