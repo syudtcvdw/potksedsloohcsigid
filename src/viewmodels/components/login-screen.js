@@ -6,7 +6,7 @@ var vm = function(params) {
 	vm.loginPwd = ko.observable('')
 	vm.loginErr = ko.observable()
 	vm.loading = ko.observable(false)
-	vm.seen = ko.observable(false)
+	vm.seen = ko.observable(true)
 
 	// behaviors
 	vm.validateCreds = () => {
@@ -14,8 +14,14 @@ var vm = function(params) {
 		if ( emptyFields(vm.loginEmail(), vm.loginPwd()) ) 
 			vm.loginErr("All fields are required.")
 		// send info to socket
-		VM.socket.emit('logon', {'email' : vm.loginEmail(), 'password' : vm.loginPwd()}, (err, data) => {
-			console.log(data)
+		VM.socket.emit('logon', {'email' : vm.loginEmail(), 'password' : vm.loginPwd()}, (data) => {
+			if ( data ) {
+				console.log("Login Successful!")
+				vm.seen(false)
+				vm.start(data)
+			}
+			else vm.loginErr("Username/password does not exist!")
+			console.dir(data)
 		})
 		console.log(`Email: ${vm.loginEmail()} Password: ${vm.loginPwd()}`)
 	}
@@ -25,8 +31,9 @@ var vm = function(params) {
 		vm.loginErr(null)
 	}
 
-	vm.start = () => {
+	vm.start = (data) => {
 		console.log("Starting...")
+		console.log(`Role = ${data.role}`)
 	}
 
 	// helper functions
