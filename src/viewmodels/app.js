@@ -24,6 +24,9 @@ var VM = new function () {
     vm.MODE = ko.observable()
     vm.IP = ko.observable()
 
+    // tmp
+    vm.RESETDB = ko.observable(true)
+
     // behaviours
     vm.loadView = (view, data = {}) => {
         vm.pagedata(data)
@@ -35,8 +38,8 @@ var VM = new function () {
         .MODE
         .subscribe((m) => {
             if (m == SERVER) {
-                // client connected
-                let _io = sockets
+                // start server
+                sockets
                     .server()
                     .connect()
                     .then(() => sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress())
@@ -45,7 +48,8 @@ var VM = new function () {
     vm
         .IP
         .subscribe((ip) => {
-            if (vm.MODE() == SERVER) { // connect to self as client too
+            if (vm.MODE() == SERVER) {
+                // connect to self as client too
                 sockets
                     .client(ip)
                     .connect()

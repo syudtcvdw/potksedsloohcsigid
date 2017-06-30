@@ -16,6 +16,10 @@ module.exports = function (server) {
     console.log(`server up and running ${server}`)
     server.on('connection', (socket) => {
         console.log("We got a client: " + socket.id)
+
+        socket.on('disconnect', (reason) => {
+            console.log(`Client disconnected: ${socket.id} --> ${reason}`)
+        })
     })
 
     _self = this

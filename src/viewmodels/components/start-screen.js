@@ -169,6 +169,10 @@ var vm = function (params) {
                 vm.start()
             }), vm.mode(params.mode), vm.seen(true))
     }
+    VM.RESETDB.subscribe(() => {
+        DbSettings.clear()
+        DbAdmins.clear()
+    })
 }
 
 new Component('start-screen')

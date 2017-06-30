@@ -57,6 +57,7 @@ function getSockets() {
                 return new Promise((resolve, reject) => {
                     _io_client = new require('socket.io-client')('http://' + _ip + ':9192', {reconnectionAttempts: 1})
                     _io_client.on('connect_error', e => reject(e))
+                    _io_client.on('disconnect', reason => console.log(`Connection lost: ${reason}`))
                     _io_client.on('connect', () => resolve(_io_client))
                 })
             } else {
