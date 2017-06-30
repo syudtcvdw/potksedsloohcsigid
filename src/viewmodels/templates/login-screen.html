@@ -1,15 +1,15 @@
 <div class="start-screen">
-	<!-- ko if: seen -->
-		<div class="logon-pane">
+    <!-- ko if: seen -->
+    <div class="logon-pane">
 
-			<div id="logon">
-				<h2 class="title">Login</h2>
-				<input type="email" name="logon-email" data-bind="textInput: loginEmail" placeholder="Enter login email" >
-				<div class="pwd-box">
-					<input type="password" name="logon-pwd" data-bind="textInput: loginPwd" placeholder="Enter login password" >
-				</div>
-				<a class="btn btn-block btn-orange" data-bind="click: validateCreds">Login</a>
-				<!-- ko if: loading -->
+        <div id="logon">
+            <h2 class="title">Login</h2>
+            <input type="email" name="logon-email" data-bind="textInput: loginEmail" placeholder="Enter login email">
+            <div class="pwd-box">
+                <input type="password" name="logon-pwd" data-bind="textInput: loginPwd" placeholder="Enter login password">
+            </div>
+            <a class="btn btn-block btn-orange" data-bind="click: validateCreds">Login</a>
+            <!-- ko if: loading -->
             <div class="loading" data-bind="css: { opaque: loginErr() }">
                 <div class="content">
                     <!-- ko ifnot: loginErr() -->
@@ -24,11 +24,11 @@
                 </div>
             </div>
             <!-- /ko -->
-			</div>
+        </div>
 
-		</div>
-		<!-- /ko -->
-		<div class="footer-watermark">
-			powered by NEST
-		</div>
+    </div>
+    <!-- /ko -->
+    <div class="footer-watermark">
+        powered by NEST
+    </div>
 </div>

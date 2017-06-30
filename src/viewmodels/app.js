@@ -6,6 +6,7 @@ const sockets = require(__dirname + '/imports/_sockets.js')
 require(COMPONENTS_PATH + 'splash-screen.js')
 require(COMPONENTS_PATH + 'start-screen.js')
 require(COMPONENTS_PATH + 'login-screen.js')
+require(COMPONENTS_PATH + 'home-screen.js')
 
 // empty component
 ko
@@ -24,6 +25,7 @@ var VM = new function () {
     vm.view = ko.observable('splash-screen')
     vm.MODE = ko.observable()
     vm.IP = ko.observable()
+    vm.ROLE = ko.observable()
 
     // tmp
     vm.RESETDB = ko.observable(true)

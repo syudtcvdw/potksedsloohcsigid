@@ -21,6 +21,7 @@ var vm = function (params) {
             .findOne({label: 'schoolName'})
             .execAsync()
             .then(d => vm.schoolName(d.value))
+            .catch(e => {})
         }, 1200)
         _.delay(() => {
             $('.splash-screen').addClass('dismiss')
