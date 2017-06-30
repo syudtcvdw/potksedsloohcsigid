@@ -1,0 +1,34 @@
+<div class="start-screen">
+
+		<div class="logon-pane">
+
+			<div id="logon">
+				<h2 class="title">Login</h2>
+				<input type="email" name="logon-email" data-bind="textInput: loginEmail" placeholder="Enter login email" >
+				<div class="pwd-box">
+					<input type="password" name="logon-pwd" data-bind="textInput: loginPwd" placeholder="Enter login password" >
+				</div>
+				<a class="btn btn-block btn-orange" data-bind="click: validateCreds">Login</a>
+				<!-- ko if: loading -->
+            <div class="loading" data-bind="css: { opaque: loginErr() }">
+                <div class="content">
+                    <!-- ko ifnot: loginErr() -->
+                    <img data-bind="ifnot: loginErr" src="resx/images/balls.gif" alt="">
+                    <!-- /ko -->
+                    <!-- ko if: loginErr -->
+                    <div class="animated fadeInUp">
+                        <div data-bind="text: loginErr"></div>
+                        <a class="btn btn-inverse btn-shift-down" data-bind="click: dismissLoading">Ok</a>
+                    </div>
+                    <!-- /ko -->
+                </div>
+            </div>
+            <!-- /ko -->
+			</div>
+
+		</div>
+
+		<div class="footer-watermark">
+			powered by NEST
+		</div>
+</div>
