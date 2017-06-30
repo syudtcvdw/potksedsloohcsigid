@@ -135,6 +135,7 @@ var vm = function (params) {
     vm.advance = () => {
         vm.seen(false)
         VM.MODE(vm.mode())
+        VM.loadView('login-screen', params)
     }
 
     // methods
