@@ -67,7 +67,7 @@ function getSockets() {
                                     value: info.schoolUid
                                 }, {
                                     label: 'schoolName',
-                                    value: "info.schoolName"
+                                    value: info.schoolName
                                 }
                             ])
                         })

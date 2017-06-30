@@ -27,8 +27,8 @@ module.exports = function (server) {
                     .findOne(query)
                     .execAsync()
                     .then(d => {
-                        console.log(`New login via ${query.email}`)
-                        cb({role: 'ADMIN'})
+                        console.log(`New login attempt from: ${query.email}`)
+                        cb(!d? false:{role: 'ADMIN'})
                     })
                     .catch(() => cb(false))
             })

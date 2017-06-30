@@ -39,10 +39,11 @@ var vm = function(params) {
 	// helper functions
 	function emptyFields(...fields) {
 		var empty = false
-		fields.forEach(items => { if (items.length === 0) empty = true })
+		fields.forEach(items => { if (items.trim().length === 0) empty = true })
 		return empty
 	}
 
+	console.log(params)
 }
 
 new Component('login-screen').def(vm).load()
