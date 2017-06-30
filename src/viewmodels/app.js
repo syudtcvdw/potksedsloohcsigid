@@ -5,6 +5,7 @@ const sockets = require(__dirname + '/imports/_sockets.js')
 // import components
 require(COMPONENTS_PATH + 'splash-screen.js')
 require(COMPONENTS_PATH + 'start-screen.js')
+require(COMPONENTS_PATH + 'login-screen.js')
 
 // empty component
 ko
