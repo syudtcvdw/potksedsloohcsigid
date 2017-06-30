@@ -2,9 +2,10 @@
 
     <div class="content">
         <img class="animated fadeIn" src="resx/logo/logo-full.png" alt="digischools-logo">
-        <h4 id="license" class="anim-js fadeInUp" data-ajs-delay="1.5s">Licensed to <span>Falua Group of Schools</span></h4>
+        <!-- ko if: schoolName -->
+        <h4 id="license" class="animated fadeInUp">Licensed to <span data-bind="text: schoolName"></span></h4>
+        <!-- /ko -->
     </div>
-    <!--npm install -g electron-prebuilt-->
 
     <h4 class="footer-watermark">Offered with &hearts; by Planet NEST</h4>
 </div>

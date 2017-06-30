@@ -1,6 +1,7 @@
 var vm = function (params) {
     let vm = this
-    let [DbSettings, DbAdmins] = db("settings", "admins")
+    let [DbSettings,
+        DbAdmins] = db("settings", "admins")
 
     // props
     vm.serverDesc = "Choose this option if this is the only workstation Digischools is running on in " +
@@ -80,16 +81,17 @@ var vm = function (params) {
                     VM.socket = sock
                     console.log(`Connection successful: ${vm.serverIp()}`)
                     VM.IP(vm.serverIp())
-                    DbSettings.i([{
-                        label: 'runMode',
-                        value: vm.mode()
-                    },{
-                        label: 'serverIp',
-                        value: vm.serverIp()
-                    }]).catch(() => {
-                        DbSettings.update({label: 'serverIp'}, {value: vm.serverIp()})
+                    DbSettings.iu([
+                        {
+                            label: 'runMode',
+                            value: vm.mode()
+                        }, {
+                            label: 'serverIp',
+                            value: vm.serverIp()
+                        }
+                    ]).then(() => {
+                        vm.advance()
                     });
-                    vm.advance()
                 })
                 .catch((e) => {
                     vm.showError("Unable to connect to Control Workstation")
@@ -175,10 +177,12 @@ var vm = function (params) {
                 vm.start()
             }), vm.mode(params.mode), vm.seen(true))
     }
-    VM.RESETDB.subscribe(() => {
-        DbSettings.clear()
-        DbAdmins.clear()
-    })
+    VM
+        .RESETDB
+        .subscribe(() => {
+            DbSettings.clear()
+            DbAdmins.clear()
+        })
 }
 
 new Component('start-screen')

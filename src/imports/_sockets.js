@@ -58,7 +58,21 @@ function getSockets() {
                     _io_client = new require('socket.io-client')('http://' + _ip + ':9192', {reconnectionAttempts: 1})
                     _io_client.on('connect_error', e => reject(e))
                     _io_client.on('disconnect', reason => console.log(`Connection lost: ${reason}`))
-                    _io_client.on('connect', () => resolve(_io_client))
+                    _io_client.on('connect', () => {
+                        _io_client.on('init-payload', (info) => {
+                            let [DbSettings] = db("settings")
+                            DbSettings.iu([
+                                {
+                                    label: 'schoolUid',
+                                    value: info.schoolUid
+                                }, {
+                                    label: 'schoolName',
+                                    value: "info.schoolName"
+                                }
+                            ])
+                        })
+                        resolve(_io_client)
+                    })
                 })
             } else {
                 throw "Chained calls expected, call server() or client() first - this helps the socket " +

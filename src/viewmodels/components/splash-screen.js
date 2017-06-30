@@ -3,7 +3,7 @@ var vm = function (params) {
     let [DbSettings] = db("settings")
 
     // observables
-    vm.appName = ko.observable("Digischools")
+    vm.schoolName = ko.observable()
     vm.startPayload = ko.observable()
 
     // subscriptions
@@ -14,8 +14,14 @@ var vm = function (params) {
         })
 
     // init
-    _.defer(ajs)
+    // _.defer(ajs)
     new Promise((resolve, reject) => {
+        _.delay(() => {
+            DbSettings
+            .findOne({label: 'schoolName'})
+            .execAsync()
+            .then(d => vm.schoolName(d.value))
+        }, 1200)
         _.delay(() => {
             $('.splash-screen').addClass('dismiss')
             DbSettings

@@ -7,7 +7,7 @@ Datastore.defaults.store = {
 }
 Datastore.dbPath = process.cwd()
 
-// schema
+// schemas defining docs (tables)
 const schemas = {
     settings: {
         label: {
@@ -30,10 +30,28 @@ const schemas = {
     }
 }
 
-// db map
+/**
+ * db map, helps to ensure we only have a single instance per doc
+ */
 let map = {}
 
-// export
+/**
+ * Checks if specified field, according to schema definition, has unique index
+ * @param {string} dbname 
+ * @param {string} field 
+ */
+function _isUnique(dbname, field) {
+    let schema = schemas[dbname] || {}
+    if (_.isEmpty(schema)) 
+        return false;
+    if (_.isEmpty(schema[field])) 
+        return false;
+    return typeof schema[field].unique != 'undefined'
+}
+
+/**
+ * Export the heart of this module, the guy that instantiates docs
+ */
 module.exports = (...name) => {
     let dbs = []
     name.map((n) => {
@@ -55,6 +73,10 @@ module.exports = (...name) => {
 
             promisifier.promisifyAll(ds.find().__proto__)
             ds.extend({
+                ___name: n,
+                /**
+                 * Wrapper for .insert(), to make it promise-aware
+                 */
                 i: function (data) {
                     return new Promise((resolve, reject) => {
                         this.insert(data, (err, doc) => (err || doc) === doc
@@ -62,12 +84,54 @@ module.exports = (...name) => {
                             : reject(err))
                     })
                 },
+                /**
+                 * Clears all data in concerned doc
+                 */
                 clear: function () {
                     return new Promise((resolve, reject) => {
                         this.remove({}, {
                             multi: true
                         }, (err, num) => (err || num) === num
                             ? resolve(num)
+                            : reject(err))
+                    })
+                },
+                /**
+                 * Use this for insert operations that may end up being updates
+                 * Works with unique fields in the update payload
+                 */
+                iu: function (data) {
+                    return new Promise((resolve, reject) => {
+                        data = Array.isArray(data)
+                            ? data
+                            : [data]
+                        data.forEach(function (o) {
+                            let cond = []
+                            for (let i in o) 
+                                if (_isUnique(this.___name, i)) {
+                                    let _o = {}
+                                    _o[i] = o[i]
+                                    cond.push(_o)
+                                }
+                            this.insert(o, (err, doc) => {
+                                if ((err || doc) === doc) return;
+                                // insert failed, try update
+                                if (cond.length > 0)
+                                    this.update({
+                                        $or: cond
+                                    }, o, {})
+                            })
+                        }, this)
+                        resolve()
+                    })
+                },
+                /**
+                 * Wrapper for .save(), to make it promise-aware
+                 */
+                s: function (data) {
+                    return new Promise((resolve, reject) => {
+                        this.save(data, (err, doc) => (err || doc) === doc
+                            ? resolve(doc)
                             : reject(err))
                     })
                 }
