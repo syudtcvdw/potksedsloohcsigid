@@ -10,14 +10,23 @@ Datastore.dbPath = process.cwd()
 // schema
 const schemas = {
     settings: {
-        label: { type: String, unique: true },
-        value: { },
+        label: {
+            type: String,
+            unique: true
+        },
+        value: {}
     },
     admins: {
         name: String,
-        email: { type: String, unique: true },
+        email: {
+            type: String,
+            unique: true
+        },
         password: String,
-        is_first: { type: Boolean, default: false },
+        is_first: {
+            type: Boolean,
+            default: false
+        }
     }
 }
 
@@ -34,17 +43,32 @@ module.exports = (...name) => {
         else {
             console.log(`instantiating ${n} db`)
             let schema = schemas[n] || {}
-            let ds = _.isEmpty(schema)? Datastore(n) : Datastore(n, schema, {})
+            let ds = _.isEmpty(schema)
+                ? Datastore(n)
+                : Datastore(n, schema, {})
+
+            // enforce index
+            if (!_.isEmpty(schema)) {
+                for (let prop in schema) 
+                    (typeof schema[prop].unique == 'undefined') || ds.ensureIndex({fieldName: prop, unique: true})
+            }
+
             promisifier.promisifyAll(ds.find().__proto__)
             ds.extend({
-                i: function(data) {
+                i: function (data) {
                     return new Promise((resolve, reject) => {
-                        this.insert(data, (err,doc) => (err || doc) === doc? resolve(doc):reject(err))
+                        this.insert(data, (err, doc) => (err || doc) === doc
+                            ? resolve(doc)
+                            : reject(err))
                     })
                 },
-                clear: function() {
+                clear: function () {
                     return new Promise((resolve, reject) => {
-                        this.remove({}, { multi: true }, (err, num) => (err || num) === num? resolve(num):reject(err))
+                        this.remove({}, {
+                            multi: true
+                        }, (err, num) => (err || num) === num
+                            ? resolve(num)
+                            : reject(err))
                     })
                 }
             })
