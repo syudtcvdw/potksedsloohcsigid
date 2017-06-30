@@ -9,9 +9,9 @@ var vm = function (params) {
     // subscriptions
     vm
         .startPayload
-        .subscribe((p) => {
+        .subscribe(p => {
             _.delay(() => VM.loadView('start-screen', p), 1000)
-        });
+        })
 
     // init
     _.defer(ajs)

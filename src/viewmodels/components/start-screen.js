@@ -1,7 +1,6 @@
 var vm = function (params) {
     let vm = this
-    let [DbSettings,
-        DbAdmins] = db("settings", "admins")
+    let [DbSettings, DbAdmins] = db("settings", "admins")
 
     // props
     vm.serverDesc = "Choose this option if this is the only workstation Digischools is running on in " +
@@ -78,13 +77,18 @@ var vm = function (params) {
                 .client(vm.serverIp())
                 .connect()
                 .then((sock) => {
-                    vm.socket = sock
+                    VM.socket = sock
                     console.log(`Connection successful: ${vm.serverIp()}`)
                     VM.IP(vm.serverIp())
-                    DbSettings.i({
+                    DbSettings.i([{
+                        label: 'runMode',
+                        value: vm.mode()
+                    },{
                         label: 'serverIp',
                         value: vm.serverIp()
-                    })
+                    }]).catch(() => {
+                        DbSettings.update({label: 'serverIp'}, {value: vm.serverIp()})
+                    });
                     vm.advance()
                 })
                 .catch((e) => {
@@ -121,7 +125,7 @@ var vm = function (params) {
             }).then(() => {
                 vm.advance()
             }).catch(() => {
-                DbSettings.remove({label: 'runMode'})
+                DbSettings.clear()
                 vm.logonErr("Error occured during authentication")
             })
         }).catch(err => {
