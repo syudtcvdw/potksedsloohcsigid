@@ -14,10 +14,12 @@ module.exports = function (server) {
     if (running) 
         return _self
 
+    VM.serverInfo.isRunning(true)
     console.log(`server up and running ${server}`)
     server.on('connection', (socket) => {
-        new Promise(() => {
+        new Promise((resolve) => {
             socket.on('disconnect', (reason) => {
+                VM.serverInfo.countDown()
                 console.log(`Client disconnected: ${socket.id} --> ${reason}`)
             })
 
@@ -28,19 +30,44 @@ module.exports = function (server) {
                     .execAsync()
                     .then(d => {
                         console.log(`New login attempt from: ${query.email}`)
-                        cb(!d? false:{role: 'ADMIN'})
+                        cb(!d
+                            ? false
+                            : {
+                                role: 'ADMIN',
+                                info: d
+                            })
                     })
                     .catch(() => cb(false))
             })
 
-            let [DbSettings] = db('settings')
-            DbSettings.find({label: {$in: ['schoolUid', 'schoolName']}}).execAsync().then(docs => {
-                let d = {}
-                for (let i in docs) d[docs[i].label] = docs[i].value
-                socket.emit('init-payload', d)
+            socket.on('kill me now', () => {
+                socket.disconnect(true)
             })
+
+            resolve(socket)
+        }).then((socket) => {
+            let [DbSettings] = db('settings')
+            DbSettings
+                .find({
+                label: {
+                    $in: ['schoolUid', 'schoolName']
+                }
+            })
+                .execAsync()
+                .then(docs => {
+                    let d = {}
+                    for (let i in docs) 
+                        d[docs[i].label] = docs[i].value
+                    socket.emit('init-payload', d)
+                })
+            VM.serverInfo.countUp()
             console.log("We got a client: " + socket.id)
         })
+    })
+
+    server.on('disconnect', () => {
+        VM.serverInfo.isRunning(false)
+        console.log('Server: Connection dropped')
     })
 
     _self = this

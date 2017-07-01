@@ -3,7 +3,6 @@ var vm = function (params) {
     let [DbSettings] = db("settings")
 
     // observables
-    vm.schoolName = ko.observable()
     vm.startPayload = ko.observable()
 
     // subscriptions
@@ -20,7 +19,7 @@ var vm = function (params) {
             DbSettings
             .findOne({label: 'schoolName'})
             .execAsync()
-            .then(d => vm.schoolName(d.value))
+            .then(d => VM.controlVm.schoolName(d.value))
             .catch(e => {})
         }, 1200)
         _.delay(() => {

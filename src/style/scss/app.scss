@@ -43,19 +43,29 @@ body {
     position: absolute;
     background: $theme-orange;
     color: $theme-white;
-    padding: 3px 1rem 1rem;
-    box-shadow: rgba($theme-black, .5) -2px 2px 5px, rgba($theme-black, .2) -4px 4px 10px;
     animation: fadeIn 500ms ease-in-out;
     max-width: 320px;
     word-wrap: break-word;
-    border-radius: 0 0 5px 5px;
     text-align: justify;
-    line-height: 1.5;
-    &::before {
-        content: "\f059";
-        font-family: 'FontAwesome';
-        display: block;
-        text-align: right;
+    padding: 3px 1rem 5px;
+    border-radius: 2px;
+    &:not(.mini) {
+        box-shadow: rgba($theme-black, .5) -2px 2px 5px, rgba($theme-black, .2) -4px 4px 10px;
+        line-height: 1.5;
+        border-radius: 0 0 5px 5px;
+        padding: 3px 1rem 1rem;
+        &::before {
+            content: "\f059";
+            font-family: 'FontAwesome';
+            display: block;
+            text-align: right;
+        }
+    }
+    &.mini {
+        font-size: smaller
+    }
+    &.dark {
+        background: $theme-black;
     }
 }
 
@@ -96,7 +106,8 @@ textarea {
     }
 }
 
-input, textarea {
+input,
+textarea {
     cursor: text
 }
 
@@ -147,7 +158,6 @@ input, textarea {
         background: transparent;
         border: rgba($theme-black, .1) solid 2px;
         border-radius: 3px;
-
         &:hover {
             background: $theme-orange;
             border-color: $theme-orange;
@@ -169,7 +179,16 @@ input, textarea {
     color: $theme-red;
 }
 
+.curtain {
+    @include absolute-full;
+    position: fixed;
+    background: rgba($theme-black, .69);
+    animation: fadeIn 500ms ease-in;
+    z-index: 9999;
+}
+
 // specific
 @import '_specific/splash';
 @import '_specific/start';
 @import '_specific/home';
+@import '_specific/control';

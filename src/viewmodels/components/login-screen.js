@@ -26,7 +26,7 @@ var vm = function (params) {
                     vm.start(data)
                 } else 
                     vm.loginErr("Username/password incorrect!")
-                console.dir(data)
+                
             })
         console.log(`Email: ${vm.loginEmail()} Password: ${vm.loginPwd()}`)
     }
@@ -37,9 +37,9 @@ var vm = function (params) {
     vm.start = (data) => {
         vm.seen(false)
         VM.ROLE(data.role)
+        VM.controlVm.personName(data.info.name)
         VM.loadView('home-screen')
-        console.log("Starting...")
-        console.log(`Role = ${data.role}`)
+        console.log("Starting app...")
     }
 
     // helper functions
@@ -53,8 +53,9 @@ var vm = function (params) {
     }
 
     // init
+    console.log('Login screen: ', params)
     if (typeof params.firstRun != 'undefined' && VM.MODE() == SERVER) {
-        vm.start({role: 'ADMIN'}) // don't require logon from server-running admin on first run
+        vm.start(params) // don't require logon from server-running admin on first run
     }
 }
 

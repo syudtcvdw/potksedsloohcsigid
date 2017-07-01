@@ -7,6 +7,7 @@ require(COMPONENTS_PATH + 'splash-screen.js')
 require(COMPONENTS_PATH + 'start-screen.js')
 require(COMPONENTS_PATH + 'login-screen.js')
 require(COMPONENTS_PATH + 'home-screen.js')
+require(COMPONENTS_PATH + 'control-frame.js')
 
 // empty component
 ko
@@ -17,15 +18,17 @@ var VM = new function () {
     var vm = this
 
     // props
-    vm.db = null
-    vm.socket = null
+    vm.socket = null // keeps a pointer to the socket connection
+    vm.controlVm = null // keeps a pointer to the control-frame vm
 
     // observables
-    vm.pagedata = ko.observable()
-    vm.view = ko.observable('splash-screen')
-    vm.MODE = ko.observable()
-    vm.IP = ko.observable()
-    vm.ROLE = ko.observable()
+    vm.pagedata = ko.observable() // interpage data transmitted via component's params
+    vm.view = ko.observable('splash-screen') // what view is loaded in <main />
+    vm.MODE = ko.observable() // system's running mode, server or client
+    vm.IP = ko.observable() // server IP address
+    vm.ROLE = ko.observable() // logged in user's role as far as the system is concerned: Admin, Teacher, blah blah
+    vm.connected = ko.observable() // useful for clients (and server's client) to know the socket state
+    vm.serverInfo = new serverInfo() // for server mode only
 
     // tmp
     vm.RESETDB = ko.observable(true)
@@ -64,9 +67,27 @@ var VM = new function () {
             }
         })
 
-    // methods
+    // sub-vm
+    function serverInfo() {
+        let si = this
 
-    // TODO: make provision for state save for VMs, implement destroy()
+        // observables
+        si.isRunning = ko.observable() // serveris currently running?
+        si.population = ko.observable(0) // how many clients (including this one) are connected
+
+        // behaviours
+        si.countUp = () => {
+            si.population(si.population() + 1)
+        }
+        si.countDown = () => {
+            si.population(si.population() - 1)
+        }
+
+        // computed
+        si.popuReport = ko.computed(() => {
+            return `${si.population()} Workstation${si.population() != 1? 's':''}`
+        })
+    }
 };
 
 // ko initializations

@@ -57,8 +57,13 @@ function getSockets() {
                 return new Promise((resolve, reject) => {
                     _io_client = new require('socket.io-client')('http://' + _ip + ':9192', {reconnectionAttempts: 1})
                     _io_client.on('connect_error', e => reject(e))
-                    _io_client.on('disconnect', reason => console.log(`Connection lost: ${reason}`))
+                    _io_client.on('disconnect', reason => {
+                        VM.connected(false)
+                        VM.controlVm.disconnectionTime(`${(new Date).getHours()}:${(new Date).getMinutes()}`)
+                        console.log(`Connection lost: ${reason}`)
+                    })
                     _io_client.on('connect', () => {
+                        VM.connected(true)
                         _io_client.on('init-payload', (info) => {
                             let [DbSettings] = db("settings")
                             DbSettings.iu([

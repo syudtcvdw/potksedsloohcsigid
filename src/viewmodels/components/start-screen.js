@@ -137,6 +137,15 @@ var vm = function (params) {
     vm.advance = () => {
         vm.seen(false)
         VM.MODE(vm.mode())
+        if (typeof params.firstRun != 'undefined' && vm.mode() == SERVER) {
+            // this is neccessary to ensure payload integrity as expected at login-screen
+            params = _.assign(params, { 
+                role: 'ADMIN',
+                info: {
+                    name: vm.adminName()
+                }
+            })
+        }
         VM.loadView('login-screen', params)
     }
 
@@ -153,6 +162,7 @@ var vm = function (params) {
     function authSuccessful(data) {
         vm.schoolData = data
         vm.enterName(true)
+        VM.controlVm.schoolName(data.name) // hack for setting up school name in control footer on first auth
     }
 
     // subscriptions
@@ -165,7 +175,6 @@ var vm = function (params) {
         vm.seen(true)
         _.defer(() => {
             ajs()
-            $('.start-screen').append("<script src='./imports/ext/tooltip.min.js'></script>")
             tooltip.refresh()
         })
     } else {

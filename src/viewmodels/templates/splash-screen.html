@@ -2,8 +2,8 @@
 
     <div class="content">
         <img class="animated fadeIn" src="resx/logo/logo-full.png" alt="digischools-logo">
-        <!-- ko if: schoolName -->
-        <h4 id="license" class="animated fadeInUp">Licensed to <span data-bind="text: schoolName"></span></h4>
+        <!-- ko if: $root.controlVm.schoolName -->
+        <h4 id="license" class="animated fadeInUp">Licensed to <span data-bind="text: $root.controlVm.schoolName"></span></h4>
         <!-- /ko -->
     </div>
 
