@@ -22,11 +22,12 @@ var vm = function (params) {
             }, (data) => {
                 if (data) {
                     console.log("Login Successful!")
+                    vm.notify("Login successful, welcome")
                     vm.seen(false)
                     vm.start(data)
                 } else 
                     vm.loginErr("Username/password incorrect!")
-                
+
             })
         console.log(`Email: ${vm.loginEmail()} Password: ${vm.loginPwd()}`)
     }
@@ -37,7 +38,9 @@ var vm = function (params) {
     vm.start = (data) => {
         vm.seen(false)
         VM.ROLE(data.role)
-        VM.controlVm.personName(data.info.name)
+        VM
+            .controlVm
+            .personName(data.info.name)
         VM.loadView('home-screen')
         console.log("Starting app...")
     }

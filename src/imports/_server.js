@@ -14,12 +14,16 @@ module.exports = function (server) {
     if (running) 
         return _self
 
-    VM.connectionInfo().connected(true)
+    VM
+        .connectionInfo()
+        .connected(true)
     console.log(`server up and running ${server}`)
     server.on('connection', (socket) => {
         new Promise((resolve) => {
             socket.on('disconnect', (reason) => {
-                VM.connectionInfo().countDown()
+                VM
+                    .connectionInfo()
+                    .countDown()
                 console.log(`Client disconnected: ${socket.id} --> ${reason}`)
             })
 
@@ -30,6 +34,8 @@ module.exports = function (server) {
                     .execAsync()
                     .then(d => {
                         console.log(`New login attempt from: ${query.email}`)
+                        if (d) 
+                            vm.notify(`${query.email} just logged in`)
                         cb(!d
                             ? false
                             : {
@@ -60,13 +66,17 @@ module.exports = function (server) {
                         d[docs[i].label] = docs[i].value
                     socket.emit('init-payload', d)
                 })
-            VM.connectionInfo().countUp()
+            VM
+                .connectionInfo()
+                .countUp()
             console.log("We got a client: " + socket.id)
         })
     })
 
     server.on('disconnect', () => {
-        VM.connectionInfo().connected(false)
+        VM
+            .connectionInfo()
+            .connected(false)
         console.log('Server: Connection dropped')
     })
 
