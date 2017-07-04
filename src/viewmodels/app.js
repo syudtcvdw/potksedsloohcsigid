@@ -90,7 +90,6 @@ var VM = new function () {
         // behaviours
         si.countUp = () => {
             si.population(si.population() + 1)
-            vm.notify("New person connected")
         }
         si.countDown = () => {
             si.population(si.population() - 1)
@@ -112,7 +111,6 @@ var VM = new function () {
 
     function clientInfo() {
         let ci = this
-        console.log("NEW THIS")
 
         // observables
         ci.connected = ko.observable(true)
@@ -121,10 +119,7 @@ var VM = new function () {
         ci
             .connected
             .subscribe(c => {
-                console.log(`client info connected: ${c}`)
-                if (c) 
-                    vm.notify("Connection established")
-                else 
+                if (!c) 
                     vm.notify("Connection to server lost", "error", {
                         "reconnect": () => alert('will retry')
                     })
