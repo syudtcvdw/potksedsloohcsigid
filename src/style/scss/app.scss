@@ -175,10 +175,6 @@ textarea {
     clear: both;
 }
 
-.error {
-    color: $theme-red;
-}
-
 .curtain {
     @include absolute-full;
     position: fixed;

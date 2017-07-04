@@ -11,9 +11,10 @@ var vm = function (params) {
         return VM.MODE() == SERVER
     })
     vm.ipTooltip = ko.computed(() => {
+        if (!VM.connectionInfo()) return;
         return vm.isServer()
             ? `Other workstations in your institution can connect to this server via this address: ${VM.IP()}`
-            : `You are currently${!VM.connected()? ' NOT':''} connected to the Control Workstation at ${VM.IP()}`
+            : `You are currently${!VM.connectionInfo().connected()? ' NOT':''} connected to the Control Workstation at ${VM.IP()}`
     })
 
     // subscriptions

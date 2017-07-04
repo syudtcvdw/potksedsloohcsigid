@@ -45,6 +45,7 @@
         }
     }
 }
+
 .connection-lost {
     header {
         background: $theme-red;
@@ -57,5 +58,30 @@
         top: 0;
         left: 0;
         width: 100%;
+    }
+}
+
+.notifs {
+    position: fixed;
+    bottom: 32px;
+    right: 3px;
+    z-index: 999;
+    overflow-x: hidden;
+    .notif {
+        color: $theme-white;
+        font-size: smaller; // font-weight: bolder;
+        padding: 1rem;
+        width: 320px;
+        background: $theme-green;
+        box-shadow: rgba($theme-black, .3) -2px 2px 2px;
+        border-radius: 5px;
+        animation-duration: 250ms !important;
+        margin-bottom: 5px;
+        &.warn {
+            background: $theme-orange
+        }
+        &.err {
+            background: $theme-red
+        }
     }
 }

@@ -8,16 +8,25 @@
         <li data-tooltip="{ 'class': 'mini dark' }" title="Click to logout" data-bind="text: personName"></li>
         <li data-bind="text: $root.ROLE"></li>
         <!-- ko if: isServer -->
-        <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.serverInfo.popuReport"></li>
+        <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.connectionInfo().popuReport"></li>
         <!-- /ko -->
         <!-- ko ifnot: isServer -->
-        <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.connected()? 'Connected':'Not connected'"></li>
+        <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.connectionInfo().connected()? 'Connected':'Not connected'"></li>
         <!-- /ko -->
     </ul>
 </footer>
-<!-- ko ifnot: $root.connected -->
-<div class="curtain connection-lost">
+<!-- ko ifnot: $root.connectionInfo().connected -->
+<!--<div class="curtain connection-lost">
     <header class="animated fadeInDown">Connection to server lost [<span data-bind="text: disconnectionTime"></span>]</header>
-</div>
+</div>-->
 <!-- /ko -->
+
+<div class="notifs" data-bind="with: $root.notifs">
+    <!-- ko foreach: notifs -->
+    <div class="notif animated" data-bind="css: { slideInRight: !leaving(), slideOutRight: leaving() }">
+        <span data-bind="text: msg"></span>
+    </div>
+    <!-- /ko -->
+</div>
+
 <!-- /ko -->

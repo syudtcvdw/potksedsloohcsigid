@@ -27,8 +27,8 @@ var VM = new function () {
     vm.MODE = ko.observable() // system's running mode, server or client
     vm.IP = ko.observable() // server IP address
     vm.ROLE = ko.observable() // logged in user's role as far as the system is concerned: Admin, Teacher, blah blah
-    vm.connected = ko.observable() // useful for clients (and server's client) to know the socket state
-    vm.serverInfo = new serverInfo() // for server mode only
+    vm.connectionInfo = ko.observable() // connection info
+    vm.notifs = new notifs() // notifications viewmodel
 
     // tmp
     vm.RESETDB = ko.observable(true)
@@ -44,11 +44,16 @@ var VM = new function () {
         .MODE
         .subscribe((m) => {
             if (m == SERVER) {
+                // instantiate connection info
+                vm.connectionInfo(new serverInfo())
                 // start server
                 sockets
                     .server()
                     .connect()
                     .then(() => sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress())
+            } else {
+                // instantiate connection info
+                vm.connectionInfo(new clientInfo())
             }
         })
     vm
@@ -72,7 +77,7 @@ var VM = new function () {
         let si = this
 
         // observables
-        si.isRunning = ko.observable() // serveris currently running?
+        si.connected = ko.observable() // server is currently running?
         si.population = ko.observable(0) // how many clients (including this one) are connected
 
         // behaviours
@@ -87,6 +92,55 @@ var VM = new function () {
         si.popuReport = ko.computed(() => {
             return `${si.population()} Workstation${si.population() != 1? 's':''}`
         })
+    }
+    function clientInfo() {
+        let ci = this
+        
+        // observables
+        ci.connected = ko.observable()
+    }
+    function notifs() {
+        let nt = this
+
+        // observables
+        nt.sticky = ko.observable()
+        nt.notifs = ko.observableArray()
+
+        // behaviours
+        nt.add = (msg, actions = null) => {
+            nt.notifs.push(new Notif(msg, actions))
+        }
+
+        /**
+         * Local vm for each notification
+         * @param {string} msg The message to display
+         * @param {map} actions An object map of action to callback
+         */
+        function Notif(msg, actions) {
+            let n = this
+
+            // props
+            n.msg = ko.observable(msg || 'Welcome to Digischools')
+            n.actions = ko.observableArray()
+            n.leaving = ko.observable(false)
+            if (typeof actions != 'undefined')
+                for (let a in actions) n.actions.push(a)
+
+            // behaviours
+            n.doAction = (d) => {
+                console.log(d)
+            }
+            n.die = () => {
+                nt.notifs.remove(n)
+            }
+
+            // init
+            if (n.actions().length == 0) new Promise((resolve) => {
+                setTimeout(() => (n.leaving(true), resolve()), 5000)
+            }).then(() => {
+                setTimeout(() => n.die(), 250)
+            })
+        }
     }
 };
 
