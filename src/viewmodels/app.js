@@ -119,8 +119,9 @@ var VM = new function () {
         // subscriptions
         ci
             .connected
-            .subscribe(s => {
-                if (s) 
+            .subscribe(c => {
+                console.log(`client info connected: ${c}`)
+                if (c) 
                     vm.notify("Connection established")
                 else 
                     vm.notify("Connection to server lost", "error", {
