@@ -117,12 +117,16 @@ var VM = new function () {
         ci.connected = ko.observable()
 
         // subscriptions
-        ci.connected.subscribe(s => {
-            if (s) vm.notify("Connection established")
-            else vm.notify("Connection to server lost", "error", {
-                "reconnect": () => alert('will retry')
+        ci
+            .connected
+            .subscribe(s => {
+                if (s) 
+                    vm.notify("Connection established")
+                else 
+                    vm.notify("Connection to server lost", "error", {
+                        "reconnect": () => alert('will retry')
+                    })
             })
-        })
     }
 
     function notifs() {
@@ -161,7 +165,12 @@ var VM = new function () {
                 actions[d]()
             }
             n.die = () => {
-                new Promise((resolve) => setTimeout(() => (n.leaving(true), resolve()), !n.sticky()? 5000:0)).then(() => setTimeout(() => n.die(), 250))
+                new Promise((resolve) => setTimeout(() => {
+                    n.leaving(true)
+                    resolve()
+                }, !n.sticky()
+                    ? 5000
+                    : 0)).then(() => setTimeout(() => nt.notifs.remove(n), 250))
             }
 
             // computed
