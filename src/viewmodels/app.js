@@ -112,6 +112,7 @@ var VM = new function () {
 
     function clientInfo() {
         let ci = this
+        console.log("NEW THIS")
 
         // observables
         ci.connected = ko.observable()
@@ -119,8 +120,9 @@ var VM = new function () {
         // subscriptions
         ci
             .connected
-            .subscribe(s => {
-                if (s) 
+            .subscribe(c => {
+                console.log(`client info connected: ${c}`)
+                if (c) 
                     vm.notify("Connection established")
                 else 
                     vm.notify("Connection to server lost", "error", {
