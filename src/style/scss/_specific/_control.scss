@@ -77,11 +77,37 @@
         border-radius: 5px;
         animation-duration: 250ms !important;
         margin-bottom: 5px;
-        &.warn {
-            background: $theme-orange
+        &.sticky {
+            padding-bottom: 5px;
         }
-        &.err {
-            background: $theme-red
+        &[kind=warn] {
+            background: $theme-orange;
+            a {
+                color: $theme-orange;
+            }
+        }
+        &[kind=error] {
+            background: $theme-red;
+            a {
+                color: $theme-red;
+            }
+        }
+        .actions {
+            text-align: right;
+            padding-left: 5px;
+            a {
+                display: inline-block;
+                background: $theme-white;
+                font-weight: bold;
+                font-size: 70%;
+                text-transform: uppercase;
+                padding: 3px 6px;
+                opacity: .9;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
         }
     }
 }

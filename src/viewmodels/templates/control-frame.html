@@ -21,12 +21,22 @@
 </div>-->
 <!-- /ko -->
 
+<!-- ko if: $root.notifs.notifs().length > 0 -->
 <div class="notifs" data-bind="with: $root.notifs">
     <!-- ko foreach: notifs -->
-    <div class="notif animated" data-bind="css: { slideInRight: !leaving(), slideOutRight: leaving() }">
+    <div class="notif animated" data-bind="css: { slideInRight: !leaving(), slideOutRight: leaving(), sticky: sticky }, attr: { kind: kind }">
         <span data-bind="text: msg"></span>
+        <!-- ko if: sticky -->
+        <div class="actions">
+            <!-- ko foreach: actions -->
+            <a data-bind="click: $parent.doAction, text: $data"></a>
+            <!-- /ko -->
+            <a data-bind="click: die">Dismiss</a>
+        </div>
+        <!-- /ko -->
     </div>
     <!-- /ko -->
 </div>
+<!-- /ko -->
 
 <!-- /ko -->

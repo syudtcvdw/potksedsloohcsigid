@@ -39,6 +39,13 @@ var VM = new function () {
         vm.view(view)
     }
 
+    // methods
+    vm.notify = (msg, kind = "", actions = null) => {
+        vm
+            .notifs
+            .add(msg, kind, actions)
+    }
+
     // subscriptions
     vm
         .MODE
@@ -83,63 +90,92 @@ var VM = new function () {
         // behaviours
         si.countUp = () => {
             si.population(si.population() + 1)
+            vm.notify("New person connected")
         }
         si.countDown = () => {
             si.population(si.population() - 1)
+            if (si.population() == 0) 
+                vm.notify("Server offline", "error", {
+                    "put online": () => alert('retrying')
+                })
+            else 
+                vm.notify("Someone disconnected", "warn")
         }
 
         // computed
         si.popuReport = ko.computed(() => {
-            return `${si.population()} Workstation${si.population() != 1? 's':''}`
+            return `${si.population()} Workstation${si.population() != 1
+                ? 's'
+                : ''}`
         })
     }
+
     function clientInfo() {
         let ci = this
-        
+
         // observables
         ci.connected = ko.observable()
+
+        // subscriptions
+        ci.connected.subscribe(s => {
+            if (s) vm.notify("Connection established")
+            else vm.notify("Connection to server lost", "error", {
+                "reconnect": () => alert('will retry')
+            })
+        })
     }
+
     function notifs() {
         let nt = this
 
         // observables
-        nt.sticky = ko.observable()
         nt.notifs = ko.observableArray()
 
         // behaviours
-        nt.add = (msg, actions = null) => {
-            nt.notifs.push(new Notif(msg, actions))
+        nt.add = (msg, kind = "", actions = null) => {
+            nt
+                .notifs
+                .push(new Notif(msg, kind, actions))
         }
 
         /**
          * Local vm for each notification
          * @param {string} msg The message to display
+         * @param {string} kind The kind of notification, dictates the color
          * @param {map} actions An object map of action to callback
          */
-        function Notif(msg, actions) {
+        function Notif(msg, kind, actions) {
             let n = this
 
             // props
             n.msg = ko.observable(msg || 'Welcome to Digischools')
+            n.kind = ko.observable(kind || '')
             n.actions = ko.observableArray()
             n.leaving = ko.observable(false)
-            if (typeof actions != 'undefined')
-                for (let a in actions) n.actions.push(a)
-
+            if (actions) 
+                for (let a in actions) 
+                    n.actions.push(a);
+        
             // behaviours
             n.doAction = (d) => {
-                console.log(d)
+                actions[d]()
             }
             n.die = () => {
-                nt.notifs.remove(n)
+                new Promise((resolve) => setTimeout(() => (n.leaving(true), resolve()), !n.sticky()? 5000:0)).then(() => setTimeout(() => n.die(), 250))
             }
 
-            // init
-            if (n.actions().length == 0) new Promise((resolve) => {
-                setTimeout(() => (n.leaving(true), resolve()), 5000)
-            }).then(() => {
-                setTimeout(() => n.die(), 250)
+            // computed
+            n.sticky = ko.computed(() => {
+                if (!n.actions()) 
+                    return false;
+                return n
+                    .actions()
+                    .length != 0
             })
+
+            // init
+            if (!n.sticky()) 
+                n.die()
         }
     }
 };
