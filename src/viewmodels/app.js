@@ -112,6 +112,7 @@ var VM = new function () {
 
     function clientInfo() {
         let ci = this
+        console.log("NEW THIS")
 
         // observables
         ci.connected = ko.observable(true)
