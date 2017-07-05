@@ -23,6 +23,8 @@ const vm = function (params) {
                     .personEmail(),
                 'password': vm.updatePwd()
             }, (data) => {
+							console.log(data)
+							console.log('okay...')
                 if (data) 
                     VM.notify("Update successful!")
                 else 
