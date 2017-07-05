@@ -6,21 +6,20 @@ var vm = function (params) {
     vm.startPayload = ko.observable()
 
     // subscriptions
-    vm
+    vm.s1 = vm
         .startPayload
         .subscribe(p => {
             _.delay(() => VM.loadView('start-screen', p), 1000)
         })
 
-    // init
-    // _.defer(ajs)
+    // init _.defer(ajs)
     new Promise((resolve, reject) => {
         _.delay(() => {
             DbSettings
-            .findOne({label: 'schoolName'})
-            .execAsync()
-            .then(d => VM.controlVm.schoolName(d.value))
-            .catch(e => {})
+                .findOne({label: 'schoolName'})
+                .execAsync()
+                .then(d => VM.controlVm.schoolName(d.value))
+                .catch(e => {})
         }, 1200)
         _.delay(() => {
             $('.splash-screen').addClass('dismiss')

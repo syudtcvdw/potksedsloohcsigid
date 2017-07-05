@@ -166,7 +166,7 @@ var vm = function (params) {
     }
 
     // subscriptions
-    vm
+    vm.s1 = vm
         .mode
         .subscribe(() => $('#tooltip').remove())
 
@@ -186,11 +186,12 @@ var vm = function (params) {
                 vm.start()
             }), vm.mode(params.mode), vm.seen(true))
     }
-    VM
+    vm.s2 = VM
         .RESETDB
         .subscribe(() => {
-            DbSettings.clear()
-            DbAdmins.clear()
+            /*DbSettings.clear()
+            DbAdmins.clear()*/
+            console.log("Got db RESET command")
         })
 }
 
