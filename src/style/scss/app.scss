@@ -77,7 +77,22 @@ body {
 }
 
 @include headers {
-    font-weight: lighter
+    font-weight: lighter;
+    &.title {
+        border-bottom: solid 1px rgba($theme-black, .5);
+        color: $theme-orange;
+        position: relative;
+        padding-bottom: 3px;
+        &::before {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            display: block;
+            width: 50%;
+            height: 1px;
+            background: $theme-green;
+        }
+    }
 }
 
 a.close {
@@ -181,6 +196,10 @@ textarea {
     &.btn-shift-down {
         margin-top: .8rem;
     }
+    &.disabled {
+        filter: grayscale(.5);
+        pointer-events: none;
+    }
 }
 
 .clearfix {
@@ -197,22 +216,8 @@ textarea {
     z-index: 9999;
 }
 
-@include headers {
-    &.title {
-        border-bottom: solid 1px rgba($theme-black, .5);
-        color: $theme-orange;
-        position: relative;
-        padding-bottom: 3px;
-        &::before {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            display: block;
-            width: 50%;
-            height: 1px;
-            background: $theme-green;
-        }
-    }
+table {
+    width: 100%;
 }
 
 // specific

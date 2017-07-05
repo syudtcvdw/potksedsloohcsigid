@@ -4,54 +4,34 @@ const vm = function (params) {
     // observables
     vm.updateName = ko.observable('')
     vm.updatePwd = ko.observable('')
-    vm.updateErr = ko.observable()
     vm.loading = ko.observable(false)
 
     // behaviors
     vm.updateCreds = () => {
+        if (_anyEmpty(vm.updateName(), vm.updatePwd())) 
+            return VM.notify('Fill in all fields, please', 'warn'),
+            null
+
         vm.loading(true)
-        if (emptyFields(vm.updateName(), vm.updatePwd())) 
-            vm.updateErr('Fill in all fields, pls.')
-            // send to the socket ( update profile )
-        console.log(`Email: ${VM.controlVm.personEmail()}`)
-        VM
-            .socket
-            .emit('update profile', {
-                'name': vm.updateName(),
-                'email': VM
-                    .controlVm
-                    .personEmail(),
-                'password': vm.updatePwd()
-            }, (data) => {
-                if (data) 
-                    VM.notify("Update successful!")
+        sockets.emit('update profile', { // send to the socket ( update profile )
+            'name': vm.updateName(),
+            'email': VM
+                .controlVm
+                .personEmail(),
+            'password': vm.updatePwd()
+        }, (data) => {
+            if (!data.status) 
+                VM.notify("Profile update failed, no reponse from Control Workstation", "error")
+            else {
+                if (data.response) 
+                    VM.notify("Profile update successful!")
                 else 
-                    VM.notify("Update failed", "error")
-            })
-        // change password retrieve first admin's password
-
-    }
-
-    vm.dismissLoading = () => {
-        vm.loading(false)
-        vm.updateErr(null)
-    }
-
-    vm.start = (data) => {
-        console.log('starting vm.')
-        console.log(data)
-    }
-
-    // helpers
-    function emptyFields(...fields) {
-        var empty = false
-        fields.forEach(items => {
-            if (items.trim().length === 0) 
-                empty = true
+                    VM.notify("Profile update failed", "warn")
+            }
+            vm.loading(false)
         })
-        return empty
+        // change password retrieve first admin's password
     }
-
 }
 
 new Component('admins-screen')

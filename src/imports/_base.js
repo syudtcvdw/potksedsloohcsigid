@@ -64,6 +64,19 @@ function _loadComponent(name, component) {
 }
 
 /**
+ * Determines if any of supplied fields is empty
+ * @param {array} fields 
+ */
+function _anyEmpty(...fields) {
+    let _empty = false
+    fields.forEach(items => {
+        if (items.trim().length === 0)
+            _empty = true
+    })
+    return _empty
+}
+
+/**
  * A depth-inclusive match extension for javascript string
  * @param   {RegExp} regex The regex pattern to match against
  * @returns {Array}  Array of (arrays) matches
@@ -109,7 +122,7 @@ String.prototype.sprintf = function (replacement_map) {
 /**
  * Add ability to extend functions with properties
  */
-Function.prototype.extend = function(args) {
+Function.prototype.extend = function (args) {
     if (Array.isArray(args) || (args !== null && typeof args === 'object')) {
         for (let i in args) {
             this[i] = args[i];
