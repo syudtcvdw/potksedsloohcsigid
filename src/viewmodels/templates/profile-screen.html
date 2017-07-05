@@ -1,29 +1,11 @@
 <div class="start-screen profile-screen">
-	<div class="logon-pane">
 
-		<div id="logon">
-			<h2 class="title">Update Profile</h2>
-			<input type="text" name="name" data-bind="textInput: updateName" placeholder="Enter your (new) name">
-			<div class="pwd-box">
-				<input type="password" name="pwd" data-bind="textInput: updatePwd" placeholder="Enter new password">
-			</div>
-			<a class="btn btn-block btn-orange" data-bind="click: updateCreds">Update Info</a>
-			<!-- ko if: loading -->
-			<div class="loading" data-bind="css: { opaque: updateErr() }">
-				<div class="content">
-					<!-- ko ifnot: updateErr() -->
-					<img data-bind="ifnot: updateErr" src="resx/images/balls.gif" alt="Loading...">
-					<!-- /ko -->
-					<!-- ko if: updateErr -->
-					<div class="animated fadeInUp">
-						<div data-bind="text: updateErr"></div>
-						<a class="btn btn-inverse btn-shift-down" data-bind="click: dismissLoading">Ok</a>
-					</div>
-					<!-- /ko -->
-				</div>
-			</div>
-			<!-- /ko -->
+	<div class="col-4">
+		<h4 class="title">Your Profile</h4>
+		<input type="text" name="name" data-bind="textInput: updateName" placeholder="Enter your (new) name">
+		<div class="pwd-box">
+			<input type="password" name="pwd" data-bind="textInput: updatePwd" placeholder="Enter new password">
 		</div>
-
+		<a class="btn btn-block btn-orange" data-bind="click: updateCreds">Update Info</a>
 	</div>
 </div>
