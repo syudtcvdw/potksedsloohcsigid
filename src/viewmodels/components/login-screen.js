@@ -54,7 +54,7 @@ var vm = function (params) {
         VM
             .controlVm
             .personEmail(data.info.email)
-        VM.loadView('profile-screen')
+        VM.loadView('admins-screen')
         console.log("Starting app...")
     }
 
