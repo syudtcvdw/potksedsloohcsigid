@@ -40,10 +40,21 @@ var VM = new function () {
     }
 
     // methods
-    vm.notify = (msg, kind = "", actions = null) => {
+    vm.notify = (msg, kind = "", actions = null, id = null) => {
+        if (id != null) 
+            vm.closeNotification(id)
         vm
             .notifs
-            .add(msg, kind, actions)
+            .add(msg, kind, actions, id)
+    }
+    vm.closeNotification = (id) => {
+        vm
+            .notifs
+            .notifs()
+            .map(n => {
+                if (n.id == id) 
+                    n.die()
+            })
     }
 
     // subscriptions
@@ -98,7 +109,7 @@ var VM = new function () {
             if (si.population() == 0) 
                 vm.notify("Server offline", "error", {
                     "put online": () => alert('retrying')
-                })
+                }, 'server offline')
             else 
                 vm.notify("Someone disconnected", "warn")
         }
@@ -124,7 +135,7 @@ var VM = new function () {
                 if (!c) 
                     vm.notify("Connection to server lost", "error", {
                         "reconnect": () => alert('will retry')
-                    })
+                    }, "connection lost")
             })
     }
 
@@ -135,10 +146,10 @@ var VM = new function () {
         nt.notifs = ko.observableArray()
 
         // behaviours
-        nt.add = (msg, kind = "", actions = null) => {
+        nt.add = (msg, kind = "", actions = null, id = null) => {
             nt
                 .notifs
-                .push(new Notif(msg, kind, actions))
+                .push(new Notif(msg, kind, actions, id))
         }
 
         /**
@@ -147,13 +158,14 @@ var VM = new function () {
          * @param {string} kind The kind of notification, dictates the color
          * @param {map} actions An object map of action to callback
          */
-        function Notif(msg, kind, actions) {
+        function Notif(msg, kind, actions, id = null) {
             let n = this
 
             // props
             n.msg = ko.observable(msg || 'Welcome to Digischools')
             n.kind = ko.observable(kind || '')
             n.actions = ko.observableArray()
+            n.id = id
             n.leaving = ko.observable(false)
             if (actions) 
                 for (let a in actions) 
