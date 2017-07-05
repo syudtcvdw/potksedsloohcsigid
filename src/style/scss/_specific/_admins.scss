@@ -26,6 +26,10 @@ $table-border-color:            #ddd !default;
 	background: $theme-white;
 	padding: .5rem 1rem;
 	color: rgba($theme-black, .7);
+
+	.view-admins {
+		padding-left: 1rem;
+	}
 	/* 
 	 * Credits
 	 * https://github.com/twbs/bootstrap-sass/blob/master/assets/stylesheets/bootstrap/_tables.scss
