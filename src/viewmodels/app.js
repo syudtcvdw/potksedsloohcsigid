@@ -7,6 +7,7 @@ require(COMPONENTS_PATH + 'splash-screen.js')
 require(COMPONENTS_PATH + 'start-screen.js')
 require(COMPONENTS_PATH + 'login-screen.js')
 require(COMPONENTS_PATH + 'home-screen.js')
+require(COMPONENTS_PATH + 'profile-screen.js')
 require(COMPONENTS_PATH + 'control-frame.js')
 
 // empty component
