@@ -19,15 +19,14 @@ exports.Component = function (name) {
                     ___name: this._name,
                     dispose: function () {
                         console.log(`Disposing ${this.___name} component`)
-                        ko
-                            .utils
-                            .objectForEach(this, this.disposeOne);
+                        ko.utils.objectForEach(this, this.disposeOne);
+                        for (let p in this) this[p] = null
                     },
 
                     // little helper that handles being given a value or prop + value
                     disposeOne: function (propOrValue, value) {
                         var disposable = value || propOrValue;
-
+                        
                         if (disposable && typeof disposable.dispose === "function") {
                             console.log(`Disposing ...`)
                             disposable.dispose();

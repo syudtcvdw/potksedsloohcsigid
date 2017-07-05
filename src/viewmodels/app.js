@@ -90,6 +90,8 @@ var VM = new function () {
         // behaviours
         si.countUp = () => {
             si.population(si.population() + 1)
+            if (si.population() != 1) 
+                vm.notify("Someone just connected to control workstation", "warn")
         }
         si.countDown = () => {
             si.population(si.population() - 1)
