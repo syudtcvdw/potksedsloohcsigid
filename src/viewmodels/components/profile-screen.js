@@ -1,14 +1,10 @@
-var vm = (params) => {
-	let vm = this
+var vm = function (params) {
+		let vm = this
 
-	// observables
-	
-	// behaviors
-
-	// init
+		// observables behaviors init
 
 }
 
-new decodeURIComponent('profile-screen')
+new Component('profile-screen')
 		.def(vm)
 		.load()

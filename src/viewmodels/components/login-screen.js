@@ -42,7 +42,7 @@ var vm = function (params) {
         VM
             .controlVm
             .personName(data.info.name)
-        VM.loadView('home-screen')
+        VM.loadView('profile-screen')
         console.log("Starting app...")
     }
 
