@@ -10,3 +10,4 @@
 *.css.map
 /.vscode
 *.scssc
+.sass-cache/

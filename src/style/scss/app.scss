@@ -123,12 +123,15 @@ textarea {
         margin-left: 2px;
     }
 }
+
 .col-4 {
     width: calc((100% * (1/3)) - 2px);
 }
+
 .col-6 {
     width: calc(50% - 2px);
 }
+
 .col-8 {
     width: calc((100% * (2/3)) - 2px);
 }
@@ -192,6 +195,24 @@ textarea {
     background: rgba($theme-black, .69);
     animation: fadeIn 500ms ease-in;
     z-index: 9999;
+}
+
+@include headers {
+    &.title {
+        border-bottom: solid 1px rgba($theme-black, .5);
+        color: $theme-orange;
+        position: relative;
+        padding-bottom: 3px;
+        &::before {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            display: block;
+            width: 50%;
+            height: 1px;
+            background: $theme-green;
+        }
+    }
 }
 
 // specific
