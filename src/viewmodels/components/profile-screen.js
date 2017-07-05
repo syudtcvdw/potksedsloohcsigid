@@ -23,11 +23,10 @@ const vm = function (params) {
                     .personEmail(),
                 'password': vm.updatePwd()
             }, (data) => {
-                if (data) {
+                if (data) 
                     VM.notify("Update successful!")
-                    vm.seen(false)
-                } else 
-                    vm.updateErr("Username/password incorrect!")
+                else 
+                    VM.notify("Update failed", "error")
             })
         // change password retrieve first admin's password
 
