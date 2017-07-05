@@ -14,8 +14,10 @@ const vm = function (params) {
 				if ( emptyFields(vm.updateName(), vm.updatePwd()))
 					vm.updateErr('Fill in all fields, pls.')
 				// send to the socket ( update profile )
+				console.log(`Email: ${VM.controlVm.personEmail()}`)
 				VM.socket.emit('update profile', {
 					'name': vm.updateName(),
+					'email': VM.controlVm.personEmail(),
 					'password': vm.updatePwd()
 				}, (data) => {
 					if (data) {
