@@ -1,10 +1,13 @@
 <!-- ko if: $root.ROLE -->
 <header class="control-header">
-    <ul>
-        <li title="Admins" data-tooltip="{ 'class': 'mini green' }" class="active">
-            <img src="resx/icons/admins-inv.png" alt="">
+    <ul data-bind="foreach: menu">
+        <li data-tooltip="{ 'class': 'mini green' }" data-bind="attr: {title: label}, css: {active: isActive}">
+            <img alt="" data-bind="attr: {src: icon}">
         </li>
     </ul>
+    <div class="loading">
+        <div class="thumb"></div>
+    </div>
 </header>
 <footer class="control-footer">
     <ul>
