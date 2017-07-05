@@ -1,24 +1,6 @@
 @import '../_partials/_fonts.scss';
 @import '../_partials/_mixins.scss';
 @import '../_partials/_vars.scss';
-
-$body-bg: $theme-white;
-$line-height-base:        1.428571429 !default; // 20/14
-$line-height-computed:  1.428571429 !default; 
-$table-cell-padding:            8px !default;
-//** Padding for cells in `.table-condensed`.
-$table-condensed-cell-padding:  5px !default;
-
-//** Default background color used for all tables.
-$table-bg:                      transparent !default;
-//** Background color used for `.table-striped`.
-$table-bg-accent:               #f9f9f9 !default;
-//** Background color used for `.table-hover`.
-$table-bg-hover:                #f5f5f5 !default;
-$table-bg-active:               $table-bg-hover !default;
-
-//** Border color for table and cell borders.
-$table-border-color:            #ddd !default;
 //
 .admins-screen {
 	height: 100%;
@@ -26,70 +8,35 @@ $table-border-color:            #ddd !default;
 	background: $theme-white;
 	padding: .5rem 1rem;
 	color: rgba($theme-black, .7);
-
-	.view-admins {
-		padding-left: 1rem;
-	}
-	/* 
-	 * Credits
-	 * https://github.com/twbs/bootstrap-sass/blob/master/assets/stylesheets/bootstrap/_tables.scss
-	*/
-	.table {
-		width: 100%;
-		max-width: 100%;
-		margin-bottom: $line-height-computed;
-		// Cells
-		> thead,
-		> tbody,
-		> tfoot {
-			> tr {
-				> th,
-				> td {
-					padding: $table-cell-padding;
-					line-height: $line-height-base;
-					vertical-align: top;
-					border-top: 1px solid $table-border-color;
-				}
+	.admin-card {
+		background: $theme-green;
+		color: $theme-white;
+		padding: .5rem;
+		box-shadow: rgba($theme-black, .3) -2px 2px 4px;
+		.admin-name {
+			margin: 0;
+		}
+		.info {
+			margin-bottom: .5rem;
+		}
+		.btn {
+			border-radius: none;
+			background: $theme-white;
+			color: $theme-green;
+			opacity: .8;
+			&:hover {
+				opacity: 1
 			}
 		}
-		// Bottom align for column headings
-		> thead > tr > th {
-			vertical-align: bottom;
-			border-bottom: 2px solid $table-border-color;
-		}
-		// Remove top border from thead by default
-		> caption + thead,
-		> colgroup + thead,
-		> thead:first-child {
-			> tr:first-child {
-				> th,
-				> td {
-					border-top: 0;
-				}
-			}
-		}
-		// Account for multiple tbody instances
-		> tbody + tbody {
-			border-top: 2px solid $table-border-color;
-		}
-
-		// Nesting
-		.table {
-			background-color: $body-bg;
+	}
+	.loading-img {
+		margin: auto;
+	}
+	>.row {
+		height: 100%;
+		.pane {
+			height: 100%;
+			overflow-y: auto;
 		}
 	}
-
-	.table-striped {
-  > tbody > tr:nth-of-type(odd) {
-    background-color: $table-bg-accent;
-  }
-}
-
-.table-hover {
-  > tbody > tr:hover {
-    background-color: $table-bg-hover;
-  }
-}
-
-
 }

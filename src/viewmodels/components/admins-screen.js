@@ -1,14 +1,16 @@
 const vm = function (params) {
-	let vm = this
+    let vm = this
 
-	vm.updateName = ko.observable('')
-	vm.updatePwd = ko.observable('')
-	vm.loading = ko.observable(false)
-	vm.adminDetails = ko.observableArray([
-		{ sn: 1, name: 'Victor I. Afolabi', email: 'victor@vic.com', action: 'add | remove' },
-		{ sn: 2, name: 'Banjo Mofesola Paul', email: 'depaule@paul.com', action: 'add | remove' },
-		{ sn: 3, name: 'Dotun Longe', email: 'dedean@beats.net', action: 'add | remove' }
-	])
+    vm.updateName = ko.observable()
+    vm.updatingProfile = ko.observable(false)
+    vm.admins = ko.observableArray()
+    vm.noAdmins = ko.observable(false)
+    vm.fetchingAdmins = ko.observable(false)
+    vm.newName = ko.observable()
+    vm.newEmail = ko.observable()
+    vm.newPwd = ko.observable()
+    vm.confNewPwd = ko.observable()
+    vm.addingAdmin = ko.observable(false)
 
     // behaviors
     vm.updateCreds = () => {
@@ -16,7 +18,7 @@ const vm = function (params) {
             return VM.notify('Fill in all fields, please', 'warn'),
             null
 
-        vm.loading(true)
+        vm.updatingProfile(true)
         sockets.emit('update profile', { // send to the socket ( update profile )
             'name': vm.updateName(),
             'email': VM
@@ -32,37 +34,79 @@ const vm = function (params) {
                 else 
                     VM.notify("Profile update failed", "warn")
             }
-            vm.loading(false)
+            vm.updatingProfile(false)
         })
         // change password retrieve first admin's password
     }
 
-	/**
+    /**
 	 * Delete admin
 	 */
-	vm.deleteAdmin = (admin) => {
-		// remove an admin
-	}
+    vm.deleteAdmin = (admin) => {
+        // remove an admin
+    }
 
-	/**
+    /**
 	 * Add an admin
 	 */
-	vm.addAdmin = (admin) => {
-		// add an admin
-		if (admin)
-			vm.adminDetails.push(admin)
-		
-	}
+    vm.addAdmin = (admin) => {
+        // add an admin
+        if (admin) 
+            vm.adminDetails.push(admin)
 
-	/**
-	 * Dismiss loadin
-	 */
-	vm.dismissLoading = () => {
-		vm.loading(false)
-		vm.updateErr(null)
-	}
+    }
+
+    /**
+     * Fetches list of all admins from the server
+     */
+    vm.fetchAdmins = () => {
+        vm.fetchingAdmins(true)
+        console.log('Fetching admins')
+        VM.notify('Fetching all admins')
+        sockets.emit("get all admins", {}, data => {
+            vm.fetchingAdmins(false)
+            if (!data.status)
+                vm.noAdmins(true)
+            else {
+                if (!data.response) 
+                    vm.noAdmins(true)
+                else {
+                    vm.noAdmins(false)
+                    vm
+                        .admins
+                        .removeAll()
+                    data
+                        .response
+                        .map(a => {
+                            vm
+                                .admins
+                                .push(new Admin(a))
+                        })
+                }
+            }
+        })
+    }
+
+    // sub-vm
+    function Admin(data) {
+        let a = this
+
+        // observables
+        a.name = ko.observable(data.name || "")
+        a.email = ko.observable(data.email || "")
+        a.password = ko.observable(data.password || "")
+    }
+
+    // local
+    function loadMyProfile() {
+        vm.updateName(VM.controlVm.personName())
+    }
+
+    // init
+    vm.fetchAdmins()
+    loadMyProfile()
 }
 
 new Component('admins-screen')
-	.def(vm)
-	.load()
+    .def(vm)
+    .load()

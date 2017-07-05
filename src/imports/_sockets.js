@@ -129,13 +129,14 @@ function getSockets() {
             _ipReadyCallback = callback
             return this
         },
-        emit(event, data, callback, wait = 5000) { // wrapper for emits that require reply, includes timeout
+        emit(event, data, callback, quiet = false, wait = 5000) { // wrapper for emits that require reply, includes timeout
             let settled = false
             new Promise((resolve, reject) => {
-                if (!VM.socket) 
+                if (!VM.socket)
                     return reject(),
                     null
-                VM.loading(true) // show the loading strip
+                if (!quiet) VM.loading(true) // show the loading strip
+                console.log('VM now loading')
                 VM
                     .socket
                     .emit(event, data, (response) => {
@@ -147,9 +148,9 @@ function getSockets() {
             }).catch(() => {
                 if (!settled) 
                     callback({status: false})
-                VM.loading(false) // remove the loading strip
+                if (!quiet) VM.loading(false) // remove the loading strip
             }).then(() => {
-                VM.loading(false) // remove the loading strip
+                if (!quiet) VM.loading(false) // remove the loading strip
             })
         }
     }
