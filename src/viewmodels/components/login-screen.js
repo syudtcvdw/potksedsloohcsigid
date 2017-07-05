@@ -78,6 +78,7 @@ var vm = function (params) {
         .findOne({label: 'lastEmail'})
         .execAsync()
         .then(d => vm.loginEmail(d.value))
+        .catch()
 }
 
 new Component('login-screen')
