@@ -56,6 +56,6 @@ const vm = function (params) {
 
 }
 
-new Component('profile-screen')
+new Component('admins-screen')
     .def(vm)
     .load()
