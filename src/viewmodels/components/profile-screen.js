@@ -25,7 +25,6 @@ const vm = function (params) {
             }, (data) => {
                 if (data) {
                     VM.notify("Update successful!")
-                    vm.seen(false)
                 } else 
                     vm.updateErr("Username/password incorrect!")
             })
