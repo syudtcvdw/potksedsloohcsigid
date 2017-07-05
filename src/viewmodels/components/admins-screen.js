@@ -6,8 +6,18 @@ const vm = function (params) {
     vm.updatePwd = ko.observable('')
     vm.updateErr = ko.observable()
     vm.loading = ko.observable(false)
+    vm.adminDetails = {
+        sn: ko.observable(),
+        name: ko.observable(),
+        email: ko.observable(),
+        delete: ko.observable()
+    }
+
 
     // behaviors
+    /**
+     * Update admin credentials
+     */
     vm.updateCreds = () => {
         vm.loading(true)
         if (emptyFields(vm.updateName(), vm.updatePwd())) 
@@ -34,6 +44,23 @@ const vm = function (params) {
 
     }
 
+    /**
+     * Delete admin
+     */
+    vm.deleteAdmin = (admin) => {
+        // remove an admin
+    }
+
+    /**
+     * Add an admin
+     */
+    vm.addAdmin = (admin) => {
+        // add an admin
+    }
+
+    /**
+     * Dismiss loadin
+     */
     vm.dismissLoading = () => {
         vm.loading(false)
         vm.updateErr(null)
@@ -44,7 +71,12 @@ const vm = function (params) {
         console.log(data)
     }
 
-    // helpers
+    // helper functions
+    /**
+     * Check for empty fileds
+     * @param {*} fields 
+     * @return bool
+     */
     function emptyFields(...fields) {
         var empty = false
         fields.forEach(items => {
