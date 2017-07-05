@@ -8,4 +8,24 @@
 		</div>
 		<a class="btn btn-block btn-orange" data-bind="click: updateCreds, css: {disabled: loading}">Update Info</a>
 	</div>
+
+	<div class="col-8 view-admins">
+		<h4 class="title">View Admins List</h4>
+		<table class="table table-hover" data-bind="foreach: adminDetails">
+			<!--<tr>
+				<th>S/N</th>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Action</th>
+			</tr>-->
+			<!-- @TODO loop through adminDetails -->
+			<tr>
+				<td data-bind="text: $data.sn"></td>
+				<td data-bind="text: $data.name"></td>
+				<td data-bind="text: $data.email"></td>
+				<td data-bind="text: $data.action"></td>
+			</tr>
+			<!-- /endloop -->
+		</table>
+	</div>
 </div>

@@ -1,10 +1,14 @@
 const vm = function (params) {
-    let vm = this
+	let vm = this
 
-    // observables
-    vm.updateName = ko.observable('')
-    vm.updatePwd = ko.observable('')
-    vm.loading = ko.observable(false)
+	vm.updateName = ko.observable('')
+	vm.updatePwd = ko.observable('')
+	vm.loading = ko.observable(false)
+	vm.adminDetails = ko.observableArray([
+		{ sn: 1, name: 'Victor I. Afolabi', email: 'victor@vic.com', action: 'add | remove' },
+		{ sn: 2, name: 'Banjo Mofesola Paul', email: 'depaule@paul.com', action: 'add | remove' },
+		{ sn: 3, name: 'Dotun Longe', email: 'dedean@beats.net', action: 'add | remove' }
+	])
 
     // behaviors
     vm.updateCreds = () => {
@@ -32,8 +36,33 @@ const vm = function (params) {
         })
         // change password retrieve first admin's password
     }
+
+	/**
+	 * Delete admin
+	 */
+	vm.deleteAdmin = (admin) => {
+		// remove an admin
+	}
+
+	/**
+	 * Add an admin
+	 */
+	vm.addAdmin = (admin) => {
+		// add an admin
+		if (admin)
+			vm.adminDetails.push(admin)
+		
+	}
+
+	/**
+	 * Dismiss loadin
+	 */
+	vm.dismissLoading = () => {
+		vm.loading(false)
+		vm.updateErr(null)
+	}
 }
 
 new Component('admins-screen')
-    .def(vm)
-    .load()
+	.def(vm)
+	.load()
