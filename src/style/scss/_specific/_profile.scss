@@ -1,8 +1,11 @@
 @import '../_partials/_fonts.scss';
 @import '../_partials/_mixins.scss';
 @import '../_partials/_vars.scss';
-
-.profile {
+//
+.profile-screen {
+	height: 100%;
+	position: relative;
+	background: $theme-white;
 	h1 {
 		color: $theme-orange;
 	}

@@ -11,6 +11,14 @@
 @import '../_partials/_vars.scss';
 @include use-inconsolata;
 //
+control-frame {
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+}
+
 .control-footer {
     position: fixed;
     height: 32px;
@@ -21,9 +29,6 @@
     line-height: 32px;
     font-size: small;
     ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
         text-align: right;
         li {
             display: inline-block;
@@ -102,10 +107,35 @@
                 text-transform: uppercase;
                 padding: 3px 6px;
                 opacity: .9;
-
                 &:hover {
                     opacity: 1;
                 }
+            }
+        }
+    }
+}
+
+.control-header {
+    background: $theme-white;
+    ul {
+        li {
+            padding: .5rem 1rem;
+            text-align: center;
+            display: inline-block;
+            font-size: 70%;
+            min-width: 82px;
+            text-transform: uppercase;
+            transition-duration: 250ms;
+            &:not(.active) {
+                &:hover {
+                    background: darken($theme-white, 1%)
+                }
+            }
+            &.active {
+                background: $theme-black
+            }
+            img {
+                width: 22px;
             }
         }
     }

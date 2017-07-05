@@ -142,7 +142,8 @@ var vm = function (params) {
             params = _.assign(params, { 
                 role: 'ADMIN',
                 info: {
-                    name: vm.adminName()
+                    name: vm.adminName(),
+                    email: vm.logonEmail()
                 }
             })
         }

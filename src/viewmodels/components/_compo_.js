@@ -20,7 +20,7 @@ exports.Component = function (name) {
                     dispose: function () {
                         console.log(`Disposing ${this.___name} component`)
                         ko.utils.objectForEach(this, this.disposeOne);
-                        for (let p in this) this[p] = null
+                        for (let p in this) delete this[p]
                     },
 
                     // little helper that handles being given a value or prop + value

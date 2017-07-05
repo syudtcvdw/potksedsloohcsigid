@@ -22,6 +22,15 @@ var vm = function (params) {
             }, (data) => {
                 if (data) {
                     console.log("Login Successful!")
+
+                    // remember this email address
+                    let [DbSettings] = db('settings')
+                    DbSettings.iu({
+                        label: 'lastEmail',
+                        value: vm.loginEmail()
+                    })
+
+                    // go on
                     if (VM.MODE() != SERVER) 
                         VM.notify("Login successful, welcome")
                     vm.seen(false)
@@ -42,6 +51,9 @@ var vm = function (params) {
         VM
             .controlVm
             .personName(data.info.name)
+        VM
+            .controlVm
+            .personEmail(data.info.email)
         VM.loadView('profile-screen')
         console.log("Starting app...")
     }
@@ -61,6 +73,11 @@ var vm = function (params) {
     if (typeof params.firstRun != 'undefined' && VM.MODE() == SERVER) {
         vm.start(params) // don't require logon from server-running admin on first run
     }
+    let [DbSettings] = db('settings')
+    DbSettings
+        .findOne({label: 'lastEmail'})
+        .execAsync()
+        .then(d => vm.loginEmail(d.value))
 }
 
 new Component('login-screen')
