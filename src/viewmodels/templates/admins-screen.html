@@ -6,7 +6,7 @@
 		<div class="pwd-box">
 			<input type="password" name="pwd" data-bind="textInput: updatePwd" placeholder="Enter new password">
 		</div>
-		<a class="btn btn-block btn-orange" data-bind="click: updateCreds">Update Info</a>
+		<a class="btn btn-block btn-orange" data-bind="click: updateCreds, css: {disabled: loading}">Update Info</a>
 	</div>
 
 	<div class="col-8 view-admins">

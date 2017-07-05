@@ -58,8 +58,12 @@ function getSockets() {
                     _io_client = new require('socket.io-client')('http://' + _ip + ':9192', {reconnectionAttempts: 1})
                     _io_client.on('connect_error', e => reject(e))
                     _io_client.on('disconnect', reason => {
-                        VM.connectionInfo().connected(false)
-                        VM.controlVm.disconnectionTime(`${(new Date).getHours()}:${(new Date).getMinutes()}`)
+                        VM
+                            .connectionInfo()
+                            .connected(false)
+                        VM
+                            .controlVm
+                            .disconnectionTime(`${ (new Date).getHours()}:${ (new Date).getMinutes()}`)
                         console.log(`Connection lost: ${reason}`)
                     })
                     _io_client.on('connect', () => {
@@ -124,6 +128,29 @@ function getSockets() {
         onIpReady(callback) {
             _ipReadyCallback = callback
             return this
+        },
+        emit(event, data, callback, wait = 5000) { // wrapper for emits that require reply, includes timeout
+            let settled = false
+            new Promise((resolve, reject) => {
+                if (!VM.socket) 
+                    return reject(),
+                    null
+                VM.loading(true) // show the loading strip
+                VM
+                    .socket
+                    .emit(event, data, (response) => {
+                        settled = true
+                        callback({status: true, response: response})
+                        resolve()
+                    })
+                setTimeout(() => reject(), wait) // wait for response max soso seconds
+            }).catch(() => {
+                if (!settled) 
+                    callback({status: false})
+                VM.loading(false) // remove the loading strip
+            }).then(() => {
+                VM.loading(false) // remove the loading strip
+            })
         }
     }
 }
