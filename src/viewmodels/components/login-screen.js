@@ -12,15 +12,17 @@ var vm = function (params) {
     vm.validateCreds = () => {
         vm.loading(true)
         if (emptyFields(vm.loginEmail(), vm.loginPwd())) 
-            vm.loginErr("All fields are required.")
-            // send info to socket
-        VM
-            .socket
-            .emit('logon', {
-                'email': vm.loginEmail(),
-                'password': vm.loginPwd()
-            }, (data) => {
-                if (data) {
+            vm.loginErr("All fields are required.");
+        
+        // send info to socket
+        sockets.emit('logon', {
+            'email': vm.loginEmail(),
+            'password': vm.loginPwd()
+        }, (data) => {
+            if (!data.status) 
+                vm.loginErr("No response from Control Workstation")
+            else {
+                if (data.response) {
                     console.log("Login Successful!")
 
                     // remember this email address
@@ -34,11 +36,11 @@ var vm = function (params) {
                     if (VM.MODE() != SERVER) 
                         VM.notify("Login successful, welcome")
                     vm.seen(false)
-                    vm.start(data)
+                    vm.start(data.response)
                 } else 
                     vm.loginErr("Username/password incorrect!")
-
-            })
+            }
+        })
         console.log(`Email: ${vm.loginEmail()} Password: ${vm.loginPwd()}`)
     }
     vm.dismissLoading = () => {

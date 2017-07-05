@@ -9,7 +9,9 @@
 @import '../_partials/_fonts.scss';
 @import '../_partials/_mixins.scss';
 @import '../_partials/_vars.scss';
+@import '../_partials/_animations.scss';
 @include use-inconsolata;
+@include anim-loading-strip;
 //
 control-frame {
     ul {
@@ -138,5 +140,21 @@ control-frame {
                 width: 22px;
             }
         }
+    }
+}
+
+.loading-strip {
+    height: 2px;
+    background: $theme-white;
+    position: relative;
+
+    .thumb {
+        width: 20%;
+        height: 100%;
+        background: $theme-orange;
+        position: absolute;
+        left: -20%;
+        top: 0;
+        animation: loading-strip 1s ease-out infinite;
     }
 }

@@ -5,8 +5,10 @@
             <img alt="" data-bind="attr: {src: icon}">
         </li>
     </ul>
-    <div class="loading">
+    <div class="loading-strip">
+        <!-- ko if: $root.loading -->
         <div class="thumb"></div>
+        <!-- /ko -->
     </div>
 </header>
 <footer class="control-footer">

@@ -29,6 +29,7 @@ var VM = new function () {
     vm.IP = ko.observable() // server IP address
     vm.ROLE = ko.observable() // logged in user's role as far as the system is concerned: Admin, Teacher, blah blah
     vm.connectionInfo = ko.observable() // connection info
+    vm.loading = ko.observable() // toggles the loading guy on the header
     vm.notifs = new notifs() // notifications viewmodel
 
     // tmp
@@ -128,6 +129,10 @@ var VM = new function () {
 
         // observables
         ci.connected = ko.observable(true)
+
+        // behaviours
+        ci.reconnect = () => {
+        }
 
         // subscriptions
         ci
