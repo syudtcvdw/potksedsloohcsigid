@@ -231,13 +231,13 @@ table {
     .fa {
         width: 44px;
         height: 39px;
-        line-height: 44px;
+        line-height: 39px;
         color: $theme-black;
         position: absolute;
         right: 1px;
         top: 1px;
         text-align: center;
-        background: darken($theme-white, 1%);
+        background: darken($theme-white, 2%);
         border-radius: 0 3px 3px 0;
     }
 }
