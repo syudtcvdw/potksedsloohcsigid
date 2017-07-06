@@ -69,7 +69,7 @@ function getSockets() {
                     _io_client.on('connect', () => {
                         // VM.connectionInfo().connected(true)
                         _io_client.on('init-payload', (info) => {
-                            let [DbSettings] = db("settings")
+                            let DbSettings = db("settings")
                             DbSettings.iu([
                                 {
                                     label: 'schoolUid',

@@ -139,11 +139,31 @@ module.exports = (...name) => {
                             ? resolve(doc)
                             : reject(err))
                     })
+                },
+                /**
+                 * Checks for existence of specified value, in specified column
+                 * @param {string} col The column to check
+                 * @param {string} val The value to check for
+                 */
+                exists: function (col, val) {
+                    return new Promise((resolve, reject) => {
+                        this
+                            .findOne({col: val})
+                            .execAsync()
+                            .then(d => {
+                                !d
+                                    ? reject()
+                                    : resolve()
+                            })
+                            .catch(() => reject())
+                    })
                 }
             })
             map[n] = ds
             dbs.push(ds)
         }
     })
-    return dbs
+    return dbs.length == 1
+        ? dbs[0]
+        : dbs
 }
