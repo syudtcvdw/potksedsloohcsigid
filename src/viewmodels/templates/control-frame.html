@@ -30,7 +30,6 @@
 </div>-->
 <!-- /ko -->
 
-<!-- ko if: $root.notifs.notifs().length > 0 -->
 <div class="notifs" data-bind="with: $root.notifs">
     <!-- ko foreach: notifs -->
     <div class="notif animated" data-bind="css: { slideInRight: !leaving(), slideOutRight: leaving(), sticky: sticky }, attr: { kind: kind }">
@@ -47,17 +46,14 @@
     <!-- /ko -->
 
     <!-- ko if: $root.MODE() == 'CLIENT-RECON' -->
-    <div>
-        <div class="reconnect-pane notif animated fadeInUp" kind="warn">
-            <small>Confirm server address</small>
-            <div class="input-fa">
-                <input type="text" data-bind="textInput: $root.connectionInfo().ip" placeholder="Enter server address">
-                <i class="fa fa-chevron-right" data-bind="click: $root.connectionInfo().doRecon"></i>
-            </div>
+    <div class="reconnect-pane notif animated fadeInUp" kind="warn">
+        <small>Confirm server address</small>
+        <div class="input-fa">
+            <input type="text" data-bind="textInput: $root.connectionInfo().ip" placeholder="Enter server address">
+            <i class="fa fa-chevron-right" data-bind="click: $root.connectionInfo().doRecon"></i>
         </div>
     </div>
     <!-- /ko -->
 </div>
-<!-- /ko -->
 
 <!-- /ko -->

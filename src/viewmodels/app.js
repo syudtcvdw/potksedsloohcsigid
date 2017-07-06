@@ -194,7 +194,7 @@ var VM = new function () {
             .subscribe(c => {
                 if (!c) 
                     vm.notify("Connection to server lost", "error", {
-                        "reconnect": ci.reconnect 
+                        "reconnect": ci.reconnect
                     }, "connection lost")
             })
     }
