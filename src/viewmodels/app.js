@@ -166,6 +166,27 @@ var VM = new function () {
             ci.ip(VM.IP())
             vm.MODE('CLIENT-RECON')
         }
+        ci.doRecon = () => {
+            if (_anyEmpty(ci.ip())) vm.notify("You need to enter the Server Address", 'error')
+            else if (!ci.ip().match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/)) vm.notify("Server address is not properly formatted", 'error')
+            else {
+                sockets.reconnect(ci.ip()).then((sock) => {
+                    VM.MODE(CLIENT)
+                    VM.socket = sock
+                    console.log(`Reconnection successful: ${VM.IP()}`)
+                    VM.IP(ci.ip())
+                    DbSettings.iu([
+                        {
+                            label: 'runMode',
+                            value: VM.MODE()
+                        }, {
+                            label: 'serverIp',
+                            value: VM.IP()
+                        }
+                    ])
+                })
+            }
+        }
 
         // subscriptions
         ci

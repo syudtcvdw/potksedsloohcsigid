@@ -223,6 +223,22 @@ table {
     width: 100%;
 }
 
+.input-fa {
+    position: relative;
+    input {
+        padding-right: 46px;
+    }
+    .fa {
+        width: 44px;
+        height: 44px;
+        line-height: 44;
+        color: $theme-black;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+}
+
 // specific
 @import '_specific/splash';
 @import '_specific/start';
