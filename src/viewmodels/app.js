@@ -164,7 +164,7 @@ var VM = new function () {
         // behaviours
         ci.reconnect = () => {
             ci.ip(VM.IP())
-            vm.MODE('CLIENT-RECON')
+            vm.MODE('CLIENT-RECON') 
         }
         ci.doRecon = () => {
             if (_anyEmpty(ci.ip())) vm.notify("You need to enter the Server Address", 'error')
