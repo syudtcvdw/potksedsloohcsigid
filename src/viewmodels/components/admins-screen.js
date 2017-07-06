@@ -57,10 +57,8 @@ const vm = function (params) {
 				return VM.notify('Please fill in all fields.', 'warn')
 			if (vm.newPwd() !== vm.confNewPwd()) 
 				return VM.notify('Your passwords doesn\'t match')
-			/**
-			 * 
-			 * Go ahead and add admin.
-			 */
+			
+			// Go ahead and add admin.
 			vm.addingAdmin(true)
 			sockets.emit('add admin', {
 					'name': vm.newName(),
@@ -68,7 +66,10 @@ const vm = function (params) {
 					'password': vm.newPwd()
 			}, (data) => {
 					if (!data.status) 
-							VM.notify(`Ooops! Looks like there's an issue adding this admin`, 'warn')
+						VM.notify('There was no response from the server. Try again.', 'error', {'try again': () => {
+							vm.addingAdmin(true)
+							vm.addAdmin()
+						}}, 'add admin')
 					else {
 							if (data.response) {
 									vm
@@ -79,7 +80,7 @@ const vm = function (params) {
 													password: vm.newPwd()
 											}))
 							} else 
-									VM.notify('Failure adding admin.', 'warn')
+									VM.notify(`Ooops! Looks like there's an issue adding this admin`, 'warn')
 					}
 					vm.addingAdmin(false)
 			})
