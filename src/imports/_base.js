@@ -70,7 +70,7 @@ function _loadComponent(name, component) {
 function _anyEmpty(...fields) {
     let _empty = false
     fields.forEach(items => {
-        if (items.trim().length === 0)
+        if (!items || items.trim().length === 0)
             _empty = true
     })
     return _empty
