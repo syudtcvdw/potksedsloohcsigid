@@ -75,6 +75,9 @@ body {
     &.green {
         background: $theme-green;
     }
+    &.orange {
+        background: $theme-orange;
+    }
 }
 
 .anim-js {
@@ -110,7 +113,7 @@ a.close {
     }
 }
 
-input,
+input:not([type=checkbox]):not([type=radio]),
 select,
 textarea {
     background: $theme-white;
@@ -125,11 +128,11 @@ textarea {
     &:focus {
         outline: none;
         box-shadow: rgba(lighten($theme-orange, 5%), .7) 0 0 3px;
-        border-color: transparent
+        border-color: rgba(lighten($theme-orange, 5%), .7)
     }
 }
 
-input,
+input:not([type=checkbox]):not([type=radio]):not([disabled]),
 textarea {
     cursor: text
 }
@@ -246,6 +249,10 @@ table {
             color: $theme-white;
         }
     }
+}
+
+.mt0 {
+    margin-top: 0;
 }
 
 // specific

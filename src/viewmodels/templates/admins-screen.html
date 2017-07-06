@@ -4,8 +4,14 @@
 		<div class="col span_1_of_3 pane">
 			<form>
 				<h4 class="title">Your Profile</h4>
-				<input type="text" name="name" data-bind="textInput: updateName" placeholder="Enter your (new) name">
-				<input type="email" name="pwd" data-bind="value: $root.controlVm.personEmail" readonly>
+				<input type="text" name="name" data-bind="textInput: updateName" placeholder="Your name goes here">
+				<input type="email" name="pwd" data-bind="value: $root.controlVm.personEmail, enable: isEditEmail" placeholder="Put yout email here">
+				<p class="mt0" data-bind="if: $root.controlVm.superAdmin">
+					<label for="edit-email" data-tooltip="{ 'class': 'mini orange' }" title="Requires internet connection">
+						<input type="checkbox" data-bind="checked: isEditEmail" id="edit-email">
+						<small>Edit my email too</small>
+					</label>
+				</p>
 				<a class="btn btn-block btn-black" data-bind="click: updateCreds, css: {disabled: updatingProfile}">Update Info</a>
 			</form>
 

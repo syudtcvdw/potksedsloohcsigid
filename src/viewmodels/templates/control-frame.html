@@ -15,7 +15,7 @@
     <ul>
         <li data-bind="text: schoolName"></li>
         <li data-tooltip="{ 'class': 'mini dark' }" title="Click to logout" data-bind="text: personName"></li>
-        <li data-bind="text: $root.ROLE"></li>
+        <li data-bind="text: superAdmin()? 'Super Admin':$root.ROLE"></li>
         <!-- ko if: isServer -->
         <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.connectionInfo().popuReport"></li>
         <!-- /ko -->
