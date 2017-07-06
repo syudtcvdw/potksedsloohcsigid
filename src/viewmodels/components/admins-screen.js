@@ -66,7 +66,7 @@ const vm = function (params) {
 					'password': vm.newPwd()
 			}, (data) => {
 					if (!data.status) 
-						VM.notify('There was no response from the server. Try again.', 'error', {'try again': () => {
+						VM.notify('There was no response from the server.', 'error', {'try again': () => {
 							vm.addingAdmin(true)
 							vm.addAdmin()
 						}}, 'add admin')
