@@ -53,10 +53,37 @@ const vm = function (params) {
 		 * Add new admin
 		 */
 		vm.addAdmin = () => {
-			// add an admin
-			if ( _anyEmpty(vm.newName(), vm.newEmail(), vm.newPwd(), vm.confNewPwd()) )
-				VM.notify('Please fill in all fields.')
-			console.log('Okay. No empty')
+			if (_anyEmpty(vm.newName(), vm.newEmail(), vm.newPwd(), vm.confNewPwd())) 
+				return VM.notify('Please fill in all fields.', 'warn')
+			if (vm.newPwd() !== vm.confNewPwd()) 
+				return VM.notify('Your passwords doesn\'t match')
+			
+			// Go ahead and add admin.
+			vm.addingAdmin(true)
+			sockets.emit('add admin', {
+					'name': vm.newName(),
+					'email': vm.newEmail(),
+					'password': vm.newPwd()
+			}, (data) => {
+					if (!data.status) 
+						VM.notify('There was no response from the server. Try again.', 'error', {'try again': () => {
+							vm.addingAdmin(true)
+							vm.addAdmin()
+						}}, 'add admin')
+					else {
+							if (data.response) {
+									vm
+											.admins
+											.push(new Admin({
+													name: vm.newName(),
+													email: vm.newEmail(),
+													password: vm.newPwd()
+											}))
+							} else 
+									VM.notify(`Ooops! Looks like there's an issue adding this admin`, 'warn')
+					}
+					vm.addingAdmin(false)
+			})
 		}
 
 		/**
