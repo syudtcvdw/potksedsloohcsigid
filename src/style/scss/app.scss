@@ -239,6 +239,12 @@ table {
         text-align: center;
         background: darken($theme-white, 2%);
         border-radius: 0 3px 3px 0;
+        transition: 250ms ease-in-out;
+
+        &:hover {
+            background: $theme-green;
+            color: $theme-white;
+        }
     }
 }
 

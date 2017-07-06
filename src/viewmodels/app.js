@@ -184,7 +184,7 @@ var VM = new function () {
                             value: VM.IP()
                         }
                     ])
-                })
+                }).catch(e => console.log('reconnection', e))
             }
         }
 
