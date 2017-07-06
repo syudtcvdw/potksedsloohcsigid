@@ -186,6 +186,7 @@ var VM = new function () {
         
             // behaviours
             n.doAction = (d) => {
+                n.die()
                 actions[d]()
             }
             n.die = () => {

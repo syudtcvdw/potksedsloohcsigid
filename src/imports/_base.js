@@ -65,15 +65,27 @@ function _loadComponent(name, component) {
 
 /**
  * Determines if any of supplied fields is empty
- * @param {array} fields 
+ * @param {array} fields
  */
 function _anyEmpty(...fields) {
     let _empty = false
     fields.forEach(items => {
-        if (!items || items.trim().length === 0)
+        if (!items || items.trim().length === 0) 
             _empty = true
     })
     return _empty
+}
+
+/**
+ * Resets a form
+ * @param {string} formSelector The jquery selector to use, including the notation
+ */
+function _resetForm(formSelector) {
+    $(':input', formSelector)
+        .removeAttr('checked')
+        .removeAttr('selected')
+        .not(':button, :submit, :reset, :hidden, :radio, :checkbox')
+        .val('');
 }
 
 /**

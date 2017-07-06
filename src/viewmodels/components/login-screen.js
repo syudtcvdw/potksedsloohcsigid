@@ -26,7 +26,7 @@ var vm = function (params) {
                     console.log("Login Successful!")
 
                     // remember this email address
-                    let [DbSettings] = db('settings')
+                    let DbSettings = db('settings')
                     DbSettings.iu({
                         label: 'lastEmail',
                         value: vm.loginEmail()
@@ -75,7 +75,7 @@ var vm = function (params) {
     if (typeof params.firstRun != 'undefined' && VM.MODE() == SERVER) {
         vm.start(params) // don't require logon from server-running admin on first run
     }
-    let [DbSettings] = db('settings')
+    let DbSettings = db('settings')
     DbSettings
         .findOne({label: 'lastEmail'})
         .execAsync()

@@ -28,7 +28,7 @@ module.exports = function (server) {
             })
 
             socket.on('logon', (query, cb) => { // success: {role,info}
-                let [DbAdmins] = db('admins')
+                let DbAdmins = db('admins')
                 DbAdmins
                     .findOne(query)
                     .execAsync()
@@ -51,7 +51,7 @@ module.exports = function (server) {
             })
 
             socket.on('update profile', (query, cb) => { // success: bool
-                let [DbAdmins] = db('admins')
+                let DbAdmins = db('admins')
                 DbAdmins
                     .findOne({email: query.email})
                     .execAsync()
@@ -67,7 +67,7 @@ module.exports = function (server) {
             })
 
             socket.on('get all admins', (query, cb) => { // success: [docs]
-                let [DbAdmins] = db('admins')
+                let DbAdmins = db('admins')
                 DbAdmins
                     .find({})
                     .execAsync()
@@ -79,9 +79,22 @@ module.exports = function (server) {
                     .catch(() => cb(false))
             })
 
+            socket.on('add admin', (query, cb) => { // success: object, failure: error message
+                let DbAdmins = db('admins')
+                DbAdmins
+                    .exists('email', query.email)
+                    .then(() => cb("This email address is already assigned"))
+                    .catch(() => {
+                        DbAdmins
+                            .i(query)
+                            .then(() => cb(query))
+                            .catch(() => cb("Unable to add admin"))
+                    })
+            })
+
             resolve(socket)
         }).then((socket) => {
-            let [DbSettings] = db('settings')
+            let DbSettings = db('settings')
             DbSettings
                 .find({
                 label: {

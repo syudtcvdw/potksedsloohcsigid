@@ -1,6 +1,6 @@
 var vm = function (params) {
     let vm = this
-    let [DbSettings] = db("settings")
+    let DbSettings = db("settings")
 
     // observables
     vm.startPayload = ko.observable()
