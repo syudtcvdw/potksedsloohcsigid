@@ -31,6 +31,7 @@ var VM = new function () {
     vm.connectionInfo = ko.observable() // connection info
     vm.loading = ko.observable() // toggles the loading guy on the header
     vm.notifs = new notifs() // notifications viewmodel
+    vm.skipModeSub = false // tells whether to ignore subscription update on MODE
 
     // tmp
     vm.RESETDB = ko.observable(true)
@@ -63,6 +64,9 @@ var VM = new function () {
     vm
         .MODE
         .subscribe((m) => {
+            if (vm.skipModeSub) // ignore this subscription update
+                return vm.skipModeSub = false,
+                null
             if (m == SERVER) {
                 // instantiate connection info
                 vm.connectionInfo(new serverInfo())
@@ -71,14 +75,26 @@ var VM = new function () {
                     .server()
                     .connect()
                     .then(() => sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress())
-            } else {
+            } else if (m == CLIENT) {
                 // instantiate connection info
                 vm.connectionInfo(new clientInfo())
+            } else if (m == 'SERVER-RECON') {
+                console.log('reconnecting...')
+                // reconnect server
+                sockets
+                    .reconnect()
+                    .then(() => {
+                        vm.skipModeSub = true
+                        VM.MODE(SERVER)
+                        sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress()
+                    })
             }
         })
     vm
         .IP
         .subscribe((ip) => {
+            if (ip == null) 
+                return
             if (vm.MODE() == SERVER) {
                 // connect to self as client too
                 sockets
@@ -94,7 +110,8 @@ var VM = new function () {
     vm
         .RESETDB
         .subscribe(() => {
-            let [DbSettings, DbAdmins] = db('settings', 'admins')
+            let [DbSettings,
+                DbAdmins] = db('settings', 'admins')
             DbSettings.clear()
             DbAdmins.clear()
             console.log("Got db RESET command")
@@ -118,10 +135,15 @@ var VM = new function () {
             si.population(si.population() - 1)
             if (si.population() == 0) 
                 vm.notify("Server offline", "error", {
-                    "put online": () => alert('retrying')
+                    "put online": si.reconnect
                 }, 'server offline')
             else 
                 vm.notify("Someone disconnected", "warn")
+        }
+        si.reconnect = () => {
+            vm.IP(null)
+            si.connected(false)
+            vm.MODE('SERVER-RECON')
         }
 
         // computed
@@ -137,9 +159,13 @@ var VM = new function () {
 
         // observables
         ci.connected = ko.observable(true)
+        ci.ip = ko.observable() // useful for reconnection purposes
 
         // behaviours
-        ci.reconnect = () => {}
+        ci.reconnect = () => {
+            ci.ip(VM.IP())
+            vm.MODE('CLIENT-RECON')
+        }
 
         // subscriptions
         ci
@@ -147,7 +173,7 @@ var VM = new function () {
             .subscribe(c => {
                 if (!c) 
                     vm.notify("Connection to server lost", "error", {
-                        "reconnect": () => alert('will retry')
+                        "reconnect": ci.reconnect
                     }, "connection lost")
             })
     }

@@ -9,9 +9,14 @@
 let _self,
     running;
 
-module.exports = function (server) {
+/**
+ * when force is true,
+ * it prevents this guy from returning its existing self,
+ * most likely means user triggered reconnection
+ */
+module.exports = function (server, force = false) {
     // single instance
-    if (running) 
+    if (running && !force) 
         return _self
 
     VM

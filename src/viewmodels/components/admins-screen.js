@@ -6,10 +6,10 @@ const vm = function (params) {
     vm.admins = ko.observableArray()
     vm.noAdmins = ko.observable(false)
     vm.fetchingAdmins = ko.observable(false)
-    vm.newName = ko.observable('Victor I. Afolabi')
-    vm.newEmail = ko.observable('victor@vic.com')
-    vm.newPwd = ko.observable('victor')
-    vm.confNewPwd = ko.observable('victor')
+    vm.newName = ko.observable()
+    vm.newEmail = ko.observable()
+    vm.newPwd = ko.observable()
+    vm.confNewPwd = ko.observable()
     vm.addingAdmin = ko.observable(false)
 
     // behaviors
