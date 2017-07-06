@@ -175,6 +175,7 @@ var VM = new function () {
                     VM.socket = sock
                     console.log(`Reconnection successful: ${VM.IP()}`)
                     VM.IP(ci.ip())
+                    let DbSettings = db('settings')
                     DbSettings.iu([
                         {
                             label: 'runMode',
