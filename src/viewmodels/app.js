@@ -91,6 +91,14 @@ var VM = new function () {
                     .catch((e) => console.log(`Connection error: ${e}`))
             }
         })
+    vm
+        .RESETDB
+        .subscribe(() => {
+            let [DbSettings, DbAdmins] = db('settings', 'admins')
+            DbSettings.clear()
+            DbAdmins.clear()
+            console.log("Got db RESET command")
+        })
 
     // sub-vm
     function serverInfo() {
@@ -131,8 +139,7 @@ var VM = new function () {
         ci.connected = ko.observable(true)
 
         // behaviours
-        ci.reconnect = () => {
-        }
+        ci.reconnect = () => {}
 
         // subscriptions
         ci

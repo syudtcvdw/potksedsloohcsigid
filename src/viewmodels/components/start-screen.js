@@ -187,13 +187,6 @@ var vm = function (params) {
                 vm.start()
             }), vm.mode(params.mode), vm.seen(true))
     }
-    vm.s2 = VM
-        .RESETDB
-        .subscribe(() => {
-            /*DbSettings.clear()
-            DbAdmins.clear()*/
-            console.log("Got db RESET command")
-        })
 }
 
 new Component('start-screen')

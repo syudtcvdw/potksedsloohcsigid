@@ -14,8 +14,8 @@ const vm = function (params) {
 
     // behaviors
     vm.updateCreds = () => {
-        if (_anyEmpty(vm.updateName(), vm.updatePwd())) 
-            return VM.notify('Fill in all fields, please', 'warn'),
+        if (_anyEmpty(vm.updateName())) 
+            return VM.notify("Don't leave your name empty", 'warn'),
             null
 
         vm.updatingProfile(true)
@@ -23,14 +23,16 @@ const vm = function (params) {
             'name': vm.updateName(),
             'email': VM
                 .controlVm
-                .personEmail(),
-            'password': vm.updatePwd()
+                .personEmail()
         }, (data) => {
             if (!data.status) 
                 VM.notify("Profile update failed, no reponse from Control Workstation", "error")
             else {
-                if (data.response) 
-                    VM.notify("Profile update successful!")
+                if (data.response) {
+                    VM.controlVm.personName(data.response.name)
+                    VM.notify("Profile update successful")
+                    _.delay(vm.fetchAdmins, 500)
+                }
                 else 
                     VM.notify("Profile update failed", "warn")
             }
@@ -62,7 +64,6 @@ const vm = function (params) {
     vm.fetchAdmins = () => {
         vm.fetchingAdmins(true)
         console.log('Fetching admins')
-        VM.notify('Fetching all admins')
         sockets.emit("get all admins", {}, data => {
             vm.fetchingAdmins(false)
             if (!data.status)

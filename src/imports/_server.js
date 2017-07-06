@@ -27,14 +27,14 @@ module.exports = function (server) {
                 console.log(`Client disconnected: ${socket.id} --> ${reason}`)
             })
 
-            socket.on('logon', (query, cb) => {
+            socket.on('logon', (query, cb) => { // success: {role,info}
                 let [DbAdmins] = db('admins')
                 DbAdmins
                     .findOne(query)
                     .execAsync()
                     .then(d => {
                         console.log(`New login attempt from: ${query.email}`)
-                        if (d)
+                        if (d) 
                             VM.notify(`${d.name} just logged in`)
                         cb(!d
                             ? false
@@ -46,8 +46,37 @@ module.exports = function (server) {
                     .catch(() => cb(false))
             })
 
-            socket.on('kill me now', () => {
+            socket.on('kill me now', () => { // void
                 socket.disconnect(true)
+            })
+
+            socket.on('update profile', (query, cb) => { // success: bool
+                let [DbAdmins] = db('admins')
+                DbAdmins
+                    .findOne({email: query.email})
+                    .execAsync()
+                    .then(d => {
+                        DbAdmins
+                            .iu(query)
+                            .then(() => {
+                                console.log(`Updated profile for ${query.email}`)
+                                cb(query) // return the query to the person, helps ensure they update with the saved data
+                            })
+                    })
+                    .catch(() => cb(false))
+            })
+
+            socket.on('get all admins', (query, cb) => { // success: [docs]
+                let [DbAdmins] = db('admins')
+                DbAdmins
+                    .find({})
+                    .execAsync()
+                    .then(d => {
+                        cb(!d
+                            ? false
+                            : d)
+                    })
+                    .catch(() => cb(false))
             })
 
             resolve(socket)

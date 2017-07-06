@@ -7,7 +7,7 @@
 	position: relative;
 	background: $theme-white;
 	padding: .5rem 1rem;
-	color: rgba($theme-black, .7);
+	color: $theme-text;
 	.admin-card {
 		background: $theme-green;
 		color: $theme-white;
@@ -15,6 +15,9 @@
 		box-shadow: rgba($theme-black, .3) -2px 2px 4px;
 		.admin-name {
 			margin: 0;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 		.info {
 			margin-bottom: .5rem;
@@ -24,6 +27,8 @@
 			background: $theme-white;
 			color: $theme-green;
 			opacity: .8;
+			font-size: 65%;
+			font-weight: bold;
 			&:hover {
 				opacity: 1
 			}

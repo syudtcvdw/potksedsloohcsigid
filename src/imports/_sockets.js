@@ -136,7 +136,6 @@ function getSockets() {
                     return reject(),
                     null
                 if (!quiet) VM.loading(true) // show the loading strip
-                console.log('VM now loading')
                 VM
                     .socket
                     .emit(event, data, (response) => {

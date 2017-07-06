@@ -6,7 +6,7 @@
 				<h4 class="title">Your Profile</h4>
 				<input type="text" name="name" data-bind="textInput: updateName" placeholder="Enter your (new) name">
 				<input type="email" name="pwd" data-bind="value: $root.controlVm.personEmail" readonly>
-				<a class="btn btn-block btn-orange" data-bind="click: updateCreds, css: {disabled: updatingProfile}">Update Info</a>
+				<a class="btn btn-block btn-black" data-bind="click: updateCreds, css: {disabled: updatingProfile}">Update Info</a>
 			</div>
 
 			<div>
@@ -19,7 +19,7 @@
 				<div class="pwd-box">
 					<input type="password" name="pwd" data-bind="textInput: confNewPwd" placeholder="Confirm the password">
 				</div>
-				<a class="btn btn-block btn-orange" data-bind="click: updateCreds, css: {disabled: addingAdmin}">Add admin</a>
+				<a class="btn btn-block btn-black" data-bind="click: updateCreds, css: {disabled: addingAdmin}">Add admin</a>
 			</div>
 		</div>
 
@@ -29,7 +29,7 @@
 			<div class="row" data-bind="foreach: admins">
 				<div class="admin-card col span_1_of_3">
 					<div class="info">
-						<h5 class="admin-name" data-bind="text: name"></h5>
+						<h4 class="admin-name" data-bind="text: name"></h4>
 						<small data-bind="text: email">mpdepaule1@gmail.com</small>
 					</div>
 					<div class="row group">
@@ -52,4 +52,7 @@
 			<!-- /ko -->
 		</div>
 	</div>
+
+	<!--<div class="curtain connection-lost">
+	</div>-->
 </div>

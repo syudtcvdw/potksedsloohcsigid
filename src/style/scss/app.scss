@@ -166,6 +166,13 @@ textarea {
             background: $theme-orange
         }
     }
+    &.btn-black {
+        background: lighten($theme-black, 5%);
+        color: $theme-white;
+        &:hover {
+            background: $theme-black
+        }
+    }
     &.btn-inverse {
         background: transparent;
         border: rgba($theme-black, .1) solid 2px;
@@ -180,7 +187,7 @@ textarea {
         margin-top: .8rem;
     }
     &.disabled {
-        filter: grayscale(.5);
+        filter: grayscale(.5) sepia(.5);
         pointer-events: none;
     }
     &.btn-white {
