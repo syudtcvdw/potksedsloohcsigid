@@ -1,0 +1,69 @@
+/*  ROWS  */
+
+.row {
+    clear: both;
+    padding: 0px;
+    margin: 0px;
+    /*  GROUPING  */
+    &.group {
+        zoom: 1;
+        /* For IE 6/7 */
+    }
+    &.group:before,
+    &.group:after {
+        content: "";
+        display: table;
+    }
+    &.group:after {
+        clear: both;
+    }
+}
+
+
+/*  COLUMN SETUP  */
+
+.col {
+    display: block;
+    float: left;
+    margin: 0 0 1% 1.6%;
+    /*  GRID OF THREE  */
+    &.span_3_of_3 {
+        width: 100%;
+    }
+    &.span_2_of_3 {
+        width: 66.13%;
+    }
+    &.span_1_of_3 {
+        width: 32.26%;
+        @media only screen and (min-width: 801px) {
+            &:nth-child(3n + 1) {
+                margin-left: 0;
+            }
+        }
+        @media only screen and (max-width: 800px) {
+            &:nth-child(2n + 1) {
+                margin-left: 0;
+            }
+        }
+    }
+    /*  GRID OF TWO  */
+    &.span_2_of_2 {
+        width: 100%;
+    }
+    &.span_1_of_2 {
+        width: 49.2%;
+        &:nth-child(2n + 1) {
+            margin-left: 0;
+        }
+    }
+    &:first-child {
+        margin-left: 0;
+    }
+    /*  GO FULL WIDTH BELOW 800 PIXELS */
+    @media only screen and (max-width: 800px) {
+        .span_2_of_3,
+        .span_1_of_3 {
+            width: 49.2%;
+        }
+    }
+}

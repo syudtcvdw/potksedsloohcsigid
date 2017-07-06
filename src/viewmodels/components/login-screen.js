@@ -19,7 +19,7 @@ var vm = function (params) {
             'email': vm.loginEmail(),
             'password': vm.loginPwd()
         }, (data) => {
-            if (!data.status) 
+            if (!data.status)
                 vm.loginErr("No response from Control Workstation")
             else {
                 if (data.response) {
@@ -40,7 +40,7 @@ var vm = function (params) {
                 } else 
                     vm.loginErr("Username/password incorrect!")
             }
-        })
+        }, quiet = true)
         console.log(`Email: ${vm.loginEmail()} Password: ${vm.loginPwd()}`)
     }
     vm.dismissLoading = () => {

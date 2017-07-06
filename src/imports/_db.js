@@ -37,8 +37,8 @@ let map = {}
 
 /**
  * Checks if specified field, according to schema definition, has unique index
- * @param {string} dbname 
- * @param {string} field 
+ * @param {string} dbname
+ * @param {string} field
  */
 function _isUnique(dbname, field) {
     let schema = schemas[dbname] || {}
@@ -115,12 +115,16 @@ module.exports = (...name) => {
                                     cond.push(_o)
                                 }
                             this.insert(o, (err, doc) => {
-                                if ((err || doc) === doc) return;
+                                if ((err || doc) === doc) 
+                                    return;
+                                
                                 // insert failed, try update
-                                if (cond.length > 0)
+                                if (cond.length > 0) 
                                     this.update({
                                         $or: cond
-                                    }, o, {})
+                                    }, {
+                                        $set: o
+                                    }, {})
                             })
                         }, this)
                         resolve()
