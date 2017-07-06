@@ -20,6 +20,32 @@ function getSockets() {
          * getSockets().onIpReady(callback).getIpAddress()
          */
 
+        reconnect(ip = null) {
+            // when no ip is supplied, we're on the server, so we should behave accordingly
+            _mode = !ip
+                ? SERVER
+                : _mode
+
+            return new Promise((resolve) => {
+                // attempt reconnection
+                if (_mode == 'SERVER') {
+                    _io_server.close(() => {
+                        _control.close()
+                        _control = require('http').Server(window.app)
+                        _io_server = require('socket.io')(_control)
+                        _control.listen(9192)
+                        _server(_io_server, true) // start up the server leaflet, force renew
+                        resolve(_io_server)
+                    })
+                } else {
+                    this
+                        .client(ip)
+                        .connect()
+                        .then(socket => resolve(socket))
+                        .catch(e => reject(e))
+                }
+            })
+        },
         /**
          * Readies socket to operate in client mode
          */
@@ -67,7 +93,8 @@ function getSockets() {
                         console.log(`Connection lost: ${reason}`)
                     })
                     _io_client.on('connect', () => {
-                        // VM.connectionInfo().connected(true)
+                        if (VM.connectionInfo()) 
+                            VM.connectionInfo().connected(true)
                         _io_client.on('init-payload', (info) => {
                             let DbSettings = db("settings")
                             DbSettings.iu([
@@ -132,10 +159,11 @@ function getSockets() {
         emit(event, data, callback, quiet = false, wait = 5000) { // wrapper for emits that require reply, includes timeout
             let settled = false
             new Promise((resolve, reject) => {
-                if (!VM.socket)
+                if (!VM.socket) 
                     return reject(),
                     null
-                if (!quiet) VM.loading(true) // show the loading strip
+                if (!quiet) 
+                    VM.loading(true) // show the loading strip
                 VM
                     .socket
                     .emit(event, data, (response) => {
@@ -147,10 +175,12 @@ function getSockets() {
             }).catch(() => {
                 if (!settled) 
                     callback({status: false})
-                if (!quiet) VM.loading(false) // remove the loading strip
-            }).then(() => {
-                if (!quiet) VM.loading(false) // remove the loading strip
-            })
+                if (!quiet) 
+                    VM.loading(false) // remove the loading strip
+                }).then(() => {
+                if (!quiet) 
+                    VM.loading(false) // remove the loading strip
+                })
         }
     }
 }

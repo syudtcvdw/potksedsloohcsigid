@@ -48,4 +48,11 @@
 </div>
 <!-- /ko -->
 
+<!-- ko if: $root.MODE() == 'CLIENT-RECON' -->
+<div class="reconnect-pane animated fadeInUp">
+    <small>Confirm server address</small>
+    <input type="text" data-bind="textInput: $root.connectionInfo().ip" placeholder="Enter server address">
+</div>
+<!-- /ko -->
+
 <!-- /ko -->
