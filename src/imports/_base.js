@@ -15,6 +15,11 @@ const api = require(IMPORTS_PATH + '_api.js')
 const db = require(IMPORTS_PATH + '_db.js')
 const _server = require(IMPORTS_PATH + '_server.js')
 
+/**
+ * Randomly generates a number within given range
+ * @param {int} min The inclusive minimum
+ * @param {int} max The inclusive maximum
+ */
 function _random(min, max) {
     return Math.ceil(Math.random() * (max - min) + min);
 }
@@ -87,6 +92,18 @@ function _resetForm(formSelector) {
         .not(':button, :submit, :reset, :hidden, :radio, :checkbox')
         .val('');
 }
+
+/**
+ * Password reveal logic
+ */
+$('body')
+    .on('click', '.pwd-btn', function () {
+        let $parent = $(this).parent()
+        $('input', $parent).attr('type', $parent.hasClass('seen')
+            ? 'password'
+            : 'text')
+        $parent.toggleClass('seen')
+    })
 
 /**
  * A depth-inclusive match extension for javascript string

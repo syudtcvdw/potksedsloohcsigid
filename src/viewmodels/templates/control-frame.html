@@ -39,7 +39,9 @@
             <!-- ko foreach: actions -->
             <a data-bind="click: $parent.doAction, text: $data"></a>
             <!-- /ko -->
+            <!-- ko if: !stubborn -->
             <a data-bind="click: die">Dismiss</a>
+            <!-- /ko -->
         </div>
         <!-- /ko -->
     </div>

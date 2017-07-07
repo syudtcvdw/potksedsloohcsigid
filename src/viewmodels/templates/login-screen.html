@@ -2,13 +2,14 @@
     <!-- ko if: seen -->
     <div class="logon-pane">
 
-        <div id="logon">
+        <form id="logon">
             <h2 class="title">Login</h2>
             <input type="email" name="logon-email" data-bind="textInput: loginEmail" placeholder="Enter login email">
-            <div class="pwd-box">
+            <div class="input-fa pwd-box">
                 <input type="password" name="logon-pwd" data-bind="textInput: loginPwd" placeholder="Enter login password">
+                <i class="fa pwd-btn"></i>
             </div>
-            <a class="btn btn-block btn-orange" data-bind="click: validateCreds">Login</a>
+            <button type="submit" class="btn btn-block btn-orange" data-bind="click: validateCreds">Login</button>
             <!-- ko if: loading -->
             <div class="loading" data-bind="css: { opaque: loginErr() }">
                 <div class="content">
@@ -24,7 +25,7 @@
                 </div>
             </div>
             <!-- /ko -->
-        </div>
+        </form>
 
     </div>
     <!-- /ko -->
