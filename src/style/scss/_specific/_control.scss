@@ -99,6 +99,12 @@ control-frame {
                 color: $theme-red;
             }
         }
+        &[kind=black] {
+            background: $theme-black;
+            a {
+                color: $theme-black;
+            }
+        }
         .actions {
             text-align: right;
             a {
@@ -157,15 +163,4 @@ control-frame {
         top: 0;
         animation: loading-strip 1s ease-out infinite;
     }
-}
-
-.reconnect-pane {
-    background: $theme-orange;
-    color: $theme-white;
-    width: 320px;
-    padding: 1rem;
-    position: fixed;
-    bottom: 35px;
-    right: 3px;
-    z-index: 999;
 }

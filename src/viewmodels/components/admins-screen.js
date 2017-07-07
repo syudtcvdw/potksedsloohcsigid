@@ -2,6 +2,8 @@ const vm = function (params) {
     let vm = this
 
     vm.updateName = ko.observable()
+    vm.profileEmail = ko.observable()
+    vm.isEditEmail = ko.observable(false)
     vm.updatingProfile = ko.observable(false)
     vm.admins = ko.observableArray()
     vm.noAdmins = ko.observable(false)
@@ -130,11 +132,13 @@ const vm = function (params) {
     // local
     function loadMyProfile() {
         vm.updateName(VM.controlVm.personName())
+        vm.profileEmail(VM.controlVm.personEmail())
     }
 
     // init
     vm.fetchAdmins()
     loadMyProfile()
+    _.defer(() => tooltip.refresh())
 }
 
 new Component('admins-screen')

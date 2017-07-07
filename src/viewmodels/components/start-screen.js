@@ -143,7 +143,8 @@ var vm = function (params) {
                 role: 'ADMIN',
                 info: {
                     name: vm.adminName(),
-                    email: vm.logonEmail()
+                    email: vm.logonEmail(),
+                    is_first: true
                 }
             })
         }

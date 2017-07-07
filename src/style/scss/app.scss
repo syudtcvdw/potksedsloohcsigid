@@ -23,7 +23,6 @@
 main {
     height: 100%;
     position: relative;
-
     &.page {
         height: calc(100% - (32px + 42px)) // heights of the nav and status bars
     }
@@ -75,6 +74,9 @@ body {
     &.green {
         background: $theme-green;
     }
+    &.orange {
+        background: $theme-orange;
+    }
 }
 
 .anim-js {
@@ -110,7 +112,7 @@ a.close {
     }
 }
 
-input,
+input:not([type=checkbox]):not([type=radio]),
 select,
 textarea {
     background: $theme-white;
@@ -124,12 +126,22 @@ textarea {
     border-radius: 3px;
     &:focus {
         outline: none;
-        box-shadow: rgba(lighten($theme-orange, 5%), .7) 0 0 3px;
-        border-color: transparent
+        box-shadow: rgba(lighten($theme-green, 5%), .7) 0 0 3px;
+        border-color: rgba(lighten($theme-green, 5%), .3)
     }
 }
 
-input,
+input {
+    &[type=checkbox],
+    &[type=radio] {
+        &:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    }
+}
+
+input:not([type=checkbox]):not([type=radio]):not([disabled]),
 textarea {
     cursor: text
 }
@@ -142,8 +154,10 @@ textarea {
     transition: 250ms ease-out;
     text-decoration: none;
     display: inline-block;
+    border: none;
     &.btn-block {
         display: block;
+        width: 100%;
     }
     &.btn-red {
         background: lighten($theme-red, 5%);
@@ -221,6 +235,51 @@ textarea {
 
 table {
     width: 100%;
+}
+
+.input-fa {
+    position: relative;
+    input {
+        padding-right: 50px !important;
+    }
+    .fa {
+        width: 44px;
+        height: calc(100% - 4px);
+        line-height: 39px;
+        color: $theme-black;
+        position: absolute;
+        right: 2px;
+        top: 2px;
+        text-align: center;
+        background: darken($theme-white, 1%);
+        border-radius: 0 3px 3px 0;
+        transition: 250ms ease-in-out;
+        &:hover {
+            background: $theme-green;
+            color: $theme-white;
+        }
+    }
+    &.pwd-box {
+        .fa {
+            &:before {
+                content: "\f084"
+            }
+            &:hover {
+                background: inherit;
+                color: inherit;
+            }
+        }
+
+        &.seen {
+            .fa:before {
+                content: "\f056"
+            }
+        }
+    }
+}
+
+.mt0 {
+    margin-top: 0;
 }
 
 // specific

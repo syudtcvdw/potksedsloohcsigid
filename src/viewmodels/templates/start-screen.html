@@ -24,19 +24,22 @@
                 control workstation
                 <!-- /ko -->
             </p>
-            <!-- ko if: mode() == SERVER -->
-            <input type="email" name="logon-email" data-bind="textInput: logonEmail" placeholder="enter logon email">
-            <div class="pwd-box">
-                <input type="password" name="logon-pwd" data-bind="textInput: logonPwd" placeholder="enter logon password">
-            </div>
-            <!-- /ko -->
-            <!-- ko if: mode() == CLIENT -->
-            <input type="text" name="server-ip" data-bind="textInput: serverIp" placeholder="enter server address">
-            <!-- /ko -->
-            <div class="row group">
-                <div class="col span_1_of_2"><a class="btn btn-block btn-green" data-bind="click: start, text: mode() == SERVER? 'Authenticate':'Connect'"></a></div>
-                <div class="col span_1_of_2"><a class="btn btn-block btn-orange" data-bind="click: dismissLogon">Dismiss</a></div>
-            </div>
+            <form>
+                <!-- ko if: mode() == SERVER -->
+                <input type="email" name="logon-email" data-bind="textInput: logonEmail" placeholder="enter logon email">
+                <div class="input-fa pwd-box">
+                    <input type="password" name="logon-pwd" data-bind="textInput: logonPwd" placeholder="enter logon password">
+                    <i class="fa pwd-btn"></i>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: mode() == CLIENT -->
+                <input type="text" name="server-ip" data-bind="textInput: serverIp" placeholder="enter server address">
+                <!-- /ko -->
+                <div class="row group">
+                    <div class="col span_1_of_2"><button type="submit" class="btn btn-block btn-green" data-bind="click: start, text: mode() == SERVER? 'Authenticate':'Connect'"></button></div>
+                    <div class="col span_1_of_2"><a class="btn btn-block btn-orange" data-bind="click: dismissLogon">Dismiss</a></div>
+                </div>
+            </form>
             <!-- ko if: loading -->
             <div class="loading" data-bind="css: { opaque: logonErr() || enterName() }">
                 <div class="content">
@@ -50,11 +53,11 @@
                     </div>
                     <!-- /ko -->
                     <!-- ko if: enterName() && !logonErr() -->
-                    <div class="animated fadeInRight">
+                    <form class="animated fadeInRight">
                         <h4>Welcome, please enter your name</h4>
                         <input type="text" name="admin-name" data-bind="textInput: adminName" placeholder="put your name here">
-                        <a class="btn btn-inverse btn-shift-down" data-bind="click: finishAuth">Finalize</a>
-                    </div>
+                        <button type="submit" class="btn btn-inverse btn-shift-down" data-bind="click: finishAuth">Finalize</button>
+                    </form>
                     <!-- /ko -->
                 </div>
             </div>

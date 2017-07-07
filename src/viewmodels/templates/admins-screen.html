@@ -4,22 +4,30 @@
 		<div class="col span_1_of_3 pane">
 			<form>
 				<h4 class="title">Your Profile</h4>
-				<input type="text" name="name" data-bind="textInput: updateName" placeholder="Enter your (new) name">
-				<input type="email" name="pwd" data-bind="value: $root.controlVm.personEmail" readonly>
-				<a class="btn btn-block btn-black" data-bind="click: updateCreds, css: {disabled: updatingProfile}">Update Info</a>
+				<input type="text" name="name" data-bind="textInput: updateName" placeholder="Your name goes here">
+				<input type="email" name="pwd" data-bind="value: $root.controlVm.personEmail, enable: isEditEmail" placeholder="Put yout email here">
+				<p class="mt0" data-bind="if: $root.controlVm.superAdmin">
+					<label for="edit-email" data-tooltip="{ 'class': 'mini orange' }" title="Requires internet connection">
+						<input type="checkbox" data-bind="checked: isEditEmail" id="edit-email">
+						<small>Edit my email too</small>
+					</label>
+				</p>
+				<button type="submit" class="btn btn-block btn-black" data-bind="click: updateCreds, css: {disabled: updatingProfile}">Update Info</button>
 			</form>
 
 			<form id="add-admin-form">
 				<h4 class="title">Add New Admin</h4>
 				<input type="text" name="name" data-bind="textInput: newName" placeholder="Admin's name">
 				<input type="email" name="name" data-bind="textInput: newEmail" placeholder="Admin's email">
-				<div class="pwd-box">
+				<div class="input-fa pwd-box">
 					<input type="password" name="pwd" data-bind="textInput: newPwd" placeholder="Choose a password">
+					<i class="fa pwd-btn" ></i>
 				</div>
-				<div class="pwd-box">
+				<div class="input-fa pwd-box">
 					<input type="password" name="pwd" data-bind="textInput: confNewPwd" placeholder="Confirm the password">
+					<i class="fa pwd-btn" ></i>
 				</div>
-				<a class="btn btn-block btn-black" data-bind="click: addAdmin, css: {disabled: addingAdmin}">Add admin</a>
+				<button type="submit" class="btn btn-block btn-black" data-bind="click: addAdmin, css: {disabled: addingAdmin}">Add admin</button>
 			</form>
 		</div>
 

@@ -8,6 +8,7 @@ var vm = function (params) {
     vm.schoolName = ko.observable() // what school is this
     vm.personName = ko.observable() // who's currently logged in
     vm.personEmail = ko.observable() // email address of currently logged in guy
+    vm.superAdmin = ko.observable(false) // tells if logged in guy is superadmin
     vm.disconnectionTime = ko.observable() // what time the connecion the server was lost
     vm.menu = ko.observableArray() // what time the connecion the server was lost
 

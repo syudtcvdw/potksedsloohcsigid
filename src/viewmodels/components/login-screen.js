@@ -55,6 +55,9 @@ var vm = function (params) {
             .personName(data.info.name)
         VM
             .controlVm
+            .superAdmin(data.info.is_first)
+        VM
+            .controlVm
             .personEmail(data.info.email)
         VM.loadView('admins-screen')
         console.log("Starting app...")

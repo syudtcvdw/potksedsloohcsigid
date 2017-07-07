@@ -43,12 +43,12 @@ var VM = new function () {
     }
 
     // methods
-    vm.notify = (msg, kind = "", actions = null, id = null) => {
+    vm.notify = (msg, kind = "", actions = null, id = null, stubborn = false) => {
         if (id != null) 
             vm.closeNotification(id)
         vm
             .notifs
-            .add(msg, kind, actions, id)
+            .add(msg, kind, actions, id, stubborn)
     }
     vm.closeNotification = (id) => {
         vm
@@ -87,6 +87,11 @@ var VM = new function () {
                         vm.skipModeSub = true
                         VM.MODE(SERVER)
                         sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress()
+                    })
+                    .catch(() => {
+                        vm.notify("Server offline", "error", {
+                            "put online": si.reconnect
+                        }, 'server offline', true)
                     })
             }
         })
@@ -134,9 +139,9 @@ var VM = new function () {
         si.countDown = () => {
             si.population(si.population() - 1)
             if (si.population() == 0) 
-                vm.notify("Server offline", "error", {
+                vm.notify("Server still offline", "error", {
                     "put online": si.reconnect
-                }, 'server offline')
+                }, 'server offline', true)
             else 
                 vm.notify("Someone disconnected", "warn")
         }
@@ -166,6 +171,38 @@ var VM = new function () {
             ci.ip(VM.IP())
             vm.MODE('CLIENT-RECON')
         }
+        ci.doRecon = () => {
+            if (_anyEmpty(ci.ip())) 
+                vm.notify("You need to enter the Server Address", 'error')
+            else if (!ci.ip().match(/^([0-9]{1,3}\.){3}[0-9]{1,3}$/)) 
+                vm.notify("Server address is not properly formatted", 'error')
+            else {
+                sockets
+                    .reconnect(ci.ip())
+                    .then((sock) => {
+                        VM.MODE(CLIENT)
+                        VM.socket = sock
+                        console.log(`Reconnection successful: ${VM.IP()}`)
+                        VM.IP(ci.ip())
+                        let DbSettings = db('settings')
+                        DbSettings.iu([
+                            {
+                                label: 'runMode',
+                                value: VM.MODE()
+                            }, {
+                                label: 'serverIp',
+                                value: VM.IP()
+                            }
+                        ])
+                    })
+                    .catch(e => {
+                        console.log('reconnection', e)
+                        vm.notify("Unable to establish connection", "error", {
+                            "reconnect": ci.reconnect
+                        }, "connection lost", true)
+                    })
+            }
+        }
 
         // subscriptions
         ci
@@ -174,7 +211,7 @@ var VM = new function () {
                 if (!c) 
                     vm.notify("Connection to server lost", "error", {
                         "reconnect": ci.reconnect
-                    }, "connection lost")
+                    }, "connection lost", true)
             })
     }
 
@@ -185,10 +222,10 @@ var VM = new function () {
         nt.notifs = ko.observableArray()
 
         // behaviours
-        nt.add = (msg, kind = "", actions = null, id = null) => {
+        nt.add = (msg, kind = "", actions = null, id = null, stubborn = false) => {
             nt
                 .notifs
-                .push(new Notif(msg, kind, actions, id))
+                .push(new Notif(msg, kind, actions, id, stubborn))
         }
 
         /**
@@ -197,7 +234,7 @@ var VM = new function () {
          * @param {string} kind The kind of notification, dictates the color
          * @param {map} actions An object map of action to callback
          */
-        function Notif(msg, kind, actions, id = null) {
+        function Notif(msg, kind, actions, id = null, stubborn = false) {
             let n = this
 
             // props
@@ -205,6 +242,7 @@ var VM = new function () {
             n.kind = ko.observable(kind || '')
             n.actions = ko.observableArray()
             n.id = id
+            n.stubborn = stubborn
             n.leaving = ko.observable(false)
             if (actions) 
                 for (let a in actions) 
