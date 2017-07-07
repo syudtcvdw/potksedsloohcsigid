@@ -94,6 +94,14 @@ function _resetForm(formSelector) {
 }
 
 /**
+ * Returns the UTC timestamp
+ */
+function _getUTCTime() {
+    let d = new Date()
+    return Date.parse(d.toUTCString())
+}
+
+/**
  * Password reveal logic
  */
 $('body')

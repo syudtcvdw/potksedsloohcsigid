@@ -33,6 +33,9 @@ module.exports = function (server, force = false) {
             })
 
             socket.on('logon', (query, cb) => { // success: {role,info}
+                if (expired(query)) 
+                    return
+                query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
                     .findOne(query)
@@ -56,6 +59,9 @@ module.exports = function (server, force = false) {
             })
 
             socket.on('update profile', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
                     .findOne({email: query.email})
@@ -72,6 +78,9 @@ module.exports = function (server, force = false) {
             })
 
             socket.on('get all admins', (query, cb) => { // success: [docs]
+                if (expired(query)) 
+                    return
+                query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
                     .find({})
@@ -85,6 +94,9 @@ module.exports = function (server, force = false) {
             })
 
             socket.on('add admin', (query, cb) => { // success: object, failure: error message
+                if (expired(query)) 
+                    return
+                query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
                     .exists('email', query.email)
@@ -126,6 +138,16 @@ module.exports = function (server, force = false) {
             .connected(false)
         console.log('Server: Connection dropped')
     })
+
+    /**
+     * Determines if delivered packet is expired
+     * @param {object} packet The data to sniff
+     */
+    function expired(packet) {
+        if (!packet.expiry) 
+            return false
+        return _getUTCTime() >= packet.expiry
+    }
 
     _self = this
     running = true

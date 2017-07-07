@@ -89,7 +89,7 @@ var VM = new function () {
                         sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress()
                     })
                     .catch(() => {
-                        vm.notify("Server offline", "error", {
+                        vm.notify("Server still offline", "error", {
                             "put online": si.reconnect
                         }, 'server offline', true)
                     })
@@ -139,7 +139,7 @@ var VM = new function () {
         si.countDown = () => {
             si.population(si.population() - 1)
             if (si.population() == 0) 
-                vm.notify("Server still offline", "error", {
+                vm.notify("Server offline", "error", {
                     "put online": si.reconnect
                 }, 'server offline', true)
             else 

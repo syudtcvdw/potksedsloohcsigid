@@ -157,21 +157,33 @@ function getSockets() {
             return this
         },
         emit(event, data, callback, quiet = false, wait = 5000) { // wrapper for emits that require reply, includes timeout
-            let settled = false
+            let settled = rejected = false
             new Promise((resolve, reject) => {
                 if (!VM.socket) 
                     return reject(),
                     null
                 if (!quiet) 
                     VM.loading(true) // show the loading strip
+                
+                data = { // bubble-wrap the payload, so server can know its validity
+                    expiry: _getUTCTime() + wait,
+                    payload: data
+                }
                 VM
                     .socket
                     .emit(event, data, (response) => {
+                        if (rejected) 
+                            return
                         settled = true
                         callback({status: true, response: response})
                         resolve()
                     })
-                setTimeout(() => reject(), wait) // wait for response max soso seconds
+                setTimeout(() => {
+                    if (settled) 
+                        return
+                    rejected = true
+                    reject()
+                }, wait) // wait for response max soso seconds
             }).catch(() => {
                 if (!settled) 
                     callback({status: false})
