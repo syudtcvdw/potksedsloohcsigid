@@ -77,13 +77,6 @@ const vm = function (params) {
 		}
 
 		/**
-	 * Delete admin
-	 */
-		vm.deleteAdmin = (admin) => {
-				// remove an admin
-		}
-
-		/**
 		 * Add new admin
 		 */
 		vm.addAdmin = () => {
@@ -159,6 +152,39 @@ const vm = function (params) {
 				a.name = ko.observable(data.name || "")
 				a.email = ko.observable(data.email || "")
 				a.password = ko.observable(data.password || "")
+				a.superAdmin = ko.observable(data.is_first || false)
+
+				// behaviours
+				a.removeMe = () => {
+						// remove an admin show a confirmation msg
+						VM.notify('Are you sure you want to delete?', 'warn', {
+								'confirm': () => {
+										// you must not be able to delete yourself
+										if (VM.controlVm.personEmail() === a.email()) {
+												VM.notify('You can not delete yourself.', 'error')
+												return
+										}
+										// you cannot delete the superadmin
+										if (a.superAdmin()) {
+												VM.notify('You can not delete the super admin!', 'error')
+												return
+										}
+										sockets.emit('delete admin', {
+												'email': a.email()
+										}, (data) => {
+												if (!data.status) 
+														VM.notify('Could remove this admin: No response from the Control Workstation.', 'error')
+												else {
+														// what to do if the status is true
+														console.log(data)
+														VM.notify('Check the console. Good job!')
+												}
+										})
+
+								}
+						})
+				}
+
 		}
 
 		// local
