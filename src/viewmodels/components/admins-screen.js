@@ -1,19 +1,24 @@
 const vm = function (params) {
 		let vm = this
 
+		vm.fetchingAdmins = ko.observable(false)
+		vm.addingAdmin = ko.observable(false)
+		vm.updatingPassword = ko.observable(false)
 		vm.updateName = ko.observable()
 		vm.profileEmail = ko.observable()
 		vm.isEditEmail = ko.observable(false)
 		vm.updatingProfile = ko.observable(false)
 		vm.admins = ko.observableArray()
 		vm.noAdmins = ko.observable(false)
-		vm.fetchingAdmins = ko.observable(false)
 		vm.newName = ko.observable()
 		vm.newEmail = ko.observable()
 		vm.newPwd = ko.observable()
 		vm.confNewPwd = ko.observable()
-		vm.addingAdmin = ko.observable(false)
-
+		vm.updatePassword = ko.observable(false) // to determine if the curtain should come up
+		vm.dissmissCurtain = ko.observable() // click handler to dissmissCurtain
+		vm.updatePwd = ko.observable() // click handler to update password
+		vm.newUpdatePwd = ko.observable()
+		vm.newUpdateConfPwd = ko.observable()
 		// behaviors
 		vm.updateCreds = () => {
 				if (_anyEmpty(vm.updateName())) 
@@ -144,6 +149,14 @@ const vm = function (params) {
 				})
 		}
 
+		vm.updatePwd = () => {
+			// send info to the server
+		}
+
+		vm.dissmissCurtain = () => {
+			vm.updatePassword(false)
+		}
+
 		// sub-vm
 		function Admin(data) {
 				let a = this
@@ -183,6 +196,15 @@ const vm = function (params) {
 										})
 								}
 						})
+				}
+
+				a.changePwd = () => {
+					// pops up the curtain
+					vm.updatePassword(true)
+					// if ( _anyEmpty(vm.newUpdatePwd(), vm.newUpdateConfPwd()) )
+					// 	VM.notify('Please fill in all fields', 'warn')
+					// if ( vm.newUpdateConfPwd() !== vm.newUpdatePwd() )
+					// 	VM.notify('Passwords don\'t match', 'warn')
 				}
 
 		}

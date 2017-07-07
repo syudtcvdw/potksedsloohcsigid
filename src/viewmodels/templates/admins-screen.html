@@ -1,4 +1,4 @@
-<div class="admins-screen">
+<div class="start-screen admins-screen">
 
 	<div class="row">
 		<div class="col span_1_of_3 pane">
@@ -21,11 +21,11 @@
 				<input type="email" name="name" data-bind="textInput: newEmail" placeholder="Admin's email">
 				<div class="input-fa pwd-box">
 					<input type="password" name="pwd" data-bind="textInput: newPwd" placeholder="Choose a password">
-					<i class="fa pwd-btn" ></i>
+					<i class="fa pwd-btn"></i>
 				</div>
 				<div class="input-fa pwd-box">
 					<input type="password" name="pwd" data-bind="textInput: confNewPwd" placeholder="Confirm the password">
-					<i class="fa pwd-btn" ></i>
+					<i class="fa pwd-btn"></i>
 				</div>
 				<button type="submit" class="btn btn-block btn-black" data-bind="click: addAdmin, css: {disabled: addingAdmin}">Add admin</button>
 			</form>
@@ -42,7 +42,7 @@
 					</div>
 					<div class="row group">
 						<div class="col span_1_of_2">
-							<a class="btn btn-block mini">Password</a>
+							<a class="btn btn-block mini" data-bind="click: changePwd">Password</a>
 						</div>
 						<div class="col span_1_of_2">
 							<a class="btn btn-block mini" data-bind="click: removeMe">Delete</a>
@@ -61,6 +61,29 @@
 		</div>
 	</div>
 
-	<!--<div class="curtain connection-lost">
-	</div>-->
+	<!-- ko if: updatePassword -->
+	<div class="curtain">
+
+		<div class="logon-pane">
+			<div id="logon">
+				<form id="add-admin-form">
+					<h4 class="title">Update Password</h4>
+					<div class="input-fa pwd-box">
+						<input type="password" name="pwd" data-bind="textInput: newUpdatePwd" placeholder="Choose a new password">
+						<i class="fa pwd-btn"></i>
+					</div>
+					<div class="input-fa pwd-box">
+						<input type="password" name="pwd" data-bind="textInput: newUpdateConfPwd" placeholder="Confirm the password">
+						<i class="fa pwd-btn"></i>
+					</div>
+					<div class="row">
+						<button type="submit" class="btn btn-green col span_1_of_2" data-bind="click: updatePwd, css: {disabled: updatingPassword}">Update Password</button>
+						<button type="submit" class="btn btn-orange col span_1_of_2" data-bind="click: dissmissCurtain">Dismiss</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /ko -->
+
 </div>
