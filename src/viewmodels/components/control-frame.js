@@ -3,6 +3,7 @@ var vm = function (params) {
 
     // props
     let menuItems = [{id: 'admins', label: 'Admin profiles'}]
+    vm.schoolUid = '' // what the school uid is
 
     // observables
     vm.schoolName = ko.observable() // what school is this

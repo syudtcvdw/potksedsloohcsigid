@@ -11,7 +11,7 @@ var vm = function (params) {
     // behaviors
     vm.validateCreds = () => {
         vm.loading(true)
-        if (emptyFields(vm.loginEmail(), vm.loginPwd())) 
+        if (_anyEmpty(vm.loginEmail(), vm.loginPwd())) 
             vm.loginErr("All fields are required.");
         
         // send info to socket
@@ -19,7 +19,7 @@ var vm = function (params) {
             'email': vm.loginEmail(),
             'password': vm.loginPwd()
         }, (data) => {
-            if (!data.status)
+            if (!data.status) 
                 vm.loginErr("No response from Control Workstation")
             else {
                 if (data.response) {
@@ -59,18 +59,14 @@ var vm = function (params) {
         VM
             .controlVm
             .personEmail(data.info.email)
+        let DbSettings = db('settings')
+        DbSettings
+            .findOne({label: 'schoolUid'})
+            .execAsync()
+            .then(d => VM.controlVm.schoolUid(d.value))
+            .catch(() => {})
         VM.loadView('admins-screen')
         console.log("Starting app...")
-    }
-
-    // helper functions
-    function emptyFields(...fields) {
-        var empty = false
-        fields.forEach(items => {
-            if (items.trim().length === 0) 
-                empty = true
-        })
-        return empty
     }
 
     // init
