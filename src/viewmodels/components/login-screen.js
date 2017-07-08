@@ -59,14 +59,10 @@ var vm = function (params) {
         VM
             .controlVm
             .personEmail(data.info.email)
-        let DbSettings = db('settings')
-        DbSettings
-            .findOne({label: 'schoolUid'})
-            .execAsync()
-            .then(d => VM.controlVm.schoolUid(d.value))
-            .catch(() => {})
+        VM.controlVm.personId = data.info._id
+
         VM.loadView('admins-screen')
-        console.log("Starting app...")
+        console.log("Starting app...", data)
     }
 
     // init

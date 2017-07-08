@@ -155,6 +155,10 @@ textarea {
     text-decoration: none;
     display: inline-block;
     border: none;
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
     &.btn-block {
         display: block;
         width: 100%;
@@ -199,10 +203,6 @@ textarea {
     }
     &.btn-shift-down {
         margin-top: .8rem;
-    }
-    &.disabled {
-        filter: grayscale(.5) sepia(.5);
-        pointer-events: none;
     }
     &.btn-white {
         background: transparent;
@@ -269,7 +269,6 @@ table {
                 color: inherit;
             }
         }
-
         &.seen {
             .fa:before {
                 content: "\f056"
@@ -280,6 +279,15 @@ table {
 
 .mt0 {
     margin-top: 0;
+}
+
+.disabled {
+    filter: grayscale(.5) sepia(.5);
+    pointer-events: none;
+}
+
+.error-text {
+    color: $theme-red
 }
 
 // specific

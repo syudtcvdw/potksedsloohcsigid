@@ -32,6 +32,9 @@ module.exports = function (server, force = false) {
                 console.log(`Client disconnected: ${socket.id} --> ${reason}`)
             })
 
+            /**
+             * Request from connected client for their specific information
+             */
             socket.on('logon', (query, cb) => { // success: {role,info}
                 if (expired(query)) 
                     return
@@ -54,17 +57,23 @@ module.exports = function (server, force = false) {
                     .catch(() => cb(false))
             })
 
+            /**
+             * Kills connection from sender
+             */
             socket.on('kill me now', () => { // void
                 socket.disconnect(true)
             })
 
+            /**
+             * Updates said profile, identified by supplied _id
+             */
             socket.on('update profile', (query, cb) => { // success: bool
                 if (expired(query)) 
                     return
                 query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
-                    .findOne({email: query.email})
+                    .findOne({_id: query._id})
                     .execAsync()
                     .then(d => {
                         DbAdmins
@@ -77,6 +86,9 @@ module.exports = function (server, force = false) {
                     .catch(() => cb(false))
             })
 
+            /**
+             * Returns list of all admins
+             */
             socket.on('get all admins', (query, cb) => { // success: [docs]
                 if (expired(query)) 
                     return
@@ -93,6 +105,9 @@ module.exports = function (server, force = false) {
                     .catch(() => cb(false))
             })
 
+            /**
+             * Adds new admin to the admins table
+             */
             socket.on('add admin', (query, cb) => { // success: object, failure: error message
                 if (expired(query)) 
                     return
@@ -107,6 +122,19 @@ module.exports = function (server, force = false) {
                             .then(() => cb(query))
                             .catch(() => cb("Unable to add admin"))
                     })
+            })
+
+            /**
+             * Deletes admin identified by supplied _id
+             */
+            socket.on('delete admin', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbAdmins = db("admins")
+                DbAdmins.remove({$and: [{_id: query._id}, {$not: {is_first: true}}]}, {}, (err, num) => {
+                    cb(!err && num > 0)
+                })
             })
 
             resolve(socket)

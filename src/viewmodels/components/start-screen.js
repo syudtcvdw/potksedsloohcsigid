@@ -124,8 +124,8 @@ var vm = function (params) {
                 email: vm.logonEmail(),
                 password: vm.logonPwd(),
                 is_first: true
-            }).then(() => {
-                vm.advance()
+            }).then(d => {
+                vm.advance(d)
             }).catch(() => {
                 DbSettings.clear()
                 vm.logonErr("Error occured during authentication")
@@ -134,7 +134,7 @@ var vm = function (params) {
             vm.logonErr("Error occured during authentication")
         })
     }
-    vm.advance = () => {
+    vm.advance = (d = null) => {
         vm.seen(false)
         VM.MODE(vm.mode())
         if (typeof params.firstRun != 'undefined' && vm.mode() == SERVER) {
@@ -144,6 +144,7 @@ var vm = function (params) {
                 info: {
                     name: vm.adminName(),
                     email: vm.logonEmail(),
+                    _id: d._id,
                     is_first: true
                 }
             })

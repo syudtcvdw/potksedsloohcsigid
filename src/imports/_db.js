@@ -41,6 +41,8 @@ let map = {}
  * @param {string} field
  */
 function _isUnique(dbname, field) {
+    if (field == '_id') // _id is always unique
+        return true
     let schema = schemas[dbname] || {}
     if (_.isEmpty(schema)) 
         return false;
