@@ -199,6 +199,7 @@ module.exports = function (server, force = false) {
              */
             socket.on('fetch school logo', (query, cb) => {
                 query = query.payload || query
+                console.log("sending logo")
                 let DbSettings = db('settings')
                 DbSettings
                     .findOne({label: 'logoSalt'})
