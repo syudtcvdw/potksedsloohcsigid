@@ -16,6 +16,8 @@ var vm = function (params) {
 
     // observables
     vm.schoolName = ko.observable() // what school is this
+    vm.schoolSlogan = ko.observable() // slogan of the school
+    vm.schoolAddress = ko.observable() // address of the school
     vm.personName = ko.observable() // who's currently logged in
     vm.personEmail = ko.observable() // email address of currently logged in guy
     vm.superAdmin = ko.observable(false) // tells if logged in guy is superadmin
