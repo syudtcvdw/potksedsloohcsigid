@@ -9,6 +9,7 @@ var vm = function (params) {
     vm.schoolName = ko.observable()
     vm.schoolSlogan = ko.observable()
     vm.schoolAddress = ko.observable()
+    vm.schoolDisplaysPositions = ko.observable()
 
     // states
     vm.logoChanged = ko.observable(false)
@@ -84,11 +85,16 @@ var vm = function (params) {
             }, {
                 label: 'schoolAddress',
                 value: vm.schoolAddress()
+            }, {
+                label: 'schoolDisplaysPositions',
+                value: vm.schoolDisplaysPositions()
             }
         ]).then(d => {
             VM.controlVm.schoolName(vm.schoolName())
-            VM.controlVm.schoolSlogan(vm.schoolSlogan())
-            VM.controlVm.schoolAddress(vm.schoolAddress())
+            VM.controlVm.schoolSlogan = vm.schoolSlogan()
+            VM.controlVm.schoolAddress = vm.schoolAddress()
+            VM.controlVm.schoolDisplaysPositions = vm.schoolDisplaysPositions()
+
             VM.notify("Profile updated successfully")
             vm.updatingProfile(false)
         }).catch(e => {
@@ -143,8 +149,9 @@ var vm = function (params) {
 
         // load school info
         vm.schoolName(VM.controlVm.schoolName())
-        vm.schoolSlogan(VM.controlVm.schoolSlogan())
-        vm.schoolAddress(VM.controlVm.schoolAddress())
+        vm.schoolSlogan(VM.controlVm.schoolSlogan)
+        vm.schoolAddress(VM.controlVm.schoolAddress)
+        vm.schoolDisplaysPositions(VM.controlVm.schoolDisplaysPositions)
 
         // confirm logo from server
         let DbSettings = db('settings')

@@ -30,7 +30,14 @@
                     </div>
                     <div>
                         <label>School address</label>
-                        <textarea rows="5" data-bind="textInput: schoolAddress" placeholder="Enter school address"></textarea>
+                        <textarea data-bind="textInput: schoolAddress" placeholder="Enter school address"></textarea>
+                    </div>
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="display-positions-switch" data-bind="checked: schoolDisplaysPositions">
+                        <label class="onoffswitch-label" for="display-positions-switch">
+                            <span class="onoffswitch-inner"></span>
+                            <span class="onoffswitch-switch"></span>
+                        </label>
                     </div>
                     <button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: updateProfile">Save</button>
                 </form>

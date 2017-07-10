@@ -102,8 +102,9 @@ function getSockets() {
                         _io_client.on('init-payload', (info) => {
                             let DbSettings = db("settings")
                             VM.controlVm.schoolUid = info.schoolUid
-                            VM.controlVm.schoolSlogan(info.schoolSlogan || '')
-                            VM.controlVm.schoolAddress(info.schoolAddress || '')
+                            VM.controlVm.schoolSlogan = info.schoolSlogan || ''
+                            VM.controlVm.schoolAddress = info.schoolAddress || ''
+                            VM.controlVm.schoolDisplaysPositions = info.schoolDisplaysPositions || false
                             DbSettings.iu([
                                 {
                                     label: 'schoolUid',
@@ -117,6 +118,9 @@ function getSockets() {
                                 }, {
                                     label: 'schoolAddress',
                                     value: info.schoolAddress || ''
+                                }, {
+                                    label: 'schoolDisplaysPositions',
+                                    value: info.schoolDisplaysPositions || false
                                 }
                             ])
                         })
