@@ -6,11 +6,16 @@ var vm = function (params) {
 
     // observables
     vm.logo = ko.observable()
-    vm.logoChanged = ko.observable(false)
+    vm.schoolName = ko.observable()
+    vm.schoolSlogan = ko.observable()
+    vm.schoolAddress = ko.observable()
+    vm.schoolDisplaysPositions = ko.observable()
 
     // states
-    vm.uploadingLogo = ko.observable(false)
+    vm.logoChanged = ko.observable(false)
     vm.uiVisible = ko.observable(false)
+    vm.uploadingLogo = ko.observable(false)
+    vm.updatingProfile = ko.observable(false)
 
     // behaviours
     vm.selectLogo = () => {
@@ -64,6 +69,39 @@ var vm = function (params) {
             }
         }, false, 10000)
     }
+    vm.updateProfile = () => {
+        if (_anyEmpty(vm.schoolName(), vm.schoolSlogan(), vm.schoolAddress())) 
+            return VM.notify('You cannot leave any field empty', 'warn'),
+            null
+        vm.updatingProfile(true)
+        let DbSettings = db('settings')
+        DbSettings.iu([
+            {
+                label: 'schoolName',
+                value: vm.schoolName()
+            }, {
+                label: 'schoolSlogan',
+                value: vm.schoolSlogan()
+            }, {
+                label: 'schoolAddress',
+                value: vm.schoolAddress()
+            }, {
+                label: 'schoolDisplaysPositions',
+                value: vm.schoolDisplaysPositions()
+            }
+        ]).then(d => {
+            VM.controlVm.schoolName(vm.schoolName())
+            VM.controlVm.schoolSlogan = vm.schoolSlogan()
+            VM.controlVm.schoolAddress = vm.schoolAddress()
+            VM.controlVm.schoolDisplaysPositions = vm.schoolDisplaysPositions()
+
+            VM.notify("Profile updated successfully")
+            vm.updatingProfile(false)
+        }).catch(e => {
+            VM.notify("Unable to update school profile", "error")
+            vm.updatingProfile(false)
+        })
+    }
 
     // subscription
     vm
@@ -108,6 +146,12 @@ var vm = function (params) {
                 logoUri = USERDATA_ASSETS_PATH + 'logo.jpg'
             vm.logo(logoUri)
         })
+
+        // load school info
+        vm.schoolName(VM.controlVm.schoolName())
+        vm.schoolSlogan(VM.controlVm.schoolSlogan)
+        vm.schoolAddress(VM.controlVm.schoolAddress)
+        vm.schoolDisplaysPositions(VM.controlVm.schoolDisplaysPositions)
 
         // confirm logo from server
         let DbSettings = db('settings')

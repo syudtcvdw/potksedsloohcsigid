@@ -5,11 +5,12 @@
             <div class="col span_1_of_3 card" data-mh-target data-bind="css: {disabled: uploadingLogo}">
                 <h4 class="title">
                     School Logo
-                    <!-- ko if: logoChanged -->
-                    <i class="fa fa-fw fa-upload section-action green animated slideInDown" title="Click to upload" data-bind="click: uploadLogo"></i>
-                    <i class="fa fa-fw fa-refresh section-action orange animated slideInDown" title="Reset logo" data-bind="click: resetLogo"></i>
-                    <!-- /ko -->
-                    <i class="fa fa-fw fa-plus section-action" title="Click to edit" data-bind="click: selectLogo"></i>
+                    <span data-bind="visible: logoChanged">
+                        <!-- prefer visibility binding over `if` because of tooltip preservation -->
+                        <i class="fa fa-fw fa-upload section-action green animated slideInDown" title="Click to upload" data-bind="click: uploadLogo" data-tooltip="{'class': 'mini white'}"></i>
+                        <i class="fa fa-fw fa-refresh section-action orange animated slideInDown" title="Reset logo" data-bind="click: resetLogo" data-tooltip="{'class': 'mini white'}"></i>
+                    </span>
+                    <i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to edit" data-bind="click: selectLogo"></i>
                 </h4>
                 <div class="logo-pane">
                     <img class="school-logo" alt="" data-bind="attr: {src: logo}">
@@ -18,7 +19,28 @@
 
             <div class="col span_1_of_3 card">
                 <h4 class="title">School Profile</h4>
-                <div class="content"></div>
+                <form class="content">
+                    <div>
+                        <label>School name</label>
+                        <input type="text" data-bind="textInput: schoolName" placeholder="Enter school name">
+                    </div>
+                    <div>
+                        <label>Motto/slogan</label>
+                        <input type="text" data-bind="textInput: schoolSlogan" placeholder="Enter school motto/slogan">
+                    </div>
+                    <div>
+                        <label>School address</label>
+                        <textarea data-bind="textInput: schoolAddress" placeholder="Enter school address"></textarea>
+                    </div>
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="display-positions-switch" data-bind="checked: schoolDisplaysPositions">
+                        <label class="onoffswitch-label" for="display-positions-switch">
+                            <span class="onoffswitch-inner"></span>
+                            <span class="onoffswitch-switch"></span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: updateProfile">Save</button>
+                </form>
             </div>
 
             <div class="col span_1_of_3 card">

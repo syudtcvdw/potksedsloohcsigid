@@ -10,4 +10,9 @@
     .logo-pane {
         position: relative;
     }
+    label {
+        font-weight: normal;
+        font-size: 80%;
+        color: $theme-text;
+    }
 }

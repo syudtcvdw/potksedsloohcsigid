@@ -224,7 +224,7 @@ module.exports = function (server, force = false) {
             DbSettings
                 .find({
                 label: {
-                    $in: ['schoolUid', 'schoolName']
+                    $in: ['schoolUid', 'schoolName', 'schoolSlogan', 'schoolAddress', 'schoolDisplaysPositions']
                 }
             })
                 .execAsync()
