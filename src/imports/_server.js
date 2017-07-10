@@ -132,9 +132,90 @@ module.exports = function (server, force = false) {
                     return
                 query = query.payload || query
                 let DbAdmins = db("admins")
-                DbAdmins.remove({$and: [{_id: query._id}, {$not: {is_first: true}}]}, {}, (err, num) => {
+                DbAdmins.remove({
+                    $and: [
+                        {
+                            _id: query._id
+                        }, {
+                            $not: {
+                                is_first: true
+                            }
+                        }
+                    ]
+                }, {}, (err, num) => {
                     cb(!err && num > 0)
                 })
+            })
+
+            /**
+             * Event emitted only from Super Admin's workstation, to notify server they can make special demands
+             */
+            socket.on('request elevation', (query, cb) => { // void
+                query = query.payload || query
+                console.log(`Elevating ${query}...`)
+                socket.isSuper = true
+                cb()
+            })
+
+            /**
+             * Updates school logo file
+             */
+            socket.on('update school logo', (query, cb) => {
+                if (!socket.isSuper) 
+                    return cb(false),
+                    null
+                if (expired(query)) 
+                    return
+                buf = query.payload || query
+                if (!fs.existsSync(USERDATA_ASSETS_PATH)) // create the assets directory if it doesn't exist yet
+                    fs.mkdirSync(USERDATA_ASSETS_PATH)
+                fs.writeFile(USERDATA_ASSETS_PATH + 'logo.jpg', buf, 'binary', e => {
+                    cb(!e)
+                    if (!e) {
+                        // compute salt
+                        let hash = require('crypto').createHash('sha256')
+                        hash.update(_getUTCTime().toString())
+                        let salt = hash.digest('hex')
+
+                        // save up
+                        let DbSettings = db('settings')
+                        DbSettings
+                            .iu({label: 'logoSalt', value: salt})
+                            .then(() => {})
+                            .catch(() => {})
+
+                            // notify all clients
+                            server
+                            .emit('update your school logo', {
+                                salt: salt,
+                                buf: buf
+                            })
+                    }
+                })
+            })
+
+            /**
+             * Fetches school logo if the supplied salt does not match current logo salt
+             */
+            socket.on('fetch school logo', (query, cb) => {
+                query = query.payload || query
+                let DbSettings = db('settings')
+                DbSettings
+                    .findOne({label: 'logoSalt'})
+                    .execAsync()
+                    .then(d => {
+                        if (d && d.value == query.salt) 
+                            cb(false)
+                        else {
+                            fs.readFile(USERDATA_ASSETS_PATH + 'logo.jpg', 'binary', (e, data) => {
+                                if (e) 
+                                    cb(false)
+                                else 
+                                    cb({salt: d.value, buf: data})
+                            })
+                        }
+                    })
+                    .catch(e => cb(false))
             })
 
             resolve(socket)

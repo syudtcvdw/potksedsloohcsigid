@@ -31,7 +31,7 @@ function getSockets() {
                 if (_mode == 'SERVER') {
                     _io_server.close(() => {
                         _control.close()
-                        _control = require('http').Server(window.app)
+                        _control = require('http').Server()
                         _io_server = require('socket.io')(_control)
                         _control.listen(9192)
                         _server(_io_server, true) // start up the server leaflet, force renew
@@ -52,7 +52,7 @@ function getSockets() {
         server() {
             // set up server
             _mode = 'SERVER'
-            _control = require('http').Server(window.app)
+            _control = require('http').Server()
             _io_server = require('socket.io')(_control)
 
             return this
@@ -95,6 +95,10 @@ function getSockets() {
                     _io_client.on('connect', () => {
                         if (VM.connectionInfo()) 
                             VM.connectionInfo().connected(true)
+
+                        /**
+                         * Initializer payload delivered from the server
+                         */
                         _io_client.on('init-payload', (info) => {
                             let DbSettings = db("settings")
                             VM.controlVm.schoolUid = info.schoolUid
@@ -107,6 +111,13 @@ function getSockets() {
                                     value: info.schoolName
                                 }
                             ])
+                        })
+
+                        /**
+                         * Prompt from server that a new logo is available
+                         */
+                        _io_client.on('update your school logo', data => {
+                            _saveLogo(data)
                         })
                         resolve(_io_client)
                     })

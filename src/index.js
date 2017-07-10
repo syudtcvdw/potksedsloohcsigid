@@ -13,7 +13,10 @@ const {enableLiveReload} = require('electron-compile')
 
     const isDevMode = process.execPath.match(/[\\/]electron/);
 
-    if (isDevMode) enableLiveReload();
+    if (isDevMode) {
+        enableLiveReload();
+        app.setName("Digischools")
+    }
 
     const createWindow = async() => {
         // Create the browser window.
@@ -27,6 +30,7 @@ const {enableLiveReload} = require('electron-compile')
             minHeight: 600,
             icon: __dirname + '/resx/icon.ico'
         });
+        global.thisApp = app
 
         // remove the menu bar
         mainWindow.setMenu(null);
@@ -49,10 +53,20 @@ const {enableLiveReload} = require('electron-compile')
 
         // show window gracefully
         mainWindow.once('ready-to-show', () => {
-            mainWindow.show();
-            mainWindow.app = app;
+            // mainWindow.app = app;
+            mainWindow.show()
         });
     };
+
+    const shouldQuit = app.makeSingleInstance((commandLine,  workingDirectory) => {
+        // Someone tried to run a second instance, we should focus our window
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore()
+            mainWindow.focus()
+        }
+    })
+
+    if (shouldQuit) app.quit()
 
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.

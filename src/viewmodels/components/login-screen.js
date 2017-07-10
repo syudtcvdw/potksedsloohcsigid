@@ -61,14 +61,30 @@ var vm = function (params) {
             .personEmail(data.info.email)
         VM.controlVm.personId = data.info._id
 
-        VM.loadView('admins-screen')
+        VM.loadView('school-config')
         console.log("Starting app...", data)
     }
 
     // init
     console.log('Login screen: ', params)
     if (typeof params.firstRun != 'undefined' && VM.MODE() == SERVER) {
-        vm.start(params) // don't require logon from server-running admin on first run
+        /**
+         * in the unlikely event that the settings table is cleared
+         * while the admins table is left intact,
+         * the iu operation performed on the admin's details may return null
+         * leaving the _id undefined, we do a fresh db request here regardless to ensure
+         * that all information is intact before proceeding to the next screen
+         */
+        let DbAdmins = db('admins')
+        DbAdmins
+            .findOne({email: params.info.email})
+            .execAsync()
+            .then(d => {
+                if (d) 
+                    params.info._id = d._id
+                vm.start(params) // don't require logon from server-running admin on first run
+            })
+            .catch(() => {})
     }
     let DbSettings = db('settings')
     DbSettings

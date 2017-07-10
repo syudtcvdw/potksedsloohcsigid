@@ -177,7 +177,7 @@ const vm = function (params) {
     }
 
     // subscriptions
-    vm.isEditEmail.subscribe(b => {
+    vm.s1 = vm.isEditEmail.subscribe(b => {
         if (!b) vm.profileEmail(VM.controlVm.personEmail())
     })
 

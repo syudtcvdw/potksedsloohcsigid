@@ -14,7 +14,7 @@
 @include full-page-hack;
 @include font-smoothing-hack;
 @include mobile-device-touch-control;
-@include scrollbars(.2em, rgba(slategray, .01), rgba($theme-black, .09));
+@include scrollbars(.2em, rgba($theme-black, .1), rgba(slategray, .1));
 * {
     box-sizing: border-box;
     cursor: default
@@ -23,14 +23,30 @@
 main {
     height: 100%;
     position: relative;
+    transition: height 500ms ease-out;
     &.page {
-        height: calc(100% - (32px + 42px)) // heights of the nav and status bars
+        height: calc(100% - (32px + 42px)); // heights of the nav and status bars
+        background: $theme-white;
+        >div {
+            height: 100%;
+            position: relative;
+            padding: .5rem 1rem;
+            color: $theme-text;
+        }
     }
 }
 
 body {
     @include font-opensans;
     overflow: hidden;
+    &.no-nav {
+        .control-header {
+            margin-top: -42px;
+        }
+        main {
+            height: calc(100% - 32px);
+        }
+    }
 }
 
 .footer-watermark {
@@ -77,6 +93,11 @@ body {
     &.orange {
         background: $theme-orange;
     }
+    &.white {
+        background: $theme-white;
+        color: $theme-text;
+        box-shadow: rgba($theme-black, .3) 0 0 3px;
+    }
 }
 
 .anim-js {
@@ -98,6 +119,20 @@ body {
             width: 50%;
             height: 1px;
             background: $theme-green;
+        }
+        .section-action {
+            float: right;
+            color: $theme-black;
+            opacity: .7;
+            &:hover {
+                opacity: 1
+            }
+            &.green {
+                color: $theme-green
+            }
+            &.orange {
+                color: $theme-orange
+            }
         }
     }
 }
@@ -290,9 +325,27 @@ table {
     color: $theme-red
 }
 
+img {
+    max-width: 100%;
+}
+
+.col.card {
+    padding: 1rem;
+    background: $theme-white;
+    box-shadow: rgba($theme-black, .3) 0px 0px 2px;
+    border-radius: 3px;
+    // max-height: 460px;
+    position: relative;
+}
+
+.hidden {
+    display: none;
+}
+
 // specific
 @import '_specific/splash';
 @import '_specific/start';
 @import '_specific/home';
 @import '_specific/control';
 @import '_specific/admins';
+@import '_specific/school-config';

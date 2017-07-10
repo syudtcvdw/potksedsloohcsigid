@@ -119,7 +119,7 @@ var vm = function (params) {
                 value: vm.schoolData.name
             }
         ]).then(doc => {
-            DbAdmins.i({
+            DbAdmins.iu({
                 name: vm.adminName(),
                 email: vm.logonEmail(),
                 password: vm.logonPwd(),
@@ -144,7 +144,7 @@ var vm = function (params) {
                 info: {
                     name: vm.adminName(),
                     email: vm.logonEmail(),
-                    _id: d._id,
+                    _id: d? d._id : '',
                     is_first: true
                 }
             })
