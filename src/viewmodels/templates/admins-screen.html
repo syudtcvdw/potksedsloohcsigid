@@ -2,20 +2,20 @@
 
 	<div class="row">
 		<div class="col span_1_of_3 pane">
-			<form>
+			<form data-bind="css: {disabled: updatingProfile}">
 				<h4 class="title">Your Profile</h4>
-				<input type="text" name="name" data-bind="textInput: updateName" placeholder="Your name goes here">
-				<input type="email" name="pwd" data-bind="value: $root.controlVm.personEmail, enable: isEditEmail" placeholder="Put yout email here">
+				<input type="text" name="name" data-bind="textInput: profileName" placeholder="Your name goes here">
+				<input type="email" name="pwd" data-bind="textInput: profileEmail, enable: isEditEmail" placeholder="Put yout email here">
 				<p class="mt0" data-bind="if: $root.controlVm.superAdmin">
-					<label for="edit-email" data-tooltip="{ 'class': 'mini orange' }" title="Requires internet connection">
+					<label for="edit-email" data-tooltip="{ 'class': 'mini white' }" title="Requires internet connection">
 						<input type="checkbox" data-bind="checked: isEditEmail" id="edit-email">
 						<small>Edit my email too</small>
 					</label>
 				</p>
-				<button type="submit" class="btn btn-block btn-black" data-bind="click: updateCreds, css: {disabled: updatingProfile}">Update Info</button>
+				<button type="submit" class="btn btn-block btn-black" data-bind="click: updateCreds">Update Info</button>
 			</form>
 
-			<form id="add-admin-form">
+			<form id="add-admin-form" data-bind="css: {disabled: addingAdmin}">
 				<h4 class="title">Add New Admin</h4>
 				<input type="text" name="name" data-bind="textInput: newName" placeholder="Admin's name">
 				<input type="email" name="name" data-bind="textInput: newEmail" placeholder="Admin's email">
@@ -27,7 +27,7 @@
 					<input type="password" name="pwd" data-bind="textInput: confNewPwd" placeholder="Confirm the password">
 					<i class="fa pwd-btn"></i>
 				</div>
-				<button type="submit" class="btn btn-block btn-black" data-bind="click: addAdmin, css: {disabled: addingAdmin}">Add admin</button>
+				<button type="submit" class="btn btn-block btn-black" data-bind="click: addAdmin">Add admin</button>
 			</form>
 		</div>
 
@@ -61,26 +61,39 @@
 		</div>
 	</div>
 
-	<!-- ko if: updatePassword -->
-	<div class="curtain">
+	<!-- ko if: selectedAdmin -->
+	<div class="curtain" data-bind="with: selectedAdmin">
 
 		<div class="logon-pane">
 			<div id="logon">
-				<form id="add-admin-form">
-					<h4 class="title">Update Password</h4>
+				<form id="add-admin-form" data-bind="css: {disabled: updatingPassword}">
+					<h4 class="title">Change Password for
+						<!-- ko text: name -->
+						<!-- /ko -->
+					</h4>
 					<div class="input-fa pwd-box">
-						<input type="password" name="pwd" data-bind="textInput: newUpdatePwd" placeholder="Choose a new password">
+						<input type="password" name="pwd" data-bind="textInput: newPwd" placeholder="Choose a new password">
 						<i class="fa pwd-btn"></i>
 					</div>
 					<div class="input-fa pwd-box">
-						<input type="password" name="pwd" data-bind="textInput: newUpdateConfPwd" placeholder="Confirm the password">
+						<input type="password" name="pwd" data-bind="textInput: confPwd" placeholder="Confirm the password">
 						<i class="fa pwd-btn"></i>
 					</div>
 					<div class="row">
-						<button type="submit" class="btn btn-green col span_1_of_2" data-bind="click: updatePwd, css: {disabled: updatingPassword}">Update Password</button>
-						<button type="submit" class="btn btn-orange col span_1_of_2" data-bind="click: dissmissCurtain">Dismiss</button>
+						<button type="submit" class="btn btn-green col span_1_of_2" data-bind="click: doPwdUpdate">Update Password</button>
+						<button type="submit" class="btn btn-orange col span_1_of_2" data-bind="click: dismiss">Dismiss</button>
 					</div>
 				</form>
+				<!-- ko if: pwdError -->
+				<div class="loading opaque">
+					<div class="content">
+						<div class="animated fadeInUp">
+							<div data-bind="text: pwdError"></div>
+							<a class="btn btn-inverse btn-shift-down" data-bind="click: function() { this.pwdError(null) }">Ok</a>
+						</div>
+					</div>
+				</div>
+				<!-- /ko -->
 			</div>
 		</div>
 		

@@ -1,226 +1,285 @@
 const vm = function (params) {
-		let vm = this
+    let vm = this
 
-		vm.fetchingAdmins = ko.observable(false)
-		vm.addingAdmin = ko.observable(false)
-		vm.updatingPassword = ko.observable(false)
-		vm.updateName = ko.observable()
-		vm.profileEmail = ko.observable()
-		vm.isEditEmail = ko.observable(false)
-		vm.updatingProfile = ko.observable(false)
-		vm.admins = ko.observableArray()
-		vm.noAdmins = ko.observable(false)
-		vm.newName = ko.observable()
-		vm.newEmail = ko.observable()
-		vm.newPwd = ko.observable()
-		vm.confNewPwd = ko.observable()
-		vm.updatePassword = ko.observable(false) // to determine if the curtain should come up
-		vm.dissmissCurtain = ko.observable() // click handler to dissmissCurtain
-		vm.updatePwd = ko.observable() // click handler to update password
-		vm.newUpdatePwd = ko.observable()
-		vm.newUpdateConfPwd = ko.observable()
-		// behaviors
-		vm.updateCreds = () => {
-				if (_anyEmpty(vm.updateName())) 
-						return VM.notify("Don't leave your name empty", 'warn'),
-						null
+    vm.fetchingAdmins = ko.observable(false)
+    vm.addingAdmin = ko.observable(false)
+    vm.updatingProfile = ko.observable(false)
+    vm.isEditEmail = ko.observable(false)
+    vm.noAdmins = ko.observable(false)
 
-				vm.updatingProfile(true)
-				// check if edit email is checked
-				if (vm.isEditEmail()) {
-						// do an api call
-						let updateData = {
-								uid: VM
-										.controlVm
-										.schoolUid(),
-								email: vm
-										.controlVm
-										.personEmail()
-						}
-						api
-								.p('school/update-email', updateData)
-								.then(data => {
-										if (!data.status) 
-												VM.notify(data.msg, 'error')
-												// update successful
-										vm.updatingProfile(false)
-										VM.notify('Update successful!')
-										console.log('Update successful!')
-								})
-								.catch(err => {
-										console.log(err)
-										VM.notify('Unable to reach authentication servers, check your network connection.', 'error', {
-												'try again': () => {
-														// try again logic goes here...
-												}
-										})
-								})
-				} else {
-						// update admin's name
-						sockets.emit('update profile', { // send to the socket ( update profile )
-								'name': vm.updateName(),
-								'email': VM
-										.controlVm
-										.personEmail()
-						}, (data) => {
-								if (!data.status) 
-										VM.notify("Profile update failed, no reponse from Control Workstation", "error")
-								else {
-										if (data.response) {
-												VM
-														.controlVm
-														.personName(data.response.name)
-												VM.notify("Profile update successful")
-												_.delay(vm.fetchAdmins, 500)
-										} else 
-												VM.notify("Profile update failed", "warn")
-								}
-								vm.updatingProfile(false)
-						})
-				}
-				// change password retrieve first admin's password
-		}
+    vm.profileName = ko.observable()
+    vm.profileEmail = ko.observable()
 
-		/**
-		 * Add new admin
-		 */
-		vm.addAdmin = () => {
-				if (_anyEmpty(vm.newName(), vm.newEmail(), vm.newPwd(), vm.confNewPwd())) 
-						return VM.notify('Please fill in all fields.', 'warn')
-				if (vm.newPwd() !== vm.confNewPwd()) 
-						return VM.notify('The passwords do not match', 'warn');
-				
-				// Go ahead and add admin.
-				vm.addingAdmin(true)
-				sockets.emit('add admin', {
-						'name': vm.newName(),
-						'email': vm.newEmail(),
-						'password': vm.newPwd()
-				}, (data) => {
-						if (!data.status) 
-								VM.notify('Could not add admin: no response from the Control Workstation.', 'error', {
-										'try again': () => {
-												vm.addingAdmin(true)
-												vm.addAdmin()
-										}
-								}, 'add admin')
-						else {
-								if (typeof data.response == 'object') {
-										vm
-												.admins
-												.push(new Admin(data.response))
+    vm.newName = ko.observable()
+    vm.newEmail = ko.observable()
+    vm.newPwd = ko.observable()
+    vm.confNewPwd = ko.observable()
 
-										// clear inputs
-										_resetForm('#add-admin-form')
-								} else 
-										VM.notify(data.response, 'error')
-						}
-						vm.addingAdmin(false)
-				})
-		}
+    vm.admins = ko.observableArray()
+    vm.selectedAdmin = ko.observable()
 
-		/**
-		 * Fetches list of all admins from the server
-		 */
-		vm.fetchAdmins = () => {
-				vm.fetchingAdmins(true)
-				console.log('Fetching admins')
-				sockets.emit("get all admins", {}, data => {
-						vm.fetchingAdmins(false)
-						if (!data.status) 
-								vm.noAdmins(true)
-						else {
-								if (!data.response) 
-										vm.noAdmins(true)
-								else {
-										vm.noAdmins(false)
-										vm
-												.admins
-												.removeAll()
-										data
-												.response
-												.map(a => {
-														vm
-																.admins
-																.push(new Admin(a))
-												})
-								}
-						}
-				})
-		}
+    // behaviours
+    vm.updateCreds = () => {
+        if (vm.updatingProfile()) // quit if profile update is in progress
+            return
+        if (_anyEmpty(vm.profileName(), vm.profileEmail())) // no field can be empty
+            return VM.notify("No field can be empty", 'warn'),
+                null
 
-		vm.updatePwd = () => {
-			// send info to the server
-		}
+        vm.updatingProfile(true) // processing has begun
+        sockets.emit('update profile', { // send to the socket ( update profile )
+            'name': vm.profileName(),
+            '_id': VM.controlVm.personId
+        }, (data) => { // response
+            if (!data.status) { // no response really
+                VM.notify("Profile update failed, no reponse from Control Workstation", "error")
+                vm.updatingProfile(false)
+            } else {
+                if (data.response) { // name update successful
+                    function proceed(data) {
+                        // very local function to invoke for updating the name everywhere
+                        VM
+                            .controlVm
+                            .personName(data.name)
+                        if (vm.isEditEmail()) {
+                            VM
+                                .controlVm
+                                .personEmail(data.email)
+                            vm.isEditEmail(false)
+                        }
+                        VM.notify("Profile update successful")
+                        _.delay(vm.fetchAdmins, 500)
+                        vm.updatingProfile(false)
+                    }
+                    if (vm.isEditEmail()) { // do an api call
+                        let updateData = {
+                            uid: VM.controlVm.schoolUid,
+                            email: vm.profileEmail()
+                        }
+                        api
+                            .p('school/update-email', updateData)
+                            .then(data => {
+                                data = data.data
+                                console.log(data)
+                                if (!data.status)
+                                    VM.notify(data.msg, 'error');
 
-		vm.dissmissCurtain = () => {
-			vm.updatePassword(false)
-		}
+                                sockets.emit('update profile', { // send to the socket ( update profile )
+                                    'email': vm.profileEmail(),
+                                    '_id': VM.controlVm.personId
+                                }, data => {
+                                    if (!data.status) { // no response really
+                                        VM.notify("Error occured, email left unchanged", "warn")
+                                        vm.updatingProfile(false)
+                                        _.delay(vm.fetchAdmins, 500)
+                                    } else {
+                                        if (!data.response) {
+                                            VM.notify("Error occured, email left unchanged", "warn")
+                                            vm.updatingProfile(false)
+                                            _.delay(vm.fetchAdmins, 500)
+                                        } else
+                                            proceed(data.response)
+                                    }
+                                })
+                                console.log('Profile update successful')
+                            })
+                            .catch(err => {
+                                console.log(err)
+                                VM.notify('Unable to reach authentication servers, check your network connection. Email lef' +
+                                    't unchanged',
+                                    'warn', {
+                                        'try again': vm.updateCreds
+                                    })
+                                vm.updatingProfile(false)
+                                _.delay(vm.fetchAdmins, 500)
+                            })
+                    } else
+                        proceed(data.response)
+                } else {
+                    VM.notify("Profile update failed", "warn")
+                    vm.updatingProfile(false)
+                }
+            }
+        })
+    }
+    // change password retrieve first admin's password
 
-		// sub-vm
-		function Admin(data) {
-				let a = this
+    /**
+     * Add new admin
+     */
+    vm.addAdmin = () => {
+        if (vm.addingAdmin())
+            return
+        if (_anyEmpty(vm.newName(), vm.newEmail(), vm.newPwd(), vm.confNewPwd()))
+            return VM.notify('Please fill in all fields.', 'warn')
+        if (vm.newPwd() !== vm.confNewPwd())
+            return VM.notify('The passwords do not match', 'warn');
 
-				// observables
-				a.name = ko.observable(data.name || "")
-				a.email = ko.observable(data.email || "")
-				a.password = ko.observable(data.password || "")
-				a.superAdmin = ko.observable(data.is_first || false)
+        // Go ahead and add admin.
+        vm.addingAdmin(true)
+        sockets.emit('add admin', {
+            'name': vm.newName(),
+            'email': vm.newEmail(),
+            'password': vm.newPwd()
+        }, data => {
+            if (!data.status)
+                VM.notify('Could not add admin: no response from the Control Workstation.', 'error', {
+                    'try again': () => {
+                        vm.addingAdmin(true)
+                        vm.addAdmin()
+                    }
+                }, 'add admin')
+            else {
+                if (typeof data.response == 'object') {
+                    vm
+                        .admins
+                        .push(new Admin(data.response))
 
-				// behaviours
-				a.removeMe = () => {
-						// remove an admin show a confirmation msg
-						VM.notify('Are you sure you want to delete?', 'warn', {
-								'confirm': () => {
-										// you must not be able to delete yourself
-										if (VM.controlVm.personEmail() === a.email()) {
-												VM.notify('You can not delete yourself.', 'error')
-												return
-										}
-										// you cannot delete the superadmin
-										if (a.superAdmin()) {
-												VM.notify('You can not delete the super admin!', 'error')
-												return
-										}
-										// go ahead and delete this admin
-										sockets.emit('delete admin', {
-												'email': a.email()
-										}, data => {
-												if (!data.status) 
-														VM.notify('Could remove this admin: No response from the Control Workstation.', 'error')
-												else {
-														// TODO: Refresh the admin list with this admin removed
-														console.log(data)
-														VM.notify('Check the console. Good job!')
-												}
-										})
-								}
-						})
-				}
+                    // clear inputs
+                    _resetForm('#add-admin-form')
+                } else
+                    VM.notify(data.response, 'error')
+            }
+            vm.addingAdmin(false)
+        })
+    }
 
-				a.changePwd = () => {
-					// pops up the curtain
-					vm.updatePassword(true)
-					// if ( _anyEmpty(vm.newUpdatePwd(), vm.newUpdateConfPwd()) )
-					// 	VM.notify('Please fill in all fields', 'warn')
-					// if ( vm.newUpdateConfPwd() !== vm.newUpdatePwd() )
-					// 	VM.notify('Passwords don\'t match', 'warn')
-				}
+    /**
+     * Fetches list of all admins from the server
+     */
+    vm.fetchAdmins = () => {
+        if (vm.fetchingAdmins())
+            return
+        vm.fetchingAdmins(true)
+        console.log('Fetching admins')
+        sockets.emit("get all admins", {}, data => {
+            vm.fetchingAdmins(false)
+            if (!data.status)
+                vm.noAdmins(true)
+            else {
+                if (!data.response)
+                    vm.noAdmins(true)
+                else {
+                    vm.noAdmins(false)
+                    vm
+                        .admins
+                        .removeAll()
+                    data
+                        .response
+                        .map(a => {
+                            vm
+                                .admins
+                                .push(new Admin(a))
+                        })
+                }
+            }
+        })
+    }
 
-		}
+    // subscriptions
+    vm.s1 = vm.isEditEmail.subscribe(b => {
+        if (!b) vm.profileEmail(VM.controlVm.personEmail())
+    })
 
-		// local
-		function loadMyProfile() {
-				vm.updateName(VM.controlVm.personName())
-				vm.profileEmail(VM.controlVm.personEmail())
-		}
+    // sub-vm
+    function Admin(data) {
+        let a = this
 
-		// init
-		vm.fetchAdmins()
-		loadMyProfile()
-		_.defer(() => tooltip.refresh())
+        // prop
+        a._id = data._id || ""
+        a.password = data.password || ""
+        
+        // observables
+        a.name = ko.observable(data.name || "")
+        a.email = ko.observable(data.email || "")
+        a.superAdmin = ko.observable(data.is_first || false)
+
+        a.newPwd = ko.observable()
+        a.confPwd = ko.observable()
+        a.updatingPassword = ko.observable()
+        a.pwdError = ko.observable()
+
+        // behaviours
+        a.removeMe = () => {
+            // remove an admin show a confirmation msg
+            VM.notify('Are you sure you want to delete?', 'warn', {
+                'confirm': () => {
+                    // you must not be able to delete yourself
+                    if (VM.controlVm.personEmail() === a.email())
+                        return VM.notify('You can not delete yourself.', 'error'),
+                            null;
+
+                    // you cannot delete the superadmin
+                    if (a.superAdmin())
+                        return VM.notify('You can not delete the super admin!', 'error'),
+                            null;
+
+                    // go ahead and delete this admin
+                    sockets.emit('delete admin', {
+                        'email': a.email()
+                    }, data => {
+                        if (!data.status)
+                            VM.notify('Could not remove this admin: No response from the Control Workstation.', 'error')
+                        else {
+                            if (!data.response) VM.notify("Unable to delete admin", "error")
+                            else vm.admins.remove(a)
+                        }
+                    })
+                }
+            })
+        }
+
+        a.changePwd = () => { // pops up the curtain
+            vm.selectedAdmin(a)
+        }
+
+        a.dismiss = () => {
+            a.newPwd('')
+            a.confPwd('')
+            a.pwdError(null)
+            vm.selectedAdmin(null)
+        }
+
+        a.doPwdUpdate = () => {
+            if (_anyEmpty(a.newPwd(), a.confPwd()))
+                a.pwdError('Please fill in all fields')
+            else if (a.newPwd() !== a.confPwd())
+                a.pwdError('Passwords do not match')
+            else {
+                a.updatingPassword(true)
+                sockets.emit('update profile', {
+                    _id: a._id,
+                    password: a.newPwd()
+                }, data => {
+                    a.dismiss()
+                    a.updatingPassword(false)
+                    if (!data.status)
+                        VM.notify(`Could not update password for ${a.name()}, no reply from Control Workstation`, 'error')
+                    else {
+                        if (data.response) {
+                            a.password = a.newPwd()
+                            VM.notify(`Password updated for ${a.name()}`)
+                        }
+                        else VM.notify(`Could not update password for ${a.name()}`, 'error')
+                    }
+                })
+            }
+        }
+
+    }
+
+    // local
+    function loadMyProfile() {
+        vm.profileName(VM.controlVm.personName())
+        vm.profileEmail(VM.controlVm.personEmail())
+    }
+
+    // init
+    vm.fetchAdmins()
+    loadMyProfile()
+    _.defer(() => tooltip.refresh())
 }
 
 new Component('admins-screen')
-		.def(vm)
-		.load()
+    .def(vm)
+    .load()

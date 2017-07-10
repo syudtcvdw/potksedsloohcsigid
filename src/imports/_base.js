@@ -2,6 +2,7 @@ const VIEWMODELS_PATH = __dirname + '/viewmodels/'
 const IMPORTS_PATH = __dirname + '/imports/'
 const COMPONENTS_PATH = VIEWMODELS_PATH + 'components/'
 const TEMPLATES_PATH = VIEWMODELS_PATH + 'templates/'
+const DEFAULT_SCHOOL_LOGO = 'resx/images/school-logo.png'
 const SERVER = 'SERVER'
 const CLIENT = 'CLIENT'
 
@@ -14,6 +15,13 @@ const {Component} = require(COMPONENTS_PATH + '_compo_.js')
 const api = require(IMPORTS_PATH + '_api.js')
 const db = require(IMPORTS_PATH + '_db.js')
 const _server = require(IMPORTS_PATH + '_server.js')
+const {remote, BrowserWindow} = require('electron')
+const app = remote.getGlobal('thisApp')
+const currentWindow = remote.getCurrentWindow()
+
+const USERDATA_ASSETS_PATH = app.getPath('userData') + '/assets/'
+
+require('jquery-match-height')
 
 /**
  * Randomly generates a number within given range
@@ -91,6 +99,31 @@ function _resetForm(formSelector) {
         .removeAttr('selected')
         .not(':button, :submit, :reset, :hidden, :radio, :checkbox')
         .val('');
+}
+
+/**
+ * Returns the UTC timestamp
+ */
+function _getUTCTime() {
+    let d = new Date()
+    return Date.parse(d.toUTCString())
+}
+
+/**
+ * Convenience function for saving logo
+ * @param {object} data Object containing buffer and salt
+ */
+function _saveLogo(data) {
+    if (!fs.existsSync(USERDATA_ASSETS_PATH)) // create the assets directory if it doesn't exist yet
+        fs.mkdirSync(USERDATA_ASSETS_PATH)
+    fs.writeFile(USERDATA_ASSETS_PATH + 'logo.jpg', data.buf, 'binary', e => {})
+
+    // save up the salt
+    let DbSettings = db('settings')
+    DbSettings
+        .iu({label: 'logoSalt', value: data.salt})
+        .then(() => {})
+        .catch(() => {})
 }
 
 /**

@@ -32,7 +32,13 @@ module.exports = function (server, force = false) {
                 console.log(`Client disconnected: ${socket.id} --> ${reason}`)
             })
 
+            /**
+             * Request from connected client for their specific information
+             */
             socket.on('logon', (query, cb) => { // success: {role,info}
+                if (expired(query)) 
+                    return
+                query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
                     .findOne(query)
@@ -51,14 +57,23 @@ module.exports = function (server, force = false) {
                     .catch(() => cb(false))
             })
 
+            /**
+             * Kills connection from sender
+             */
             socket.on('kill me now', () => { // void
                 socket.disconnect(true)
             })
 
+            /**
+             * Updates said profile, identified by supplied _id
+             */
             socket.on('update profile', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
-                    .findOne({email: query.email})
+                    .findOne({_id: query._id})
                     .execAsync()
                     .then(d => {
                         DbAdmins
@@ -71,7 +86,13 @@ module.exports = function (server, force = false) {
                     .catch(() => cb(false))
             })
 
+            /**
+             * Returns list of all admins
+             */
             socket.on('get all admins', (query, cb) => { // success: [docs]
+                if (expired(query)) 
+                    return
+                query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
                     .find({})
@@ -84,7 +105,13 @@ module.exports = function (server, force = false) {
                     .catch(() => cb(false))
             })
 
+            /**
+             * Adds new admin to the admins table
+             */
             socket.on('add admin', (query, cb) => { // success: object, failure: error message
+                if (expired(query)) 
+                    return
+                query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
                     .exists('email', query.email)
@@ -95,6 +122,100 @@ module.exports = function (server, force = false) {
                             .then(() => cb(query))
                             .catch(() => cb("Unable to add admin"))
                     })
+            })
+
+            /**
+             * Deletes admin identified by supplied _id
+             */
+            socket.on('delete admin', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbAdmins = db("admins")
+                DbAdmins.remove({
+                    $and: [
+                        {
+                            _id: query._id
+                        }, {
+                            $not: {
+                                is_first: true
+                            }
+                        }
+                    ]
+                }, {}, (err, num) => {
+                    cb(!err && num > 0)
+                })
+            })
+
+            /**
+             * Event emitted only from Super Admin's workstation, to notify server they can make special demands
+             */
+            socket.on('request elevation', (query, cb) => { // void
+                query = query.payload || query
+                console.log(`Elevating ${query}...`)
+                socket.isSuper = true
+                cb()
+            })
+
+            /**
+             * Updates school logo file
+             */
+            socket.on('update school logo', (query, cb) => {
+                if (!socket.isSuper) 
+                    return cb(false),
+                    null
+                if (expired(query)) 
+                    return
+                buf = query.payload || query
+                if (!fs.existsSync(USERDATA_ASSETS_PATH)) // create the assets directory if it doesn't exist yet
+                    fs.mkdirSync(USERDATA_ASSETS_PATH)
+                fs.writeFile(USERDATA_ASSETS_PATH + 'logo.jpg', buf, 'binary', e => {
+                    cb(!e)
+                    if (!e) {
+                        // compute salt
+                        let hash = require('crypto').createHash('sha256')
+                        hash.update(_getUTCTime().toString())
+                        let salt = hash.digest('hex')
+
+                        // save up
+                        let DbSettings = db('settings')
+                        DbSettings
+                            .iu({label: 'logoSalt', value: salt})
+                            .then(() => {})
+                            .catch(() => {})
+
+                            // notify all clients
+                            server
+                            .emit('update your school logo', {
+                                salt: salt,
+                                buf: buf
+                            })
+                    }
+                })
+            })
+
+            /**
+             * Fetches school logo if the supplied salt does not match current logo salt
+             */
+            socket.on('fetch school logo', (query, cb) => {
+                query = query.payload || query
+                let DbSettings = db('settings')
+                DbSettings
+                    .findOne({label: 'logoSalt'})
+                    .execAsync()
+                    .then(d => {
+                        if (d && d.value == query.salt) 
+                            cb(false)
+                        else {
+                            fs.readFile(USERDATA_ASSETS_PATH + 'logo.jpg', 'binary', (e, data) => {
+                                if (e) 
+                                    cb(false)
+                                else 
+                                    cb({salt: d.value, buf: data})
+                            })
+                        }
+                    })
+                    .catch(e => cb(false))
             })
 
             resolve(socket)
@@ -126,6 +247,16 @@ module.exports = function (server, force = false) {
             .connected(false)
         console.log('Server: Connection dropped')
     })
+
+    /**
+     * Determines if delivered packet is expired
+     * @param {object} packet The data to sniff
+     */
+    function expired(packet) {
+        if (!packet.expiry) 
+            return false
+        return _getUTCTime() >= packet.expiry
+    }
 
     _self = this
     running = true

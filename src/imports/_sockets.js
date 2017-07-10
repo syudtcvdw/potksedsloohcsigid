@@ -31,7 +31,7 @@ function getSockets() {
                 if (_mode == 'SERVER') {
                     _io_server.close(() => {
                         _control.close()
-                        _control = require('http').Server(window.app)
+                        _control = require('http').Server()
                         _io_server = require('socket.io')(_control)
                         _control.listen(9192)
                         _server(_io_server, true) // start up the server leaflet, force renew
@@ -52,7 +52,7 @@ function getSockets() {
         server() {
             // set up server
             _mode = 'SERVER'
-            _control = require('http').Server(window.app)
+            _control = require('http').Server()
             _io_server = require('socket.io')(_control)
 
             return this
@@ -95,6 +95,10 @@ function getSockets() {
                     _io_client.on('connect', () => {
                         if (VM.connectionInfo()) 
                             VM.connectionInfo().connected(true)
+
+                        /**
+                         * Initializer payload delivered from the server
+                         */
                         _io_client.on('init-payload', (info) => {
                             let DbSettings = db("settings")
                             VM.controlVm.schoolUid = info.schoolUid
@@ -107,6 +111,13 @@ function getSockets() {
                                     value: info.schoolName
                                 }
                             ])
+                        })
+
+                        /**
+                         * Prompt from server that a new logo is available
+                         */
+                        _io_client.on('update your school logo', data => {
+                            _saveLogo(data)
                         })
                         resolve(_io_client)
                     })
@@ -158,21 +169,33 @@ function getSockets() {
             return this
         },
         emit(event, data, callback, quiet = false, wait = 5000) { // wrapper for emits that require reply, includes timeout
-            let settled = false
+            let settled = rejected = false
             new Promise((resolve, reject) => {
                 if (!VM.socket) 
                     return reject(),
                     null
                 if (!quiet) 
                     VM.loading(true) // show the loading strip
+                
+                data = { // bubble-wrap the payload, so server can know its validity
+                    expiry: _getUTCTime() + wait,
+                    payload: data
+                }
                 VM
                     .socket
                     .emit(event, data, (response) => {
+                        if (rejected) 
+                            return
                         settled = true
                         callback({status: true, response: response})
                         resolve()
                     })
-                setTimeout(() => reject(), wait) // wait for response max soso seconds
+                setTimeout(() => {
+                    if (settled) 
+                        return
+                    rejected = true
+                    reject()
+                }, wait) // wait for response max soso seconds
             }).catch(() => {
                 if (!settled) 
                     callback({status: false})

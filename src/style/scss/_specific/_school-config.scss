@@ -1,0 +1,13 @@
+@import '_partials/mixins';
+.school-config-screen {
+    overflow-y: auto;
+    .card {
+        .content {
+            height: calc(100% - 68px);
+            overflow-y: auto;
+        }
+    }
+    .logo-pane {
+        position: relative;
+    }
+}

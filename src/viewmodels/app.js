@@ -1,5 +1,3 @@
-const {remote, BrowserWindow} = require('electron')
-const currentWindow = remote.getCurrentWindow()
 const sockets = require(__dirname + '/imports/_sockets.js')
 
 // import components
@@ -9,6 +7,7 @@ require(COMPONENTS_PATH + 'login-screen.js')
 require(COMPONENTS_PATH + 'home-screen.js')
 require(COMPONENTS_PATH + 'admins-screen.js')
 require(COMPONENTS_PATH + 'control-frame.js')
+require(COMPONENTS_PATH + 'school-config.js')
 
 // empty component
 ko
@@ -17,6 +16,9 @@ ko
 
 var VM = new function () {
     var vm = this
+
+    // enter full screen
+    currentWindow.setFullScreen(true)
 
     // props
     vm.socket = null // keeps a pointer to the socket connection
@@ -89,7 +91,7 @@ var VM = new function () {
                         sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress()
                     })
                     .catch(() => {
-                        vm.notify("Server offline", "error", {
+                        vm.notify("Server still offline", "error", {
                             "put online": si.reconnect
                         }, 'server offline', true)
                     })
@@ -139,7 +141,7 @@ var VM = new function () {
         si.countDown = () => {
             si.population(si.population() - 1)
             if (si.population() == 0) 
-                vm.notify("Server still offline", "error", {
+                vm.notify("Server offline", "error", {
                     "put online": si.reconnect
                 }, 'server offline', true)
             else 
