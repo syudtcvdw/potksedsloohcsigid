@@ -115,17 +115,17 @@ var vm = function (params) {
             .findOne({label: 'logoSalt'})
             .execAsync()
             .then(d => {
-                if (d) {
-                    sockets.emit('fetch school logo', {
-                        salt: d.value
-                    }, d => {
-                        console.log('Logo fetched', d)
-                        if (d.status && d.response && d.response.buf) {
-                            // buffer returned, meaning logo has changed
-                            _saveLogo(d.response)
-                        }
-                    }, true, 10000)
-                }
+                sockets.emit('fetch school logo', {
+                    salt: d
+                        ? d.value
+                        : ''
+                }, d => {
+                    console.log('Logo fetched', d)
+                    if (d.status && d.response && d.response.buf) {
+                        // buffer returned, meaning logo has changed
+                        _saveLogo(d.response)
+                    }
+                }, true, 10000)
             })
             .catch(() => {})
     })

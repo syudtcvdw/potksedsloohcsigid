@@ -199,18 +199,15 @@ module.exports = function (server, force = false) {
              */
             socket.on('fetch school logo', (query, cb) => {
                 query = query.payload || query
-                console.log("sending logo")
                 let DbSettings = db('settings')
                 DbSettings
                     .findOne({label: 'logoSalt'})
                     .execAsync()
                     .then(d => {
-                        if (d && d.value == query.salt) {
-                            console.log(d.value, query.salt)
+                        if (d && d.value == query.salt) 
                             cb(false)
-                        } else {
+                        else {
                             fs.readFile(USERDATA_ASSETS_PATH + 'logo.jpg', 'binary', (e, data) => {
-                                console.log(e, data)
                                 if (e) 
                                     cb(false)
                                 else 
