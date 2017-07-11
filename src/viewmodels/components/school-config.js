@@ -4,12 +4,18 @@ var vm = function (params) {
     // props
     let logoUri = DEFAULT_SCHOOL_LOGO
 
-    // observables
+    // school profile
     vm.logo = ko.observable()
     vm.schoolName = ko.observable()
     vm.schoolSlogan = ko.observable()
     vm.schoolAddress = ko.observable()
     vm.schoolDisplaysPositions = ko.observable()
+
+    // ops & terminology
+    vm.subSession = ko.observable()
+    vm.sessionName = ko.observable()
+    vm.termsPerSession = ko.observable()
+    vm.currentTerm = ko.observable()
 
     // states
     vm.logoChanged = ko.observable(false)
