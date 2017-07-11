@@ -1,117 +1,104 @@
 <div class="school-config-screen">
 
-    <div class="row" data-bind="visible: uiVisible">
-        <div class="col span_2_of_2">
-            <div class="col span_1_of_3 card" data-mh-target data-bind="css: {disabled: uploadingLogo}">
-                <h4 class="title">
-                    School Logo
-                    <span data-bind="visible: logoChanged">
-                        <!-- prefer visibility binding over `if` because of tooltip preservation -->
-                        <i class="fa fa-fw fa-upload section-action green animated slideInDown" title="Click to upload" data-bind="click: uploadLogo" data-tooltip="{'class': 'mini white'}"></i>
-                        <i class="fa fa-fw fa-refresh section-action orange animated slideInDown" title="Reset logo" data-bind="click: resetLogo" data-tooltip="{'class': 'mini white'}"></i>
-                    </span>
-                    <i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to edit" data-bind="click: selectLogo"></i>
-                </h4>
-                <div class="logo-pane">
-                    <img class="school-logo" alt="" data-bind="attr: {src: logo}">
-                </div>
-            </div>
+	<div class="row" data-bind="visible: uiVisible">
+		<div class="col span_2_of_2">
+			<div class="col span_1_of_3 card" data-mh-target data-bind="css: {disabled: uploadingLogo}">
+				<h4 class="title">
+					School Logo
+					<span data-bind="visible: logoChanged">
+						<!-- prefer visibility binding over `if` because of tooltip preservation -->
+						<i class="fa fa-fw fa-upload section-action green animated slideInDown" title="Click to upload" data-bind="click: uploadLogo" data-tooltip="{'class': 'mini white'}"></i>
+						<i class="fa fa-fw fa-refresh section-action orange animated slideInDown" title="Reset logo" data-bind="click: resetLogo" data-tooltip="{'class': 'mini white'}"></i>
+					</span>
+					<i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to edit" data-bind="click: selectLogo"></i>
+				</h4>
+				<div class="logo-pane">
+					<img class="school-logo" alt="" data-bind="attr: {src: logo}">
+				</div>
+			</div>
 
-            <div class="col span_1_of_3 card">
-                <h4 class="title">School Profile</h4>
-                <div class="content scrollable">
-                    <form>
-                        <div>
-                            <label>School name</label>
-                            <input type="text" data-bind="textInput: schoolName" placeholder="Enter school name">
-                        </div>
-                        <div>
-                            <label>Motto/slogan</label>
-                            <input type="text" data-bind="textInput: schoolSlogan" placeholder="Enter school motto/slogan">
-                        </div>
-                        <div>
-                            <label>School address</label>
-                            <textarea rows="5" data-bind="textInput: schoolAddress" placeholder="Enter school address"></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col span_2_of_3">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="display-positions-switch" data-bind="checked: schoolDisplaysPositions">
-                                    <label class="onoffswitch-label" for="display-positions-switch">
-                                    <span class="onoffswitch-inner"></span>
-                                    <span class="onoffswitch-switch"></span>
-                                </label>
-                                </div>
-                            </div>
-                            <div class="col span_1_of_3">
-                                <button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: updateProfile">Save</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+			<div class="col span_1_of_3 card">
+				<h4 class="title">School Profile</h4>
+				<div class="content scrollable">
+					<form>
+						<div>
+							<label>School name</label>
+							<input type="text" data-bind="textInput: schoolName" placeholder="Enter school name">
+						</div>
+						<div>
+							<label>Motto/slogan</label>
+							<input type="text" data-bind="textInput: schoolSlogan" placeholder="Enter school motto/slogan">
+						</div>
+						<div>
+							<label>School address</label>
+							<textarea rows="5" data-bind="textInput: schoolAddress" placeholder="Enter school address"></textarea>
+						</div>
+						<div class="row">
+							<div class="col span_2_of_3">
+								<div class="onoffswitch">
+									<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="display-positions-switch" data-bind="checked: schoolDisplaysPositions">
+									<label class="onoffswitch-label" for="display-positions-switch">
+										<span class="onoffswitch-inner"></span>
+										<span class="onoffswitch-switch"></span>
+									</label>
+								</div>
+							</div>
+							<div class="col span_1_of_3">
+								<button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: updateProfile">Save</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
 
-            <div class="col span_1_of_3 card" title="Careful, changing these settings affect school operations, only edit when necessary"
-                data-tooltip="{'class':'mini white'}">
-                <h4 class="title">Operations &amp; Terminology</h4>
-                <div class="content scrollable">
-                    <form>
-                        <div>
-                            <label>What do you call sub-sessions?</label>
-                            <label class="dropdown">
-                                <select data-bind="value: subSession">
-                                    <option value="" class="hidden">Choose an option</option>
-                                    <option value="term">Term</option>
-                                    <option value="semester">Semester</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div>
-                            <label>Session name</label>
-                            <label class="dropdown">
-                                <select data-bind="value: sessionName">
-                                    <option value="" class="hidden">Choose an option</option>
-                                    <option>2016/2017</option>
-                                    <option>2017/2018</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div>
-                            <label>How many <span>terms</span> make one session?</label>
-                            <label class="dropdown">
-                                <select data-bind="value: termsPerSession">
-                                    <option value="" class="hidden">Choose an option</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                    <option value="4">Four</option>
-                                    <option value="5">Five</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div>
-                            <label>What <span>term</span> is the school currently in?</label>
-                            <label class="dropdown">
-                                <select data-bind="value: currentTerm">
-                                    <option value="" class="hidden">Choose an option</option>
-                                    <option value="1">First</option>
-                                    <option value="2">Second</option>
-                                    <option value="3">Third</option>
-                                    <option value="4">Fourth</option>
-                                    <option value="5">Fifth</option>
-                                </select>
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-green btn-block btn-shift-down">Update settings</button>
-                    </form>
-                </div>
-            </div>
+			<div class="col span_1_of_3 card" title="Careful, changing these settings affect school operations, only edit when necessary"
+			 data-tooltip="{'class':'mini white'}">
+				<h4 class="title">Operations &amp; Terminology</h4>
+				<div class="content scrollable">
+					<form>
+						<div>
+							<label>What do you call sub-sessions?</label>
+							<label class="dropdown">
+							<select data-bind="value: subSession">
+								<option value="" class="hidden">Choose an option</option>
+								<option value="term">Term</option>
+								<option value="semester">Semester</option>
+							</select>
+						</label>
+						</div>
+						<div>
+							<label>Session name</label>
+							<label class="dropdown">
+							<select data-bind="value: sessionName">
+								<option value="" class="hidden">Choose an option</option>
+								<option>2016/2017</option>
+								<option>2017/2018</option>
+							</select>
+						</label>
+						</div>
+						<div>
+							<label>How many <span data-bind="text: subSession"></span>s make one session?</label>
+							<label class="dropdown">
+							<select data-bind="options: termsPerSessionLists, optionsText: 'name', optionsValue: 'val', value: termsPerSession"></select>
+						</label>
+						</div>
+						<div>
+							<label>What <span data-bind="text: subSession"></span> is the school currently in?</label>
+							<label class="dropdown">
+							<select data-bind="options: currentTermList, optionsText: 'name', optionsValue: 'val', value: currentTerm"></select>
+						</label>
+						</div>
+						<button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: updateOpsAndTerms">Update settings</button>
+					</form>
+				</div>
+			</div>
 
-            <div class="col span_1_of_3 card">
-                <h4 class="title">Assessment metrics</h4>
-                <div class="content"></div>
-            </div>
+			<div class="col span_1_of_3 card">
+				<h4 class="title">Assessment metrics</h4>
+				<div class="content"></div>
+			</div>
 
-            <canvas id="canva" class="hidden" width="512" height="512"></canvas>
-        </div>
-    </div>
+			<canvas id="canva" class="hidden" width="512" height="512"></canvas>
+		</div>
+	</div>
 </div>
