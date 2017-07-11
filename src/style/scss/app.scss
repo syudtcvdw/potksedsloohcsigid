@@ -161,9 +161,19 @@ textarea {
     border-radius: 3px;
     &:focus {
         outline: none;
+    }
+}
+
+input:not([type=checkbox]):not([type=radio]),
+textarea {
+    &:focus {
         box-shadow: rgba(lighten($theme-green, 5%), .7) 0 0 3px;
         border-color: rgba(lighten($theme-green, 5%), .3)
     }
+}
+
+textarea {
+    resize: none;
 }
 
 input {
@@ -327,6 +337,9 @@ table {
 
 img {
     max-width: 100%;
+    &:not([responds]) {
+        pointer-events: none
+    }
 }
 
 .col.card {
@@ -343,7 +356,7 @@ img {
 
 .onoffswitch {
     position: relative;
-    // width: 180px;
+    margin-top: .8rem; // width: 180px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -359,9 +372,8 @@ img {
     }
     .onoffswitch-label {
         display: block;
-        overflow: hidden;
-        // border: 2px solid;
-        border-radius: 11px;
+        overflow: hidden; // border: 2px solid;
+        // border-radius: 11px;
     }
     .onoffswitch-inner {
         display: block;
@@ -373,12 +385,10 @@ img {
             display: block;
             float: left;
             width: 50%;
-            height: 67px;
+            height: 46px;
             padding: 0;
-            line-height: 67px;
-            // font-size: 40px;
-            color: white;
-            // font-family: Trebuchet, Arial, sans-serif;
+            line-height: 46px; // font-size: 40px;
+            color: white; // font-family: Trebuchet, Arial, sans-serif;
             // font-weight: bold;
             box-sizing: border-box;
         }
@@ -398,16 +408,101 @@ img {
     }
     .onoffswitch-switch {
         display: block;
-        width: 48px;
+        width: 28px;
         margin: 9.5px;
         background: #FFFFFF;
         position: absolute;
         top: 0;
         bottom: 0;
-        right: calc(100% - 68px);
+        right: calc(100% - 48px);
         border: 2px solid;
-        border-radius: 11px;
+        border-radius: 50%;
         transition: all 0.3s ease-in 0s;
+    }
+}
+
+.dropdown {
+    position: relative;
+    font-size: 100% !important;
+    select {
+        padding: 10px 42px 10px 10px;
+        background: #f8f8f8;
+        color: $theme-text;
+        border: 2px solid rgba($theme-black, .1);
+        border-radius: 0;
+        display: inline-block;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        outline: none;
+        border-radius: 3px;
+        &:-moz-focusring {
+            color: transparent;
+            text-shadow: 0 0 0 #444;
+        }
+        &::-ms-expand {
+            display: none;
+        }
+    }
+    &::before {
+        //content: '';
+        right: 5px;
+        top: -7px;
+        width: 30px;
+        height: 33px;
+        background: #f8f8f8;
+        position: absolute;
+        pointer-events: none;
+        display: block;
+    }
+    &:after {
+        content: '>';
+        font: 16px Consolas, monospace;
+        color: rgba($theme-black, .3);
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        transform: rotate(90deg);
+        right: 2px;
+        top: 0px;
+        border-bottom: 2px solid rgba($theme-black, .1);
+        ;
+        position: absolute;
+        pointer-events: none;
+        width: 39px;
+        padding: 0 0 5px 0;
+        text-indent: 16px;
+        font-weight: bold;
+        @media screen\0 {
+            width: 38px;
+            text-indent: 15px;
+            right: 0;
+        }
+    }
+    @media screen and (min--moz-device-pixel-ratio:0) {
+        select {
+            padding-right: 40px;
+        }
+        &:before {
+            right: 6px;
+        }
+        &:after {
+            text-indent: 14px;
+            right: 6px;
+            top: -5px;
+            width: 36px;
+        }
+    }
+}
+
+.scrollable {
+    overflow: auto;
+    visibility: hidden;
+    transition: visibility 0.2s;
+    &:hover,
+    &:focus,
+    &>* {
+        visibility: visible;
     }
 }
 

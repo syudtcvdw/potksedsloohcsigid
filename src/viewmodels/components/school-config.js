@@ -4,13 +4,24 @@ var vm = function (params) {
 	// props
 	let logoUri = DEFAULT_SCHOOL_LOGO
 
+    // school profile
+    vm.logo = ko.observable()
+    vm.schoolName = ko.observable()
+    vm.schoolSlogan = ko.observable()
+    vm.schoolAddress = ko.observable()
+    vm.schoolDisplaysPositions = ko.observable()
 
-	// observables
-	vm.logo = ko.observable()
-	vm.schoolName = ko.observable()
-	vm.schoolSlogan = ko.observable()
-	vm.schoolAddress = ko.observable()
-	vm.schoolDisplaysPositions = ko.observable()
+    // ops & terminology
+    vm.subSession = ko.observable()
+    vm.sessionName = ko.observable()
+    vm.termsPerSession = ko.observable()
+    vm.currentTerm = ko.observable()
+
+    // states
+    vm.logoChanged = ko.observable(false)
+    vm.uiVisible = ko.observable(false)
+    vm.uploadingLogo = ko.observable(false)
+    vm.updatingProfile = ko.observable(false)
 
 	let sessions = ['2016/2017', '2017/2018']
 	let subSessions = ['1st Term', '2nd Term', '3rd Term']
