@@ -125,7 +125,7 @@ var vm = function (params) {
 						return VM.notify('Please select all fields as appropriate', 'warn'),
 						null
 						// send info to the socket
-				sockets.emit('set sessions', {
+				sockets.emit('set ops & term', {
 						'subSession': vm.subSession(),
 						'sessionName': vm.sessionName(),
 						'termsPerSession': vm.termsPerSession(),
