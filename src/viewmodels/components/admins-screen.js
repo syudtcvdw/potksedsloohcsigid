@@ -208,10 +208,10 @@ const vm = function (params) {
 								null;
 						
 						// you cannot delete the superadmin
-						if (a.superAdmin()) 
-								return VM.notify('You can not delete the super admin!', 'error'),
+						if (a.superAdmin()) {
+							return VM.notify('You can not delete the super admin!', 'error'),
 								null;
-						
+						}
 						// remove an admin show a confirmation msg
 						VM.notify('Are you sure you want to delete?', 'warn', {
 								'confirm': () => {
@@ -235,8 +235,8 @@ const vm = function (params) {
 				}
 
 				a.changePwd = () => { // pops up the curtain
-					// you cannot change the super admin's password
-					if ( a.superAdmin() ) {
+					// you cannot change the super admin's password but super admin can change his
+					if ( a.superAdmin() && !data.is_first ) {
 						return VM.notify('You cannot change the super admin\'s password', 'error'), null;
 					}
 					vm.selectedAdmin(a)

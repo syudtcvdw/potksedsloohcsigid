@@ -2,7 +2,7 @@ var vm = function (params) {
 	let vm = this
 
 	// local vars
-	let termsPerSessionLabels = ['Two', 'Three', 'Four', 'Five']
+	const termsPerSessionLabels = ['Two', 'Three', 'Four', 'Five']
 	let termsPerSessionArr = []
 	for (let i = 1; i <= termsPerSessionLabels.length; i++) 
 		termsPerSessionArr[i - 1] = new TermsPerSessHandler(i + 1, termsPerSessionLabels[i - 1])
@@ -22,7 +22,8 @@ var vm = function (params) {
 	vm.termsPerSession = ko.observable()
 	vm.currentTerm = ko.observable()
 
-	// grading system
+	// grading sys
+	// const gradingSysFieldLists = [new GradingSystemHandler("A", 100, 100), new GradingSystemHandler("B", 70, 100), new GradingSystemHandler("C", 60, 70)]
 	vm.gradingSysFields = ko.observableArray()
 
 	// states
@@ -172,11 +173,15 @@ var vm = function (params) {
 			})
 	}
 	vm.addField = () => {
-		// +1 grade filed when 
-		const lastScore = vm.gradingSysFields()[vm.gradingSysFields().length-1].score
-		vm.gradingSysFields.push(gradingSysHandler(null, null, lastScore))
+		const gradingSysLength = vm.gradingSysFields().length
+		lastScore = gradingSysLength >= 1 ? (vm.gradingSysFields()[gradingSysLength-1]).score() - 5 : 100
+		vm.gradingSysFields.push(new GradingSystemHandler({maxScore: lastScore}))
+		console.log(vm.gradingSysFields())
 	}
-	
+	vm.saveGradingSys = () => {
+		
+	}
+
 	// subscription
 	vm
 		.logoChanged
@@ -219,12 +224,22 @@ var vm = function (params) {
 		this.name = name
 	}
 
-	function gradingSysHandler(grade=null, score=null, max=100) {
-		return {
-			grade: grade,
-			score: score,
-			max: max
-		}
+	function GradingSystemHandler() {
+		let gs = this
+		let args = arguments.length > 0? arguments[0] : {}
+		console.log(args)
+		// props
+		gs.id = vm.gradingSysFields().length
+		// observables
+		gs.grade = ko.observable(args.grade || "")
+		gs.score = ko.observable(args.score || null)
+		gs.maxScore = ko.observable(args.maxScore || 100)
+		// subscriptions
+		gs.score.subscribe(s => {
+			vm.gradingSysFields().map((v) => {
+				if (v.id > gs.id) v.maxScore(s - 5)
+			})
+		})
 	}
 
 	// init
