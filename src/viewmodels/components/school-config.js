@@ -23,7 +23,6 @@ var vm = function (params) {
 	vm.currentTerm = ko.observable()
 
 	// grading sys
-	// const gradingSysFieldLists = [new GradingSystemHandler("A", 100, 100), new GradingSystemHandler("B", 70, 100), new GradingSystemHandler("C", 60, 70)]
 	vm.gradingSysFields = ko.observableArray()
 
 	// states
@@ -34,6 +33,9 @@ var vm = function (params) {
 	vm.updatingOps = ko.observable(false)
 
 	// behaviours
+	/**
+	 * Handles logo selection
+	 */
 	vm.selectLogo = () => {
 		let file = remote
 			.dialog
@@ -52,10 +54,16 @@ var vm = function (params) {
 			vm.logoChanged(true)
 		}
 	}
+	/**
+	 * Reset logo to default
+	 */
 	vm.resetLogo = () => {
 		vm.logo(logoUri)
 		vm.logoChanged(false)
 	}
+	/**
+	 * Upload the school logo
+	 */
 	vm.uploadLogo = () => {
 		vm.uploadingLogo(true)
 		// set up canvas
@@ -85,6 +93,9 @@ var vm = function (params) {
 			}
 		}, false, 10000)
 	}
+	/**
+	 * Update school profile information
+	 */
 	vm.updateProfile = () => {
 			if (_anyEmpty(vm.schoolName(), vm.schoolSlogan(), vm.schoolAddress())) 
 					return VM.notify('You cannot leave any field empty', 'warn'),
@@ -120,6 +131,9 @@ var vm = function (params) {
 					vm.updatingProfile(false)
 			})
 	}
+	/**
+	 * Update operations & terminologies
+	 */
 	vm.updateOpsAndTerms = () => {
 			// check if any filed is empty
 			if (_anyEmpty(vm.subSession(), vm.sessionName(), vm.termsPerSession(), vm.currentTerm())) 
@@ -172,12 +186,17 @@ var vm = function (params) {
 				}
 			})
 	}
+	/**
+	 * Adds a new field for the grading system
+	 */
 	vm.addField = () => {
 		const gradingSysLength = vm.gradingSysFields().length
 		lastScore = gradingSysLength >= 1 ? (vm.gradingSysFields()[gradingSysLength-1]).score() - 5 : 100
 		vm.gradingSysFields.push(new GradingSystemHandler({maxScore: lastScore}))
-		console.log(vm.gradingSysFields())
 	}
+	/**
+	 * Save the grading system information
+	 */
 	vm.saveGradingSys = () => {
 		
 	}
@@ -191,6 +210,9 @@ var vm = function (params) {
 		})
 
 	// computed
+	/**
+	 * Handles dynamic term list under the ops & terms section
+	 */
 	vm.currentTermList = ko.computed(() => {
 		// dynamically generate list of curr terms
 		const currTermLabels = ['First', 'Second', 'Third', 'Fourth', 'Fifth']
@@ -218,12 +240,18 @@ var vm = function (params) {
 		let _t = -(dimen.h - against) / 2;
 		return {'l': _l, 't': _t}
 	}
-
+	/**
+	 * Handler for terms per session select field
+	 * @param {string} val 
+	 * @param {string} name 
+	 */
 	function TermsPerSessHandler(val, name) {
 		this.val = val
 		this.name = name
 	}
-
+	/**
+	 * Handler for grading system & validation.
+	 */
 	function GradingSystemHandler() {
 		let gs = this
 		let args = arguments.length > 0? arguments[0] : {}
