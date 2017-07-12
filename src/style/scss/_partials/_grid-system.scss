@@ -34,12 +34,12 @@
     &.span_1_of_3 {
         width: 32.26%;
         @media only screen and (min-width: 801px) {
-            &:nth-child(3n + 1) {
+            &:nth-of-type(3n + 1) {
                 margin-left: 0;
             }
         }
         @media only screen and (max-width: 800px) {
-            &:nth-child(2n + 1) {
+            &:nth-of-type(2n + 1) {
                 margin-left: 0;
             }
         }
@@ -50,11 +50,11 @@
     }
     &.span_1_of_2 {
         width: 49.2%;
-        &:nth-child(2n + 1) {
+        &:nth-of-type(2n + 1) {
             margin-left: 0;
         }
     }
-    &:first-child {
+    &:first-of-type {
         margin-left: 0;
     }
     /*  GO FULL WIDTH BELOW 800 PIXELS */
@@ -62,6 +62,10 @@
         .span_2_of_3,
         .span_1_of_3 {
             width: 49.2%;
+        }
+        .sm-full {
+            width: 100%;
+            margin-left: 0;
         }
     }
 }

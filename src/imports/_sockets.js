@@ -105,6 +105,10 @@ function getSockets() {
                             VM.controlVm.schoolSlogan = info.schoolSlogan || ''
                             VM.controlVm.schoolAddress = info.schoolAddress || ''
                             VM.controlVm.schoolDisplaysPositions = info.schoolDisplaysPositions || false
+                            VM.controlVm.schoolSubSession = info.schoolSubSession || 'term'
+                            VM.controlVm.schoolSessionName = info.schoolSessionName || ''
+                            VM.controlVm.schoolTermsPerSession = info.schoolTermsPerSession || null
+                            VM.controlVm.schoolCurrentTerm = info.schoolCurrentTerm || null
                             DbSettings.iu([
                                 {
                                     label: 'schoolUid',
@@ -121,6 +125,18 @@ function getSockets() {
                                 }, {
                                     label: 'schoolDisplaysPositions',
                                     value: info.schoolDisplaysPositions || false
+                                }, {
+                                    label: 'schoolSubSession',
+                                    value: info.schoolSubSession || 'term'
+                                }, {
+                                    label: 'schoolSessionName',
+                                    value: info.schoolSessionName || ''
+                                }, {
+                                    label: 'schoolTermsPerSession',
+                                    value: info.schoolTermsPerSession || null
+                                }, {
+                                    label: 'schoolCurrentTerm',
+                                    value: info.schoolCurrentTerm || null
                                 }
                             ])
                         })

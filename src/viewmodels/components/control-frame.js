@@ -16,6 +16,10 @@ var vm = function (params) {
     vm.schoolSlogan = '' // slogan of the school
     vm.schoolAddress = '' // address of the school
     vm.schoolDisplaysPositions = false // does the school display students' positions
+    vm.schoolSubSession = 'term' // what they call subsessions in this school
+    vm.schoolSessionName = '' // what session the school is in currently
+    vm.schoolTermsPerSession = null // how many terms per session
+    vm.schoolCurrentTerm = null // what term the school's in
 
     // observables
     vm.schoolName = ko.observable() // what school is this

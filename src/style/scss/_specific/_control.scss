@@ -24,7 +24,7 @@ control-frame {
 .control-footer {
     position: fixed;
     height: 32px;
-    background: darken($theme-white, 3%);
+    background: $theme-gray;
     bottom: 0;
     z-index: 999;
     width: 100%;
