@@ -98,20 +98,21 @@
 				<div class="content">
 					<form>
 						<div>
-							<label>Enter your grading system (e.g Excellet, V.Good or A, B, C) and the maximum score as appropriate.</label>
+							<label>Enter your grading system (e.g Excellet, V.Good or A, B, C) and the maximum score for each as appropriate.</label>
 							<!-- ko foreach: gradingSysFields -->
 							<div class="row">
 								<div class="col span_2_of_3">
-									<input type="text" data-bind="textInput: grade" placeholder="Grade name">
+									<input type="text" data-bind="textInput: grade" placeholder="Grade">
 								</div>
 								<div class="col span_1_of_3">
-									<input type="text" data-bind="textInput: score" placeholder="Max. score">
+									<input type="number" data-bind="textInput: 
+									score, attr: { max: max, min: 0, step: 5 }" placeholder="Max. score">
 								</div>
 							</div>
 							<!-- /ko -->
 						</div>
 						<div class="row">
-							<button type="submit" class="btn btn-orange btn-shift-down col span_2_of_3" data-bind="click: addField"><i class="fa fa-fw fa-plus"></i> Add Field</button>
+							<button type="submit" class="btn btn-black btn-shift-down col span_2_of_3" data-bind="click: addField"><i class="fa fa-fw fa-plus"></i> Add Field</button>
 							<button type="submit" class="btn btn-green btn-shift-down col span_1_of_3">Save</button>
 						</div>
 						</div>

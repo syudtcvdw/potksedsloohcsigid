@@ -23,7 +23,7 @@ var vm = function (params) {
 	vm.currentTerm = ko.observable()
 
 	// grading system
-	vm.gradingSysFields = ko.observableArray([gradingSysHandler(null, null)])
+	vm.gradingSysFields = ko.observableArray([gradingSysHandler(null, 100)])
 
 	// states
 	vm.logoChanged = ko.observable(false)
@@ -172,8 +172,9 @@ var vm = function (params) {
 			})
 	}
 	vm.addField = () => {
-		// +1 grade filed when clicked
-		vm.gradingSysFields.push(gradingSysHandler())
+		// +1 grade filed when 
+		const lastScore = vm.gradingSysFields()[vm.gradingSysFields().length-1].score
+		vm.gradingSysFields.push(gradingSysHandler(null, null, lastScore))
 	}
 	
 	// subscription
@@ -218,10 +219,11 @@ var vm = function (params) {
 		this.name = name
 	}
 
-	function gradingSysHandler(grade=null, score=null) {
+	function gradingSysHandler(grade=null, score=null, max=100) {
 		return {
 			grade: grade,
-			score: score
+			score: score,
+			max: max
 		}
 	}
 
