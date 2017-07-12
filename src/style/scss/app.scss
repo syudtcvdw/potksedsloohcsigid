@@ -348,7 +348,7 @@ img {
     box-shadow: rgba($theme-black, .3) 0px 0px 2px;
     border-radius: 3px; // max-height: 460px;
     position: relative;
-
+    max-height: 520px;
     &>.col.card {
         border-radius: 0;
         box-shadow: none;
@@ -510,6 +510,14 @@ img {
     &>* {
         visibility: visible;
     }
+}
+
+.green-text {
+    color: green
+}
+
+.justify {
+    text-align: justify;
 }
 
 // specific

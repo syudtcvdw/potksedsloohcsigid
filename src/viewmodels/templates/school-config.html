@@ -98,13 +98,47 @@
                 <div class="content"></div>
             </div>
 
-            <div class="col span_2_of_3 card sm-full">
-                <h4 class="title">Assessment metrics</h4>
-                <div class="col span_1_of_2 card">
-
-                </div>
-                <div class="col span_1_of_2 card">
-
+            <div class="col span_2_of_3 card sm-full" data-bind="with: metrics, css: {disabled: metrics.updatingMetrics}">
+                <h4 class="title">
+                    Assessment metrics
+                    <i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to add metric" data-bind="click: add"></i>
+                    <label class="section-action" data-tooltip="{'class': 'mini white'}" title="Total percentage composition" data-bind="css: {error: totalCompo() > 100, green: totalCompo() == 100}"><span data-bind="text: totalCompo"></span>%</label>
+                    <label class="section-action" data-tooltip="{'class': 'mini white'}" title="Total marks obtainable">Marks: <span data-bind="text: totalMarks"></span></label>
+                </h4>
+                <div class="content scrollable metrics-list">
+                    <!-- ko ifnot: metrics().length -->
+                    <p class="animated fadeInUp justify">Assessment metrics refer to the stages of assessments in the school, e.g (Assignments, Continuous Assessments,
+                        Exams). Add all levels of assessments that determine students' overall performance at the end of
+                        each <span data-bind="text: $parent.subSession"></span>.</p>
+                    <span class="green-text anim-js fadeInDown" data-ajs-delay="750ms">Click the plus icon to get started</span>
+                    <!-- /ko -->
+                    <!-- ko foreach: metrics -->
+                    <div class="row metric">
+                        <i class="fa fa-close fa-fw delete-btn" data-bind="click: kill" data-tooltip="{'class': 'mini white'}" title="Delete this metric"></i>
+                        <div class="col span_1_of_3">
+                            <label>Metric title</label>
+                            <input type="text" data-bind="textInput: title" placeholder="e.g. Continuous assessment 1">
+                        </div>
+                        <div class="col span_2_of_3">
+                            <div class="col span_1_of_3">
+                                <label>Abbrev</label>
+                                <input type="text" data-bind="textInput: label" placeholder="e.g. CA1">
+                            </div>
+                            <div class="col span_1_of_3">
+                                <label>Marks obtainable</label>
+                                <input type="number" data-bind="textInput: marks" placeholder="e.g. 40" min="1">
+                            </div>
+                            <div class="col span_1_of_3">
+                                <label>Composition (%)</label>
+                                <input type="number" data-bind="textInput: compo" placeholder="e.g. 20" max="100" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                    <div class="row animated fadeInUp" data-bind="visible: metrics().length">
+						<a class="btn btn-green col span_2_of_3" data-bind="click: save">Save data</a>
+						<a class="btn btn-orange col span_1_of_3" data-bind="click: clear">Clear Metrics</a>
+                    </div>
                 </div>
             </div>
 
