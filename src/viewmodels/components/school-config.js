@@ -219,7 +219,9 @@ var vm = function (params) {
 		// when logo is loaded
 		$('.school-logo').on('load', function () {
 			// match heights because the profile pic card is the standard
-			$('.card').matchHeight()
+			$('.card').matchHeight({
+				byRow: false
+			})
 			vm.uiVisible(true)
 		})
 
