@@ -7,7 +7,7 @@ var vm = function (params) {
 	for (let i = 1; i <= termsPerSessionLabels.length; i++) 
 		termsPerSessionArr[i - 1] = new TermsPerSessHandler(i + 1, termsPerSessionLabels[i - 1])
 
-			// school props
+	// school props
 	let logoUri = DEFAULT_SCHOOL_LOGO
 	vm.logo = ko.observable()
 	vm.schoolName = ko.observable()
@@ -21,6 +21,9 @@ var vm = function (params) {
 	vm.sessionName = ko.observable()
 	vm.termsPerSession = ko.observable()
 	vm.currentTerm = ko.observable()
+
+	// grading system
+	vm.gradingSysFields = ko.observableArray([gradingSysHandler(null, null)])
 
 	// states
 	vm.logoChanged = ko.observable(false)
@@ -168,7 +171,11 @@ var vm = function (params) {
 				}
 			})
 	}
-
+	vm.addField = () => {
+		// +1 grade filed when clicked
+		vm.gradingSysFields.push(gradingSysHandler())
+	}
+	
 	// subscription
 	vm
 		.logoChanged
@@ -211,6 +218,13 @@ var vm = function (params) {
 		this.name = name
 	}
 
+	function gradingSysHandler(grade=null, score=null) {
+		return {
+			grade: grade,
+			score: score
+		}
+	}
+
 	// init
 	_.defer(() => {
 		// setup tooltips
@@ -220,7 +234,6 @@ var vm = function (params) {
 		$('.school-logo').on('load', function () {
 			// match heights because the profile pic card is the standard
 			$('.card').matchHeight({
-				byRow: false
 			})
 			vm.uiVisible(true)
 		})
