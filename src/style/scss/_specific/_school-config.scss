@@ -5,6 +5,10 @@
         .content {
             height: calc(100% - 58px);
             overflow-y: auto;
+
+            >p:first-child {
+                margin-top: 0;
+            }
         }
     }
     .logo-pane {
