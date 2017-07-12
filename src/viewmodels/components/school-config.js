@@ -23,7 +23,7 @@ var vm = function (params) {
 	vm.currentTerm = ko.observable()
 
 	// grading system
-	vm.gradingSysFields = ko.observableArray([gradingSysHandler(null, 100)])
+	vm.gradingSysFields = ko.observableArray()
 
 	// states
 	vm.logoChanged = ko.observable(false)
