@@ -1,6 +1,6 @@
 <!-- ko if: $root.ROLE -->
 <header class="control-header">
-    <ul data-bind="foreach: menu">
+    <ul data-bind="foreach: getMenu">
         <li data-tooltip="{ 'class': 'mini white' }" data-bind="attr: {title: label, 'data-ajs-delay': ($index() * 250) + 'ms'}, css: {active: isActive}, click: go" class="anim-js fadeInRight" data-ajs-duration="650ms">
             <img alt="" data-bind="attr: {src: icon}">
         </li>

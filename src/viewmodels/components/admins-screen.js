@@ -232,7 +232,7 @@ const vm = function (params) {
 
         a.changePwd = () => { // pops up the curtain
             // you cannot change the super admin's password but super admin can change his
-            if (a.superAdmin() && !data.is_first) {
+            if (a.superAdmin() && !VM.controlVm.superAdmin()) {
                 return VM.notify('You cannot change the super admin\'s password', 'error'),
                 null;
             }
