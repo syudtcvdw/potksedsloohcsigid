@@ -6,6 +6,7 @@ require(COMPONENTS_PATH + 'start-screen.js')
 require(COMPONENTS_PATH + 'login-screen.js')
 require(COMPONENTS_PATH + 'home-screen.js')
 require(COMPONENTS_PATH + 'admins-screen.js')
+require(COMPONENTS_PATH + 'teachers-screen.js')
 require(COMPONENTS_PATH + 'control-frame.js')
 require(COMPONENTS_PATH + 'school-config.js')
 
