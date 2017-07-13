@@ -173,11 +173,17 @@ var vm = function (params) {
       vm.updatingOps(false)
     })
   }
+  /**
+   * Removes the last row from the grading system
+   */
   vm.popLastGradingRow = () => {
     vm
       .gradingSysFields
       .pop()
   }
+  /**
+   * Adds a new row to the grading system.
+   */
   vm.addField = () => {
     const gradingSysLength = vm
       .gradingSysFields()
@@ -195,6 +201,9 @@ var vm = function (params) {
       .push(new GradingSystemHandler({maxScore: lastScore}))
     redraw()
   }
+  /**
+   * Saves the grading system
+   */
   vm.saveGradingSys = () => {
     if (vm.gradingSysFieldsEmpty()) 
       return VM.notify('Click the `add field` button to add a row.', 'warn')
@@ -211,12 +220,14 @@ var vm = function (params) {
         if (!data.status) 
           return VM.notify('Problem updating Grading system, could not reach Control Workstation', 'error', {'try again': vm.saveGradingSys})
         else {
-          if (data.response) 
+          if (data.response) {
             VM.notify('Successfully saved.')
-          else 
+            vm.savingGradingSys(false)
+          } else {
             VM.notify('Unable to save Grading System', 'error')
+            vm.savingGradingSys(false)
+          }
         }
-        vm.savingGradingSys(false)
       })
     }
   }
