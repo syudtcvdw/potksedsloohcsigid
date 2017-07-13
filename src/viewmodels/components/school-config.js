@@ -94,34 +94,39 @@ var vm = function (params) {
             return VM.notify('You cannot leave any field empty', 'warn'),
             null
         vm.updatingProfile(true)
-        let DbSettings = db('settings')
-        DbSettings.iu([
-            {
-                label: 'schoolName',
-                value: vm.schoolName()
-            }, {
-                label: 'schoolSlogan',
-                value: vm.schoolSlogan()
-            }, {
-                label: 'schoolAddress',
-                value: vm.schoolAddress()
-            }, {
-                label: 'schoolDisplaysPositions',
-                value: vm.schoolDisplaysPositions()
-            }
-        ]).then(d => {
-            VM
-                .controlVm
-                .schoolName(vm.schoolName())
-            VM.controlVm.schoolSlogan = vm.schoolSlogan()
-            VM.controlVm.schoolAddress = vm.schoolAddress()
-            VM.controlVm.schoolDisplaysPositions = vm.schoolDisplaysPositions()
+        sockets.emit('update school profile', {
+            'schoolName': vm.schoolName(),
+            'schoolSlogan': vm.schoolSlogan(),
+            'schoolAddress': vm.schoolAddress(),
+            'schoolDisplaysPositions': vm.schoolDisplaysPositions()
+        }, data => {
+            if (!data.status) 
+                return VM.notify('Unable to update school profile, could not reach Control Workstation', 'error', {'Try again': vm.updateProfile})
+            else {
+                if (!data.response) {
+                    VM.notify("Problem updating school profile", "error")
+                    vm.updatingProfile(false)
+                } else {
+                    let DbSettings = db('settings')
+                    DbSettings
+                        .iu(data.response)
+                        .then(d => {
+                            VM
+                                .controlVm
+                                .schoolName(vm.schoolName())
+                            VM.controlVm.schoolSlogan = vm.schoolSlogan()
+                            VM.controlVm.schoolAddress = vm.schoolAddress()
+                            VM.controlVm.schoolDisplaysPositions = vm.schoolDisplaysPositions()
 
-            VM.notify("Profile updated successfully")
-            vm.updatingProfile(false)
-        }).catch(e => {
-            VM.notify("Unable to update school profile", "error")
-            vm.updatingProfile(false)
+                            VM.notify("Profile updated successfully")
+                            vm.updatingProfile(false)
+                        })
+                        .catch(e => {
+                            VM.notify("Unable to update school profile", "error")
+                            vm.updatingProfile(false)
+                        })
+                }
+            }
         })
     }
     vm.updateOpsAndTerms = () => {
@@ -176,18 +181,22 @@ var vm = function (params) {
             }
         })
     }
-    vm.addField = () => {
+    vm.addField = (vm, evt) => {
         const gradingSysLength = vm
             .gradingSysFields()
             .length
         lastScore = gradingSysLength >= 1
-            ? vm.gradingSysFields()[gradingSysLength - 1].score() - 5
+            ? vm
+                .gradingSysFields()[gradingSysLength - 1]
+                .score() - 5
             : 100
-        lastScore = lastScore < 0? 100:lastScore
+        lastScore = lastScore < 0
+            ? 100
+            : lastScore
         vm
             .gradingSysFields
             .push(new GradingSystemHandler({maxScore: lastScore}))
-        redraw()
+        redraw(evt)
     }
     vm.saveGradingSys = () => {}
 
@@ -215,9 +224,10 @@ var vm = function (params) {
         // observables
         am.metrics = ko.observableArray()
         am.updatingMetrics = ko.observable(false)
+        am.connected = ko.observable(false)
 
         // behaviours
-        am.add = (vm,evt) => {
+        am.add = (vm, evt) => {
             if (am.metrics().length > 0) {
                 let lm = am.metrics()[
                     am
@@ -238,7 +248,7 @@ var vm = function (params) {
                 proceed: () => {
                     am
                         .metrics
-                        .removeAll();
+                        .removeAll()
                     redraw()
                 }
             }, "clear metrics")
@@ -253,20 +263,40 @@ var vm = function (params) {
                     return VM.notify("The least obtainable score on any metric is 1", "error")
                 if (m.compo() < 1) 
                     return VM.notify("Negative values not allowed for percentage composition", "error")
-                am.updatingMetrics(true)
-                sockets.emit('save assessment metrics', am.metrics(), data => {
-                    if (!data.status) 
-                        VM.notify("Problem saving assessment metrics, could not reach Control Workstation", "error")
-                    else {
-                        if (!data.response) 
-                            VM.notify("Unable to save assessment metrics", "error")
-                        else 
-                            VM.notify("Assessment metrics saved successfully")
-                    }
-                    am.updatingMetrics(false)
-                })
             }
-            console.log(ko.toJSON(am.metrics()))
+            am.updatingMetrics(true)
+            sockets.emit('save assessment metrics', ko.toJS(am.metrics()), data => {
+                if (!data.status) 
+                    VM.notify("Problem saving assessment metrics, could not reach Control Workstation", "error")
+                else {
+                    if (!data.response) 
+                        VM.notify("Unable to save assessment metrics", "error")
+                    else 
+                        VM.notify("Assessment metrics saved successfully")
+                }
+                am.updatingMetrics(false)
+            })
+        }
+        am.loadMetrics = () => {
+            sockets.emit('fetch assessment metrics', null, data => {
+                if (!data.status) 
+                    VM.notify("Unable to fetch assessment metrics, could not reach Control Workstation", "error", {'try again': am.loadMetrics})
+                else {
+                    if (!data.response) 
+                        VM.notify("Unable to fetch assessment metrics", "error", {'try again': am.loadMetrics})
+                    else {
+                        data
+                            .response
+                            .map(m => {
+                                am
+                                    .metrics
+                                    .push(new Metric(m))
+                            })
+                        redraw()
+                        am.connected(true)
+                    }
+                }
+            }, true)
         }
 
         // computed
@@ -291,7 +321,6 @@ var vm = function (params) {
                 ? arguments[0]
                 : {}
             // props
-            console.log(args)
             this.title = ko.observable(args.title || '') // title
             this.label = ko.observable(args.label || '') // abbreviation
             this.marks = ko.observable(args.marks || null) // marks obtainable
@@ -305,6 +334,9 @@ var vm = function (params) {
                 redraw()
             }
         }
+
+        // init
+        am.loadMetrics()
     }
 
     // local
@@ -327,14 +359,20 @@ var vm = function (params) {
     }
 
     function redraw() {
-        let container = arguments.length == 0? '.metrics-list':$(arguments[0].target).closest('.card').find('.content.scrollable')[0]
+        let container = arguments.length == 0
+            ? null
+            : $(arguments[0].target)
+                .closest('.card')
+                .find('.content.scrollable')[0]
         _.defer(() => {
             $
                 .fn
                 .matchHeight
                 ._update()
-            $('.school-config-screen').scrollTop(10000)
-            $(container).scrollTop(10000)
+            if (container) {
+                $('.school-config-screen').scrollTop(10000)
+                $(container).scrollTop(10000)
+            }
             tooltip.refresh()
             $('#tooltip').remove() // because sometimes the tooltip litters the screen
         }) // redraw layout
@@ -350,7 +388,6 @@ var vm = function (params) {
         let args = arguments.length > 0
             ? arguments[0]
             : {}
-        console.log(args)
         // props
         gs.id = vm
             .gradingSysFields()
@@ -412,7 +449,6 @@ var vm = function (params) {
                         ? d.value
                         : ''
                 }, d => {
-                    console.log('Logo fetched', d)
                     if (d.status && d.response && d.response.buf) {
                         // buffer returned, meaning logo has changed
                         _saveLogo(d.response)

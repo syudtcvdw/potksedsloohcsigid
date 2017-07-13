@@ -44,7 +44,6 @@ module.exports = function (server, force = false) {
                     .findOne(query)
                     .execAsync()
                     .then(d => {
-                        console.log(`New login attempt from: ${query.email}`)
                         if (d) 
                             VM.notify(`${d.name} just logged in`)
                         cb(!d
@@ -79,7 +78,6 @@ module.exports = function (server, force = false) {
                         DbAdmins
                             .iu(query)
                             .then(() => {
-                                console.log(`Updated profile for ${query.email}`)
                                 cb(query) // return the query to the person, helps ensure they update with the saved data
                             })
                     })
@@ -152,7 +150,6 @@ module.exports = function (server, force = false) {
 			 */
             socket.on('request elevation', (query, cb) => { // void
                 query = query.payload || query
-                console.log(`Elevating ${query}...`)
                 socket.isSuper = true
                 cb()
             })
@@ -160,7 +157,7 @@ module.exports = function (server, force = false) {
             /**
 			 * Updates school logo file
 			 */
-            socket.on('update school logo', (query, cb) => {
+            socket.on('update school logo', (query, cb) => { // success: bool
                 if (!socket.isSuper) 
                     return cb(false),
                     null
@@ -197,7 +194,7 @@ module.exports = function (server, force = false) {
             /**
 			 * Fetches school logo if the supplied salt does not match current logo salt
 			 */
-            socket.on('fetch school logo', (query, cb) => {
+            socket.on('fetch school logo', (query, cb) => { // success: {salt,buf}
                 query = query.payload || query
                 let DbSettings = db('settings')
                 DbSettings
@@ -211,7 +208,12 @@ module.exports = function (server, force = false) {
                                 if (e) 
                                     cb(false)
                                 else 
-                                    cb({salt: d? d.value : null, buf: data})
+                                    cb({
+                                        salt: d
+                                            ? d.value
+                                            : null,
+                                        buf: data
+                                    })
                             })
                         }
                     })
@@ -221,7 +223,7 @@ module.exports = function (server, force = false) {
             /**
 			 * Sets school operations & termilogies
 			 */
-            socket.on('set ops & term', (query, cb) => {
+            socket.on('set ops & term', (query, cb) => { // success: bool
                 if (expired(query)) 
                     return
                 query = query.payload || query
@@ -229,12 +231,60 @@ module.exports = function (server, force = false) {
                 for (let i in query) 
                     newQuery.push({label: i, value: query[i]})
 
-                let DbAdmins = db('settings')
-                DbAdmins
+                let DbSettings = db('settings')
+                DbSettings
                     .iu(newQuery)
                     .then(() => cb(true))
                     .catch(() => cb(false))
+            })
 
+            /**
+			 * Saves school assessment metrics
+			 */
+            socket.on('save assessment metrics', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbSettings = db('settings')
+                DbSettings
+                    .iu({label: 'schoolMetrics', value: query})
+                    .then(() => cb(true))
+                    .catch(() => cb(false))
+            })
+
+            /**
+			 * Updates school profile
+			 */
+            socket.on('update school profile', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let newQuery = []
+                for (let i in query) 
+                    newQuery.push({label: i, value: query[i]})
+                let DbSettings = db('settings')
+                DbSettings
+                    .iu(newQuery)
+                    .then(() => cb(newQuery))
+                    .catch(() => cb(false))
+            })
+
+            /**
+			 * Fetches school assessment metrics
+			 */
+            socket.on('fetch assessment metrics', (query, cb) => { // success: [Metric]
+                query = query.payload || query
+                let DbSettings = db('settings')
+                DbSettings
+                    .findOne({label: 'schoolMetrics'})
+                    .execAsync()
+                    .then(d => {
+                        if (!d) 
+                            cb(false)
+                        else 
+                            cb(d.value)
+                    })
+                    .catch(e => cb(false))
             })
 
             resolve(socket)
@@ -266,7 +316,6 @@ module.exports = function (server, force = false) {
             VM
                 .connectionInfo()
                 .countUp()
-            console.log("We got a client: " + socket.id)
         })
     })
 

@@ -61,7 +61,6 @@ module.exports = (...name) => {
         if (typeof map[n] != 'undefined') 
             dbs.push(map[n])
         else {
-            console.log(`instantiating ${n} db`)
             let schema = schemas[n] || {}
             let ds = _.isEmpty(schema)
                 ? Datastore(n)
@@ -80,7 +79,6 @@ module.exports = (...name) => {
                  * Wrapper for .insert(), to make it promise-aware
                  */
                 i: function (data) {
-                    console.log('Insert data: ', data)
                     return new Promise((resolve, reject) => {
                         this.insert(data, (err, doc) => (err || doc) === doc
                             ? resolve(doc)
