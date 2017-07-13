@@ -3,8 +3,14 @@ const IMPORTS_PATH = __dirname + '/imports/'
 const COMPONENTS_PATH = VIEWMODELS_PATH + 'components/'
 const TEMPLATES_PATH = VIEWMODELS_PATH + 'templates/'
 const DEFAULT_SCHOOL_LOGO = 'resx/images/school-logo.png'
+
 const SERVER = 'SERVER'
 const CLIENT = 'CLIENT'
+
+const MENU_GLOBAL = 'MENU-GLOBAL'
+const MENU_ADMIN = 'MENU-ADMIN'
+const MENU_SUPER = 'MENU-SUPER'
+const MENU_TEACHER = 'MENU-TEACHER'
 
 const fs = require('fs')
 const ko = require('knockout')

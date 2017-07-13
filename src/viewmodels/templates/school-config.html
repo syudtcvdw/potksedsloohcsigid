@@ -90,13 +90,13 @@
 				</div>
 			</div>
 
-			<div class="col span_1_of_3 card">
+			<div class="col span_1_of_3 card" data-bind="with: gradingSystem, css: {disabled: gradingSystem.saving() || !gradingSystem.connected()}">
 				<h4 class="title">Grading system</h4>
 				<div class="content scrollable">
 					<form>
 						<div>
-							<span class="justify" data-bind="visible: gradingSysFieldsEmpty">Design your grading system (e.g Excellent, V.Good or A, B, C and specify corresponding scores)</span>
-							<!-- ko foreach: gradingSysFields -->
+							<span class="justify" data-bind="visible: !grades().length">Design your grading system (e.g Excellent, V.Good or A, B, C and specify corresponding scores)</span>
+							<!-- ko foreach: grades -->
 							<div class="row">
 								<div class="col span_2_of_3">
 									<input type="text" data-bind="textInput: grade" placeholder="Grade">
@@ -107,18 +107,18 @@
 							</div>
 							<!-- /ko -->
 						</div>
-						<!-- ko ifnot: gradingSysFieldsEmpty() -->
-						<small data-bind="click: popLastGradingRow"><i class="fa fa-fw fa-times"></i>Delete last row</small>
+						<!-- ko if: grades().length -->
+						<small data-bind="click: pop"><i class="fa fa-fw fa-times"></i>Delete last row</small>
 						<!-- /ko -->
 						<div class="row">
-							<button type="submit" class="btn btn-orange btn-shift-down col span_2_of_3" data-bind="click: addField"><i class="fa fa-fw fa-plus"></i> Add Field</button>
-							<button type="submit" class="btn btn-green btn-shift-down col span_1_of_3" data-bind="click: saveGradingSys">Save</button>
+							<button type="submit" class="btn btn-orange btn-shift-down col span_2_of_3" data-bind="click: add"><i class="fa fa-fw fa-plus"></i> Add Field</button>
+							<button type="submit" class="btn btn-green btn-shift-down col span_1_of_3" data-bind="click: save">Save</button>
 						</div>
 					</form>
 				</div>
 			</div>
 
-			<div class="col span_2_of_3 card sm-full" data-bind="with: metrics, css: {disabled: metrics.updatingMetrics}">
+			<div class="col span_2_of_3 card sm-full" data-bind="with: metrics, css: {disabled: metrics.updatingMetrics() || !metrics.connected()}">
 				<h4 class="title">
 					Assessment metrics
 					<i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to add metric" data-bind="click: add"></i>

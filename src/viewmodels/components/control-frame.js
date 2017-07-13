@@ -8,10 +8,12 @@ var vm = function (params) {
             label: 'Home'
         }, {
             id: 'admins',
-            label: 'Admin Profiles'
+            label: 'Admin Profiles',
+            kind: MENU_ADMIN
         }, {
             component: 'school-config',
-            label: 'School Configuration'
+            label: 'School Configuration',
+            kind: MENU_SUPER
         }, {
             id: 'teachers',
             label: 'Manage Teachers'
@@ -33,7 +35,7 @@ var vm = function (params) {
     vm.personEmail = ko.observable() // email address of currently logged in guy
     vm.superAdmin = ko.observable(false) // tells if logged in guy is superadmin
     vm.disconnectionTime = ko.observable() // what time the connecion the server was lost
-    vm.menu = ko.observableArray() // what time the connecion the server was lost
+    vm.menu = ko.observableArray() // all menu items (built)
 
     // computed
     vm.isServer = ko.computed(() => {
@@ -52,6 +54,15 @@ var vm = function (params) {
                 .connected()
                 ? ' NOT'
                 : ''} connected to the Control Workstation at ${VM.IP()}`
+    })
+    vm.getMenu = ko.computed(() => {
+        let m = []
+        vm.menu().map(menu => {
+            let skip = (vm.superAdmin() && menu.kind == MENU_TEACHER) || ((VM.ROLE() == 'ADMIN' && !vm.superAdmin()) && (menu.kind == MENU_TEACHER || menu.kind == MENU_SUPER))
+            if (skip) return
+            m.push(menu)
+        })
+        return m
     })
 
     // subscriptions
@@ -86,6 +97,7 @@ var vm = function (params) {
         m.id = config.id || config.component || config.label
         m.label = config.label || ' '
         m.component = config.component || m.id + '-screen'
+        m.kind = config.kind || MENU_GLOBAL
 
         // behaviours
         m.go = () => {
@@ -113,6 +125,7 @@ var vm = function (params) {
         $('control-frame').append("<script src='./imports/ext/tooltip.min.js'></script>")
         tooltip.setOptions({offsetDefault: 10})
     })
+    // bind Ctrl+tab to navigate between tabs
 }
 
 new Component('control-frame')
