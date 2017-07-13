@@ -12,6 +12,9 @@ var vm = function (params) {
         }, {
             component: 'school-config',
             label: 'School Configuration'
+        }, {
+            id: 'teachers',
+            label: 'Manage Teachers'
         }
     ]
     vm.schoolUid = '' // what the school uid is

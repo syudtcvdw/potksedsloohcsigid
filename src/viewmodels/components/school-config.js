@@ -241,19 +241,21 @@ var vm = function (params) {
     }
     vm.loadGradingSystem = () => {
         sockets.emit('fetch setting', 'gradingSystem', data => {
-                if (!data.status) 
-                    VM.notify("Unable to fetch grading system, could not reach Control Workstation", "error", {'try again': vm.loadGradingSystem})
-                else {
-                    if (data.response){
-                        data
-                            .response
-                            .map(g => {
-                                vm.gradingSysFields.push(new GradingSystemHandler(g))
-                            })
-                        redraw()
-                    }
+            if (!data.status) 
+                VM.notify("Unable to fetch grading system, could not reach Control Workstation", "error", {'try again': vm.loadGradingSystem})
+            else {
+                if (data.response) {
+                    data
+                        .response
+                        .map(g => {
+                            vm
+                                .gradingSysFields
+                                .push(new GradingSystemHandler(g))
+                        })
+                    redraw()
                 }
-            }, true)
+            }
+        }, true)
     }
 
     // subscription
@@ -344,7 +346,7 @@ var vm = function (params) {
                 if (!data.status) 
                     VM.notify("Unable to fetch assessment metrics, could not reach Control Workstation", "error", {'try again': am.loadMetrics})
                 else {
-                    if (data.response){
+                    if (data.response) {
                         data
                             .response
                             .map(m => {
