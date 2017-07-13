@@ -37,6 +37,23 @@ var vm = function (params) {
     vm.disconnectionTime = ko.observable() // what time the connecion the server was lost
     vm.menu = ko.observableArray() // all menu items (built)
 
+    // behaviours
+    vm.nextMenu = (backwards = false) => {
+        let v = VM.view()
+        let menu = vm.getMenu()
+        let cur = menu.indexOf(menu.find(m => {
+            return m.component == v
+        }))
+        let nxt = backwards
+            ? (cur == 0
+                ? menu.length - 1
+                : cur - 1)
+            : (cur == menu.length - 1
+                ? 0
+                : cur + 1)
+        VM.loadView(menu[nxt].component)
+    }
+
     // computed
     vm.isServer = ko.computed(() => {
         return VM.MODE() == SERVER
@@ -57,11 +74,14 @@ var vm = function (params) {
     })
     vm.getMenu = ko.computed(() => {
         let m = []
-        vm.menu().map(menu => {
-            let skip = (vm.superAdmin() && menu.kind == MENU_TEACHER) || ((VM.ROLE() == 'ADMIN' && !vm.superAdmin()) && (menu.kind == MENU_TEACHER || menu.kind == MENU_SUPER))
-            if (skip) return
-            m.push(menu)
-        })
+        vm
+            .menu()
+            .map(menu => {
+                let skip = (vm.superAdmin() && menu.kind == MENU_TEACHER) || ((VM.ROLE() == 'ADMIN' && !vm.superAdmin()) && (menu.kind == MENU_TEACHER || menu.kind == MENU_SUPER))
+                if (skip) 
+                    return
+                m.push(menu)
+            })
         return m
     })
 
@@ -126,6 +146,11 @@ var vm = function (params) {
         tooltip.setOptions({offsetDefault: 10})
     })
     // bind Ctrl+tab to navigate between tabs
+    document.addEventListener("keydown", function (e) {
+        if (VM.ROLE()) 
+            if (e.which === 9 && e.ctrlKey) 
+                vm.nextMenu(e.shiftKey)
+    })
 }
 
 new Component('control-frame')

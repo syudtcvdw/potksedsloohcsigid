@@ -10,10 +10,10 @@
 						<i class="fa fa-fw fa-upload section-action green animated slideInDown" title="Click to upload" data-bind="click: uploadLogo" data-tooltip="{'class': 'mini white'}"></i>
 						<i class="fa fa-fw fa-refresh section-action orange animated slideInDown" title="Reset logo" data-bind="click: resetLogo" data-tooltip="{'class': 'mini white'}"></i>
 					</span>
-					<i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to edit" data-bind="click: selectLogo"></i>
+					<i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to change" data-bind="click: selectLogo"></i>
 				</h4>
 				<div class="logo-pane">
-					<img class="school-logo" alt="" data-bind="attr: {src: logo}">
+					<img class="school-logo" alt="" data-bind="attr: {src: logo},click: selectLogo">
 				</div>
 			</div>
 

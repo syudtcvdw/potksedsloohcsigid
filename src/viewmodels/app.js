@@ -305,4 +305,4 @@ document.addEventListener("keydown", function (e) {
     } else if (e.which === 116) { //F5
         location.reload()
     }
-});
+})
