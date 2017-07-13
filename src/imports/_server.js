@@ -211,7 +211,7 @@ module.exports = function (server, force = false) {
                                 if (e) 
                                     cb(false)
                                 else 
-                                    cb({salt: d.value, buf: data})
+                                    cb({salt: d? d.value : null, buf: data})
                             })
                         }
                     })
