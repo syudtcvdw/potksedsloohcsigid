@@ -23,8 +23,6 @@ var vm = function (params) {
                 vm.loginErr("No response from Control Workstation")
             else {
                 if (data.response) {
-                    console.log("Login Successful!")
-
                     // remember this email address
                     let DbSettings = db('settings')
                     DbSettings.iu({
@@ -41,7 +39,6 @@ var vm = function (params) {
                     vm.loginErr("Username/password incorrect!")
             }
         }, quiet = true)
-        console.log(`Email: ${vm.loginEmail()} Password: ${vm.loginPwd()}`)
     }
     vm.dismissLoading = () => {
         vm.loading(false)
@@ -61,12 +58,10 @@ var vm = function (params) {
             .personEmail(data.info.email)
         VM.controlVm.personId = data.info._id
 
-        VM.loadView('school-config')
-        console.log("Starting app...", data)
+        VM.loadView('home-screen')
     }
 
     // init
-    console.log('Login screen: ', params)
     if (typeof params.firstRun != 'undefined' && VM.MODE() == SERVER) {
         /**
          * in the unlikely event that the settings table is cleared

@@ -55,9 +55,6 @@ exports.Component = function (name) {
         // build and load the ko component
         let _c = {
             viewModel: _vm,
-            afterBind: function (componentInfo) {
-                console.log(componentInfo)
-            },
             template: _getComponentView(this._name)
         }
         ko

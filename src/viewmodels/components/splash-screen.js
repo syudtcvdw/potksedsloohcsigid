@@ -31,7 +31,6 @@ var vm = function (params) {
         }, 5000)
     }).then(val => {
         // not first run
-        console.log(`Val: ${val}`)
         vm.startPayload({mode: val})
     }).catch(err => {
         // first run

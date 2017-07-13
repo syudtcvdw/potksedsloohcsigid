@@ -81,7 +81,6 @@ var VM = new function () {
                 // instantiate connection info
                 vm.connectionInfo(new clientInfo())
             } else if (m == 'SERVER-RECON') {
-                console.log('reconnecting...')
                 // reconnect server
                 sockets
                     .reconnect()
@@ -109,7 +108,6 @@ var VM = new function () {
                     .connect()
                     .then((sock) => {
                         vm.socket = sock
-                        console.log(`Connection successful: ${ip}`)
                     })
                     .catch((e) => console.log(`Connection error: ${e}`))
             }
@@ -122,6 +120,11 @@ var VM = new function () {
             DbSettings.clear()
             DbAdmins.clear()
             console.log("Got db RESET command")
+        })
+    vm
+        .view
+        .subscribe(() => {
+            vm.notifs.clear()
         })
 
     // sub-vm
@@ -228,6 +231,15 @@ var VM = new function () {
             nt
                 .notifs
                 .push(new Notif(msg, kind, actions, id, stubborn))
+        }
+        nt.clear = () => {
+            // removes all notifs that are not stubborn
+            nt
+                .notifs()
+                .map(n => {
+                    if (!n.stubborn) 
+                        n.die()
+                })
         }
 
         /**

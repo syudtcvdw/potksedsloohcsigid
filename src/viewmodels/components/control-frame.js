@@ -4,6 +4,9 @@ var vm = function (params) {
     // props
     let menuItems = [
         {
+            id: 'home',
+            label: 'Home'
+        }, {
             id: 'admins',
             label: 'Admin Profiles'
         }, {
@@ -37,7 +40,10 @@ var vm = function (params) {
         if (!VM.connectionInfo()) 
             return;
         return vm.isServer()
-            ? (VM.IP() != '127.0.0.1'? `Other workstations in your institution can connect to this server via this address: ${VM.IP()}`:'System running in solo mode, no client can connect because you\'re not on a network')
+            ? (VM.IP() != '127.0.0.1'
+                ? `Other workstations in your institution can connect to this server via this address: ${VM.IP()}`
+                : 'System running in solo mode, no client can connect because you\'re not on a netw' +
+                    'ork')
             : `You are currently${ !VM
                 .connectionInfo()
                 .connected()
@@ -48,19 +54,24 @@ var vm = function (params) {
     // subscriptions
     VM
         .ROLE
-        .subscribe(() => _.defer(() => {tooltip.refresh(),ajs()}))
+        .subscribe(() => _.defer(() => {
+            tooltip.refresh(),
+            ajs()
+        }))
     vm
         .ipTooltip
         .subscribe(() => {
-            console.log('refreshing tooltip')
             _.defer(() => tooltip.refresh())
         })
     vm
         .schoolName
         .subscribe(s => currentWindow.setTitle(`Digischools • ${s}`))
-    vm.superAdmin.subscribe(b => {
-        if (b) sockets.emit('request elevation', vm.personEmail(), d => {}, true)
-    })
+    vm
+        .superAdmin
+        .subscribe(b => {
+            if (b) 
+                sockets.emit('request elevation', vm.personEmail(), d => {}, true)
+        })
 
     // sub vm
     function MenuItem(config) {
@@ -70,7 +81,7 @@ var vm = function (params) {
 
         // observables
         m.id = config.id || config.component || config.label
-        m.label = config.label
+        m.label = config.label || ' '
         m.component = config.component || m.id + '-screen'
 
         // behaviours

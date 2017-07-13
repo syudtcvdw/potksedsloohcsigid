@@ -79,7 +79,6 @@ var vm = function (params) {
                 .connect()
                 .then((sock) => {
                     VM.socket = sock
-                    console.log(`Connection successful: ${vm.serverIp()}`)
                     VM.IP(vm.serverIp())
                     DbSettings.iu([
                         {
