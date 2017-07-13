@@ -204,6 +204,7 @@ module.exports = function (server, force = false) {
                         if (d && d.value == query.salt) 
                             cb(false)
                         else {
+                            console.log(USERDATA_ASSETS_PATH)
                             fs.readFile(USERDATA_ASSETS_PATH + 'logo.jpg', 'binary', (e, data) => {
                                 if (e) 
                                     cb(false)
@@ -272,11 +273,13 @@ module.exports = function (server, force = false) {
             /**
 			 * Fetches school assessment metrics
 			 */
-            socket.on('fetch assessment metrics', (query, cb) => { // success: [Metric]
+            socket.on('fetch setting', (query, cb) => { // success: [Metric], expects query to be a setting label
+                if (expired(query)) 
+                    return
                 query = query.payload || query
                 let DbSettings = db('settings')
                 DbSettings
-                    .findOne({label: 'schoolMetrics'})
+                    .findOne({label: query})
                     .execAsync()
                     .then(d => {
                         if (!d) 
@@ -285,6 +288,20 @@ module.exports = function (server, force = false) {
                             cb(d.value)
                     })
                     .catch(e => cb(false))
+            })
+
+            /**
+             * Saves the school's grading system
+             */
+            socket.on('save grading sys', (query, cb) => {
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbSettings = db('settings')
+                DbSettings
+                    .iu({label: 'gradingSystem', value: query})
+                    .then(() => cb(true))
+                    .catch(() => cb(false))
             })
 
             resolve(socket)
@@ -316,6 +333,7 @@ module.exports = function (server, force = false) {
             VM
                 .connectionInfo()
                 .countUp()
+            console.log("We got a client: " + socket.id)
         })
     })
 

@@ -20,6 +20,7 @@ var vm = function (params) {
     // ops & terminology
     vm.termsPerSessionLists = ko.observableArray(termsPerSessionArr)
     vm.subSession = ko.observable('term')
+    vm.sessionNameList = ko.observableArray(generateSession())
     vm.sessionName = ko.observable()
     vm.termsPerSession = ko.observable()
     vm.currentTerm = ko.observable()
@@ -36,6 +37,7 @@ var vm = function (params) {
     vm.uploadingLogo = ko.observable(false)
     vm.updatingProfile = ko.observable(false)
     vm.updatingOps = ko.observable(false)
+    vm.savingGradingSys = ko.observable(false)
 
     // behaviours
     vm.selectLogo = () => {
@@ -199,6 +201,60 @@ var vm = function (params) {
         redraw(evt)
     }
     vm.saveGradingSys = () => {}
+    /**
+     * Removes the last row from the grading system
+     */
+    vm.popLastGradingRow = () => {
+        vm
+            .gradingSysFields
+            .pop()
+    }
+    /**
+     * Saves the grading system
+     */
+    vm.saveGradingSys = () => {
+        if (vm.gradingSysFieldsEmpty()) 
+            return VM.notify('Click the `add field` button to add a row.', 'warn')
+        else {
+            for (let i = 0; i < vm.gradingSysFields().length; i++) {
+                const gs = vm.gradingSysFields()[i]
+                if (_anyEmpty(gs.grade(), gs.score())) 
+                    return VM.notify('Do not leave any field empty or delete excess row.', 'warn')
+            }
+
+            // send data to the server
+            vm.savingGradingSys(true)
+            sockets.emit('save grading sys', ko.toJS(vm.gradingSysFields()), data => {
+                if (!data.status) 
+                    return VM.notify('Problem updating Grading system, could not reach Control Workstation', 'error', {'try again': vm.saveGradingSys})
+                else {
+                    if (data.response) {
+                        VM.notify('Successfully saved.')
+                        vm.savingGradingSys(false)
+                    } else {
+                        VM.notify('Unable to save Grading System', 'error')
+                        vm.savingGradingSys(false)
+                    }
+                }
+            })
+        }
+    }
+    vm.loadGradingSystem = () => {
+        sockets.emit('fetch setting', 'gradingSystem', data => {
+                if (!data.status) 
+                    VM.notify("Unable to fetch grading system, could not reach Control Workstation", "error", {'try again': vm.loadGradingSystem})
+                else {
+                    if (data.response){
+                        data
+                            .response
+                            .map(g => {
+                                vm.gradingSysFields.push(new GradingSystemHandler(g))
+                            })
+                        redraw()
+                    }
+                }
+            }, true)
+    }
 
     // subscription
     vm
@@ -216,6 +272,12 @@ var vm = function (params) {
         for (let i = 0; i < vm.termsPerSession(); i++) 
             newCurrTermList[i] = new TermsPerSessHandler(i + 1, currTermLabels[i])
         return newCurrTermList
+    })
+    /**
+     * Keeps track of status of the grading system fields (empty or not?)
+     */
+    vm.gradingSysFieldsEmpty = ko.computed(() => {
+        return !(vm.gradingSysFields().length > 0)
     })
     // sub vm
     function AssessmentMetrics() {
@@ -278,13 +340,11 @@ var vm = function (params) {
             })
         }
         am.loadMetrics = () => {
-            sockets.emit('fetch assessment metrics', null, data => {
+            sockets.emit('fetch setting', 'schoolMetrics', data => {
                 if (!data.status) 
                     VM.notify("Unable to fetch assessment metrics, could not reach Control Workstation", "error", {'try again': am.loadMetrics})
                 else {
-                    if (!data.response) 
-                        VM.notify("Unable to fetch assessment metrics", "error", {'try again': am.loadMetrics})
-                    else {
+                    if (data.response){
                         data
                             .response
                             .map(m => {
@@ -338,6 +398,43 @@ var vm = function (params) {
         // init
         am.loadMetrics()
     }
+    /**
+     * Handler for terms per session under the ops & terms section
+     * @param {string} val
+     * @param {string} name
+     */
+    function TermsPerSessHandler(val, name) {
+        this.val = val
+        this.name = name
+    }
+    /**
+     * Handler for grading system
+     */
+    function GradingSystemHandler() {
+        let gs = this
+        let args = arguments.length > 0
+            ? arguments[0]
+            : {}
+        // props
+        gs.id = args.id || vm
+            .gradingSysFields()
+            .length
+        // observables
+        gs.grade = ko.observable(args.grade || "")
+        gs.score = ko.observable(args.score || null)
+        gs.maxScore = ko.observable(args.maxScore || 100)
+        // subscriptions
+        gs
+            .score
+            .subscribe(s => {
+                vm
+                    .gradingSysFields()
+                    .map((v) => {
+                        if (v.id > gs.id) 
+                            v.maxScore(s - 5)
+                    })
+            })
+    }
 
     // local
     function dimens(max = 800) {
@@ -351,13 +448,11 @@ var vm = function (params) {
 
         return {'w': _width, 'h': _height}
     }
-
     function offset(dimen, against = 800) {
         let _l = -(dimen.w - against) / 2;
         let _t = -(dimen.h - against) / 2;
         return {'l': _l, 't': _t}
     }
-
     function redraw() {
         let container = arguments.length == 0
             ? null
@@ -377,36 +472,16 @@ var vm = function (params) {
             $('#tooltip').remove() // because sometimes the tooltip litters the screen
         }) // redraw layout
     }
-
-    function TermsPerSessHandler(val, name) {
-        this.val = val
-        this.name = name
-    }
-
-    function GradingSystemHandler() {
-        let gs = this
-        let args = arguments.length > 0
-            ? arguments[0]
-            : {}
-        // props
-        gs.id = vm
-            .gradingSysFields()
-            .length
-        // observables
-        gs.grade = ko.observable(args.grade || "")
-        gs.score = ko.observable(args.score || null)
-        gs.maxScore = ko.observable(args.maxScore || 100)
-        // subscriptions
-        gs
-            .score
-            .subscribe(s => {
-                vm
-                    .gradingSysFields()
-                    .map((v) => {
-                        if (v.id > gs.id) 
-                            v.maxScore(s - 5)
-                    })
-            })
+    /**
+     * Generates the session the school is currently on based on the current year
+     */
+    function generateSession() {
+        const currentYear = new Date().getFullYear()
+        const currentSession = [
+            `${currentYear - 1}/${currentYear}`,
+            `${currentYear}/${currentYear + 1}`
+        ]
+        return currentSession
     }
 
     // init
@@ -437,6 +512,9 @@ var vm = function (params) {
         vm.sessionName(VM.controlVm.schoolSessionName)
         vm.termsPerSession(VM.controlVm.schoolTermsPerSession)
         vm.currentTerm(VM.controlVm.schoolCurrentTerm)
+
+        // load grading system
+        vm.loadGradingSystem()
 
         // confirm logo from server
         let DbSettings = db('settings')
