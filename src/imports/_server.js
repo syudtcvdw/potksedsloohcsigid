@@ -351,6 +351,7 @@ module.exports = function (server, force = false) {
     function expired(packet) {
         if (!packet.expiry) 
             return false
+        console.log(_getUTCTime(), packet.expiry)
         return _getUTCTime() >= packet.expiry
     }
 

@@ -205,6 +205,7 @@ function getSockets() {
                 if (!quiet) 
                     VM.loading(true) // show the loading strip
                 
+                console.log(_getUTCTime(), _getUTCTime() + wait)
                 data = { // bubble-wrap the payload, so server can know its validity
                     expiry: _getUTCTime() + wait,
                     payload: data
