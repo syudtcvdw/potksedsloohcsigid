@@ -197,7 +197,7 @@ function getSockets() {
             _ipReadyCallback = callback
             return this
         },
-        emit(event, data, callback, quiet = false, wait = 10000) { // wrapper for emits that require reply, includes timeout
+        emit(event, data, callback, quiet = false, wait = 5000) { // wrapper for emits that require reply, includes timeout
             let settled = rejected = false
             new Promise((resolve, reject) => {
                 if (!VM.socket) 
@@ -207,7 +207,7 @@ function getSockets() {
                     VM.loading(true) // show the loading strip
                 
                 data = { // bubble-wrap the payload, so server can know its validity
-                    expiry: _getUTCTime() + wait,
+                    expiry: _getUTCTime() + Vm.controlVm.timeOffset + wait,
                     payload: data
                 }
                 VM
