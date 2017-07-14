@@ -34,8 +34,12 @@ var vm = function (params) {
     vm.personName = ko.observable() // who's currently logged in
     vm.personEmail = ko.observable() // email address of currently logged in guy
     vm.superAdmin = ko.observable(false) // tells if logged in guy is superadmin
-    vm.disconnectionTime = ko.observable() // what time the connecion the server was lost
     vm.menu = ko.observableArray() // all menu items (built)
+
+    // time
+    vm.disconnectionTime = ko.observable() // what time the connecion the server was lost
+    vm.serverTime = ko.observable() // server time received on socket connection
+    vm.timeOffset = 0 // the time offset for bubble-wrapper
 
     // behaviours
     vm.nextMenu = (backwards = false) => {
@@ -106,6 +110,9 @@ var vm = function (params) {
             if (b) 
                 sockets.emit('request elevation', vm.personEmail(), d => {}, true)
         })
+    vm
+        .serverTime
+        .subscribe(t => {vm.timeOffset = t - _getUTCTime(), console.log(vm.timeOffset)})
 
     // sub vm
     function MenuItem(config) {

@@ -25,6 +25,12 @@ module.exports = function (server, force = false) {
     console.log(`server up and running ${server}`)
     server.on('connection', (socket) => {
         new Promise((resolve) => {
+            // send timestamp
+            socket.emit('server time', _getUTCTime())
+
+            /**
+             * When client gets disconnected
+             */
             socket.on('disconnect', (reason) => {
                 VM
                     .connectionInfo()

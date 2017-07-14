@@ -92,6 +92,7 @@ function getSockets() {
                             .disconnectionTime(`${ (new Date).getHours()}:${ (new Date).getMinutes()}`)
                         console.log(`Connection lost: ${reason}`)
                     })
+                    _io_client.on('server time', t => VM.controlVm.serverTime(t))
                     _io_client.on('connect', () => {
                         if (VM.connectionInfo()) 
                             VM.connectionInfo().connected(true)
@@ -205,7 +206,6 @@ function getSockets() {
                 if (!quiet) 
                     VM.loading(true) // show the loading strip
                 
-                console.log(_getUTCTime(), _getUTCTime() + wait)
                 data = { // bubble-wrap the payload, so server can know its validity
                     expiry: _getUTCTime() + wait,
                     payload: data
