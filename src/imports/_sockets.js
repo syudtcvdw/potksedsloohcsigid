@@ -196,7 +196,7 @@ function getSockets() {
             _ipReadyCallback = callback
             return this
         },
-        emit(event, data, callback, quiet = false, wait = 5000) { // wrapper for emits that require reply, includes timeout
+        emit(event, data, callback, quiet = false, wait = 10000) { // wrapper for emits that require reply, includes timeout
             let settled = rejected = false
             new Promise((resolve, reject) => {
                 if (!VM.socket) 

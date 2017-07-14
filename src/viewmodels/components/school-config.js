@@ -194,10 +194,9 @@ var vm = function (params) {
     // computed
     vm.currentTermList = ko.computed(() => {
         // dynamically generate list of curr terms
-        const currTermLabels = ['First', 'Second', 'Third', 'Fourth', 'Fifth']
         let newCurrTermList = []
         for (let i = 0; i < vm.termsPerSession(); i++) 
-            newCurrTermList[i] = new TermsPerSessHandler(i + 1, currTermLabels[i])
+            newCurrTermList[i] = new TermsPerSessHandler(i + 1, TERM_LABELS[i])
         return newCurrTermList
     })
 

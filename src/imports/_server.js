@@ -53,7 +53,7 @@ module.exports = function (server, force = false) {
                                 info: d
                             })
                     })
-                    .catch(() => cb(false))
+                    .catch(e => cb(false))
             })
 
             /**

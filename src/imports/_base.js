@@ -12,6 +12,8 @@ const MENU_ADMIN = 'MENU-ADMIN'
 const MENU_SUPER = 'MENU-SUPER'
 const MENU_TEACHER = 'MENU-TEACHER'
 
+const TERM_LABELS = ['First', 'Second', 'Third', 'Fourth', 'Fifth']
+
 const fs = require('fs')
 const ko = require('knockout')
 const $ = require('jquery')
