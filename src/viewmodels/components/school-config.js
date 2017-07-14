@@ -499,7 +499,7 @@ var vm = function (params) {
         // set logo src
         fs.exists(USERDATA_ASSETS_PATH + 'logo.jpg', b => {
             if (b) 
-                logoUri = USERDATA_ASSETS_PATH + 'logo.jpg'
+                logoUri = `${USERDATA_ASSETS_PATH}logo.jpg?nonce=${VM.nonce}`
             vm.logo(logoUri)
         })
 

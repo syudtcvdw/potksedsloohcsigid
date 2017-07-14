@@ -176,9 +176,7 @@ module.exports = function (server, force = false) {
                     cb(!e)
                     if (!e) {
                         // compute salt
-                        let hash = require('crypto').createHash('sha256')
-                        hash.update(_getUTCTime().toString())
-                        let salt = hash.digest('hex')
+                        let salt = _hash()
 
                         // save up
                         let DbSettings = db('settings')

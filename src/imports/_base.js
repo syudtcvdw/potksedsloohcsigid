@@ -36,7 +36,7 @@ require('jquery-match-height')
  * @param {int} min The inclusive minimum
  * @param {int} max The inclusive maximum
  */
-function _random(min=0, max=9999999999999) {
+function _random(min = 0, max = 9999999999999) {
     return Math.ceil(Math.random() * (max - min) + min);
 }
 
@@ -132,6 +132,15 @@ function _saveLogo(data) {
         .iu({label: 'logoSalt', value: data.salt})
         .then(() => {})
         .catch(() => {})
+}
+
+/**
+ * Generates a random hash
+ */
+function _hash() {
+    let hash = require('crypto').createHash('sha256')
+    hash.update(_getUTCTime().toString())
+    return hash.digest('hex')
 }
 
 /**

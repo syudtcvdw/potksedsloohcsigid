@@ -97,7 +97,7 @@
 						<div>
 							<span class="justify" data-bind="visible: !grades().length">Design your grading system (e.g Excellent, V.Good or A, B, C and specify corresponding scores)</span>
 							<!-- ko foreach: grades -->
-							<div class="row">
+							<div class="row group">
 								<div class="col span_2_of_3">
 									<input type="text" data-bind="textInput: grade" placeholder="Grade">
 								</div>
@@ -118,7 +118,7 @@
 				</div>
 			</div>
 
-			<div class="col span_2_of_3 card sm-full" data-bind="with: metrics, css: {disabled: metrics.updatingMetrics() || !metrics.connected()}">
+			<div class="col span_2_of_3 card sm-full preserve-col" data-bind="with: metrics, css: {disabled: metrics.updatingMetrics() || !metrics.connected()}">
 				<h4 class="title">
 					Assessment metrics
 					<i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to add metric" data-bind="click: add"></i>
@@ -132,7 +132,7 @@
 					<span class="green-text anim-js fadeInDown" data-ajs-delay="750ms">Click the plus icon to get started</span>
 					<!-- /ko -->
 					<!-- ko foreach: metrics -->
-					<div class="row metric">
+					<div class="row group metric">
 						<i class="fa fa-close fa-fw delete-btn" data-bind="click: kill" data-tooltip="{'class': 'mini white'}" title="Delete this metric"></i>
 						<div class="col span_1_of_3">
 							<label>Metric title</label>

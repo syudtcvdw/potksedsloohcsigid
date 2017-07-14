@@ -7,10 +7,12 @@
     height: 100%;
     position: relative;
     background: $theme-white;
+    margin: 0 1rem;
     header {
         position: relative;
         z-index: 0;
         padding: 1rem 0 1rem 0;
+        margin-bottom: 2rem;
         .logo {
             position: relative;
             width: 240px;
@@ -45,10 +47,36 @@
         }
     }
     hr {
-        position: absolute;
-        width: 100%;
-        left: 0;
         border-style: ridge;
         border-color: #fafafa;
+        margin-left: -2rem;
+        margin-right: -2rem;
+        margin-bottom: 2rem;
+    }
+    .text-block {
+        background: $theme-gray;
+        padding: .5rem 1rem;
+        position: relative;
+        overflow: hidden;
+        .subtitle {
+            font-weight: bold;
+            display: block;
+            margin-bottom: .5rem;
+            text-transform: capitalize;
+        }
+        .info {
+            color: rgba($theme-text, .7);
+        }
+        &:before {
+            content: '';
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border: solid thick $theme-white;
+            border-radius: 50%;
+            right: -16px;
+            bottom: -16px;
+            box-sizing: inherit;
+        }
     }
 }

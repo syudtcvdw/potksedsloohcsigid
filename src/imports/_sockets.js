@@ -210,7 +210,7 @@ function getSockets() {
                     expiry: _getUTCTime() + VM.controlVm.timeOffset + wait,
                     payload: data
                 }
-                console.log(data, _getUTCTime())
+                
                 VM
                     .socket
                     .emit(event, data, (response) => {

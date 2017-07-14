@@ -24,6 +24,7 @@ var VM = new function () {
     // props
     vm.socket = null // keeps a pointer to the socket connection
     vm.controlVm = null // keeps a pointer to the control-frame vm
+    vm.nonce = _hash()
 
     // observables
     vm.pagedata = ko.observable() // interpage data transmitted via component's params

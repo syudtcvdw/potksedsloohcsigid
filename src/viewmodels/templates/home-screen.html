@@ -1,12 +1,28 @@
 <div class="home-screen">
 
-    <header class="row">
-        <div class="logo" data-bind="style: {backgroundImage: logo}"></div>
-        <div class="body">
-            <h1 data-bind="text: VM.controlVm.schoolName"></h1>
-            <h4 class="slogan" data-bind="text: VM.controlVm.schoolSlogan"></h4>
+    <div class="animated fadeIn" data-bind="visible: uiVisible">
+        <header class="row">
+            <div class="logo" data-bind="style: {backgroundImage: logo}"></div>
+            <div class="body">
+                <h1 data-bind="text: VM.controlVm.schoolName"></h1>
+                <h4 class="slogan" data-bind="text: VM.controlVm.schoolSlogan"></h4>
+            </div>
+            <div class="clearfix"></div>
+        </header>
+
+        <div class="row">
+            <div class="col span_1_of_3 text-block">
+                <label class="subtitle">Address</label>
+                <div class="info" data-bind="text: VM.controlVm.schoolAddress"></div>
+            </div>
+            <div class="col span_1_of_3 text-block">
+                <label class="subtitle" data-bind="text: VM.controlVm.schoolSubSession"></label>
+                <div class="info" data-bind="text: TERM_LABELS[VM.controlVm.schoolCurrentTerm]+' '+VM.controlVm.schoolSubSession"></div>
+            </div>
+            <div class="col span_1_of_3 text-block">
+                <label class="subtitle">Session</label>
+                <div class="info" data-bind="text: VM.controlVm.schoolSessionName"></div>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-    <hr>
+    </div>
 </div>
