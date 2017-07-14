@@ -1,9 +1,54 @@
 @import '../_partials/_fonts.scss';
 @import '../_partials/_mixins.scss';
 @import '../_partials/_vars.scss';
+@include use-raviprakesh;
 //
 .home-screen {
     height: 100%;
     position: relative;
     background: $theme-white;
+    header {
+        position: relative;
+        z-index: 0;
+        padding: 1rem 0 1rem 0;
+        .logo {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            &:after {
+                content: '';
+                @include absolute-full;
+                width: calc(100% + 10px);
+                height: calc(100% + 10px);
+                top: -5px;
+                left: -5px;
+                border-radius: inherit;
+                background-image: linear-gradient(45deg, rgba($theme-orange, .7) 30%, rgba($theme-red, .6) 70%, rgba($theme-green, .7));
+                z-index: -1;
+            }
+        }
+        .body {
+            @include vertical-align(absolute);
+            width: calc(100% - 260px);
+            right: 0;
+            h1 {
+                @include font-ravi;
+                margin-bottom: .5rem;
+                +.slogan {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+    hr {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        border-style: ridge;
+        border-color: #fafafa;
+    }
 }

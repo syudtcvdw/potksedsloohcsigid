@@ -34,7 +34,7 @@ require('jquery-match-height')
  * @param {int} min The inclusive minimum
  * @param {int} max The inclusive maximum
  */
-function _random(min, max) {
+function _random(min=0, max=9999999999999) {
     return Math.ceil(Math.random() * (max - min) + min);
 }
 
