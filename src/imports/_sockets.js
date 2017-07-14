@@ -207,9 +207,10 @@ function getSockets() {
                     VM.loading(true) // show the loading strip
                 
                 data = { // bubble-wrap the payload, so server can know its validity
-                    expiry: _getUTCTime() + Vm.controlVm.timeOffset + wait,
+                    expiry: _getUTCTime() + VM.controlVm.timeOffset + wait,
                     payload: data
                 }
+                console.log(data, _getUTCTime())
                 VM
                     .socket
                     .emit(event, data, (response) => {
