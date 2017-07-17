@@ -93,14 +93,12 @@ var vm = function (params) {
     VM
         .ROLE
         .subscribe(() => _.defer(() => {
-            tooltip.refresh(),
+            _tooltip(),
             ajs()
         }))
     vm
         .ipTooltip
-        .subscribe(() => {
-            _.defer(() => tooltip.refresh())
-        })
+        .subscribe(() => _tooltip())
     vm
         .schoolName
         .subscribe(s => currentWindow.setTitle(`Digischools • ${s}`))

@@ -10,6 +10,7 @@
 @import '_partials/vars';
 @import '_partials/fonts';
 @import '_partials/_grid-system';
+@import '_partials/_sectionizr';
 @include use-opensans;
 @include full-page-hack;
 @include font-smoothing-hack;
@@ -120,6 +121,12 @@ body {
             height: 1px;
             background: $theme-green;
         }
+        &.no-underline {
+            border: none;
+            &::before {
+                display: none;
+            }
+        }
         .section-action {
             float: right;
             color: $theme-black;
@@ -132,6 +139,9 @@ body {
             }
             &.orange {
                 color: $theme-orange
+            }
+            &.red {
+                color: $theme-red
             }
         }
     }
@@ -505,6 +515,7 @@ img {
     overflow: auto;
     visibility: hidden;
     transition: visibility 0.2s;
+    padding-right: 1px;
     &:hover,
     &:focus,
     &>* {
@@ -518,6 +529,26 @@ img {
 
 .justify {
     text-align: justify;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+form {
+    label {
+        font-weight: normal;
+        font-size: 80%;
+        color: $theme-text;
+    }
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 // specific

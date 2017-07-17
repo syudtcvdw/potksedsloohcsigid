@@ -1,24 +1,58 @@
 @import '../_partials/_fonts.scss';
 @import '../_partials/_mixins.scss';
 @import '../_partials/_vars.scss';
-
+//
 .teachers-screen {
+	height: 100%;
+	position: relative;
 	background: $theme-white;
-	.teachers-detail {
-		margin: 0;
-		padding: 0;
-		overflow-y: scroll;
-		li {
-			list-style-type: none;
-			padding: 20px 10px;
-			margin-bottom: 1px;
-			cursor: pointer;
-			&:hover {
-				background-color: $theme-gray;
-			}
+	margin: 0 1rem;
+	.no-teachers {
+		@include vertical-align(absolute);
+		width: 100%;
+		text-align: center;
+		h5 {
+			margin-top: 0;
 		}
-		.selected {
-			background-color: $theme-gray;
+	}
+	.add-teacher {
+		@include absolute-full;
+		background: rgba($theme-white, .9);
+		padding: 2rem 5%;
+		animation-duration: 250ms;
+		.content {
+			width: 90%;
+			max-width: 420px;
+			margin: auto;
+			background: $theme-white;
+			padding: 1rem;
+			box-shadow: rgba($theme-black, .3) 0px 0px 2px;
+			animation-delay: .5s;
+			animation-duration: .5s;
+		}
+	}
+	.all-teachers {
+		padding: 0 5%;
+		height: 100%;
+		.title {
+			margin-top: 0;
+		}
+		.teachers-list {
+			max-height: 40vh;
+			overflow-y: auto;
+			li {
+				background: $theme-gray;
+				padding: 0 5px;
+				&:hover {
+					color: $theme-green;
+					background: lighten($theme-gray, 2%);
+				}
+				h5 {
+					margin: .8rem 0;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+			}
 		}
 	}
 }

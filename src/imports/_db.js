@@ -18,14 +18,28 @@ const schemas = {
     },
     admins: {
         name: String,
+        password: String,
         email: {
             type: String,
             unique: true
         },
-        password: String,
         is_first: {
             type: Boolean,
             default: false
+        }
+    },
+    teachers: {
+        name: String,
+        password: String,
+        addDate: Number,
+        gender: String,
+        email: {
+            type: String,
+            unique: true
+        },
+        phone: {
+            type: String,
+            unique: true
         }
     }
 }
@@ -106,6 +120,7 @@ module.exports = (...name) => {
                         data = Array.isArray(data)
                             ? data
                             : [data]
+                        let docs = []
                         data.forEach(function (o) {
                             let cond = []
                             for (let i in o) 
@@ -116,7 +131,7 @@ module.exports = (...name) => {
                                 }
                             this.insert(o, (err, doc) => {
                                 if ((err || doc) === doc) 
-                                    return;
+                                    return docs.push(doc);
                                 
                                 // insert failed, try update
                                 if (cond.length > 0) 
@@ -124,10 +139,17 @@ module.exports = (...name) => {
                                         $or: cond
                                     }, {
                                         $set: o
-                                    }, {})
-                            })
+                                    }, {}, (err, doc) => {
+                                        if ((err || doc) === doc) 
+                                            docs.push(doc)
+                                    })
+                                    })
                         }, this)
-                        resolve()
+                        resolve(docs.length == 0
+                            ? null
+                            : (data.length > 1
+                                ? docs
+                                : docs[0]))
                     })
                 },
                 /**
@@ -145,10 +167,13 @@ module.exports = (...name) => {
                  * @param {string} col The column to check
                  * @param {string} val The value to check for
                  */
-                exists: function (col, val) {
+                exists: function (query) {
                     return new Promise((resolve, reject) => {
-                        this
-                            .findOne({col: val})
+                        this.findOne({
+                            $or: !Array.isArray(query)
+                                ? [query]
+                                : query
+                            })
                             .execAsync()
                             .then(d => {
                                 !d

@@ -126,6 +126,7 @@ var VM = new function () {
     vm
         .view
         .subscribe(() => {
+            vm.loading(false)
             vm.notifs.clear()
         })
 

@@ -96,7 +96,6 @@ module.exports = function (server, force = false) {
             socket.on('get all admins', (query, cb) => { // success: [docs]
                 if (expired(query)) 
                     return
-                query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
                     .find({})
@@ -118,7 +117,7 @@ module.exports = function (server, force = false) {
                 query = query.payload || query
                 let DbAdmins = db('admins')
                 DbAdmins
-                    .exists('email', query.email)
+                    .exists({email: query.email})
                     .then(() => cb("This email address is already assigned"))
                     .catch(() => {
                         DbAdmins
@@ -305,6 +304,54 @@ module.exports = function (server, force = false) {
                 DbSettings
                     .iu({label: 'gradingSystem', value: query})
                     .then(() => cb(true))
+                    .catch(() => cb(false))
+            })
+
+            /**
+             * adds new teacher
+             */
+            socket.on('add teacher', (query, cb) => {
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let [DbTeachers,
+                    DbAdmins] = db('teachers', 'admins')
+                DbAdmins
+                    .exists({email: query.email})
+                    .then(() => cb("This email address is already assigned"))
+                    .catch(() => {
+                        DbTeachers
+                            .exists({email: query.email})
+                            .then(() => cb("This email address is already assigned"))
+                            .catch(() => {
+                                DbTeachers
+                                    .exists({phone: query.phone})
+                                    .then(() => cb("This phone number is already assigned"))
+                                    .catch(() => {
+                                        DbTeachers
+                                            .i(query)
+                                            .then(d => cb(d))
+                                            .catch(() => cb(false))
+                                    })
+                            })
+                    })
+            })
+
+            /**
+			 * Returns list of all teachers
+			 */
+            socket.on('get all teachers', (query, cb) => { // success: [docs]
+                if (expired(query)) 
+                    return
+                let DbTeachers = db('teachers')
+                DbTeachers
+                    .find({})
+                    .execAsync()
+                    .then(d => {
+                        cb(!d
+                            ? false
+                            : d)
+                    })
                     .catch(() => cb(false))
             })
 

@@ -283,7 +283,7 @@ const vm = function (params) {
     // init
     vm.fetchAdmins()
     loadMyProfile()
-    _.defer(() => tooltip.refresh())
+    _tooltip()
 }
 
 new Component('admins-screen')

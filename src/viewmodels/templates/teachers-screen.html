@@ -1,33 +1,130 @@
-<div class="teachers-screen">
+<div class="teachers-screen sectionizr">
 
-	<!-- Teacher list  -->
-	<div class="col span_1_of_3">
-		<h3 class="title">Teachers List</h3>
-		<ul class="teachers-detail">
-			<li class="selected">Banjo Mofesola Paul</li>
-			<li>Victor I. Afolabi</li>
-			<li>Banjo Mofesola Paul</li>
-			<li>Victor I. Afolabi</li>
-			<li>Banjo Mofesola Paul</li>
-			<li>Victor I. Afolabi</li>
-			<li>Banjo Mofesola Paul</li>
-			<li>Victor I. Afolabi</li>
-			<li>Banjo Mofesola Paul</li>
-			<li>Victor I. Afolabi</li>
-			<li>Banjo Mofesola Paul</li>
-			<li>Victor I. Afolabi</li>
-			<li>Banjo Mofesola Paul</li>
-			<li>Victor I. Afolabi</li>
-			<li>Banjo Mofesola Paul</li>
-		</ul>
-	</div>
-
-	<!-- Teacher Details  -->
-	<div class="col span_2_of_3">
-		<h3 class="title">Teacher details</h3>
-		<div>
-			Teacher details in here...
+	<section>
+		<!-- ko ifnot: connected() || teachersFetchFailed() -->
+		<div class="no-teachers">
+			<h5>Fetching teachers list, please wait</h5>
+			<img src="resx/images/balls.gif" alt="Loading...">
 		</div>
-	</div>
-	
+		<!-- /ko -->
+
+		<!-- ko if: connected -->
+
+		<!-- ko ifnot: teachers().length -->
+		<div class="no-teachers animated fadeInUp">
+			<h5>No teachers have been added yet</h5>
+			<a class="btn btn-green" data-bind="click: addTeacher">Get started</a>
+		</div>
+		<!-- /ko -->
+
+		<!-- ko if: teachers().length -->
+		<div class="all-teachers animated fadeInUp flex">
+			<div class="content">
+				<h4 class="title no-underline">All teachers</h4>
+				<ul class="teachers-list row scrollable" data-bind="foreach: teachers">
+					<li class="col span_1_of_3">
+						<h5 data-bind="text: name"></h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Aboluwarin Olaoluwakitan David</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Aboluwarin Olaoluwakitan David</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Aboluwarin Olaoluwakitan David</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Aboluwarin Olaoluwakitan David</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Aboluwarin Olaoluwakitan David</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Aboluwarin Olaoluwakitan David</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
+					</li>
+					<li class="col span_1_of_3">
+						<h5>Banjo-Ogunleye Mofesola Paul</h5>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- /ko -->
+
+		<!-- ko if: newTeacher -->
+		<div class="add-teacher animated fadeIn">
+			<form class="content animated fadeInDown" data-bind="with: newTeacher,css: {disabled: newTeacher().saving}">
+				<h4 class="title">
+					Add New Teacher
+					<i class="fa fa-fw fa-close section-action red animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"
+					    data-tooltip="{'class': 'mini white'}"></i></h4>
+				<input type="text" data-bind="textInput: name" placeholder="Enter teacher's name">
+				<input type="text" data-bind="textInput: email" placeholder="Enter teacher's email address">
+				<input type="text" data-bind="textInput: phone" placeholder="Enter teacher's phone number">
+				<div class="input-fa pwd-box">
+					<input type="password" name="pwd" data-bind="textInput: password" placeholder="Choose a new password">
+					<i class="fa pwd-btn"></i>
+				</div>
+				<div class="input-fa pwd-box">
+					<input type="password" name="pwd" data-bind="textInput: $parent.confirmPassword" placeholder="Type the password again">
+					<i class="fa pwd-btn"></i>
+				</div>
+				<button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: save">Save details</button>
+			</form>
+		</div>
+		<!-- /ko -->
+		<!-- /ko -->
+	</section>
+	<section></section>
 </div>

@@ -27,6 +27,8 @@ const {remote, BrowserWindow} = require('electron')
 const app = remote.getGlobal('thisApp')
 const currentWindow = remote.getCurrentWindow()
 
+require(IMPORTS_PATH + '_sectionizr.js')
+
 const USERDATA_ASSETS_PATH = app.getPath('userData') + '/assets/'
 
 require('jquery-match-height')
@@ -141,6 +143,16 @@ function _hash() {
     let hash = require('crypto').createHash('sha256')
     hash.update(_getUTCTime().toString())
     return hash.digest('hex')
+}
+
+/**
+ * Refreshes the tooltip
+ */
+function _tooltip() {
+    _.defer(() => {
+        tooltip.refresh()
+        $('#tooltip').remove() // because sometimes the tooltip litters the screen
+    })
 }
 
 /**

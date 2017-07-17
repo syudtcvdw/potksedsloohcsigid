@@ -37,12 +37,12 @@ var vm = function (params) {
             DbSettings.clear().then(() => DbAdmins.clear(() => {
                 vm.seen(true)
                 vm.mode(null)
-                _.defer(() => (ajs(), tooltip.refresh())) // rebind anim-js and tooltips
+                _.defer(() => (ajs(), _tooltip())) // rebind anim-js and tooltips
             }))
         else {
             vm.seen(true)
             vm.mode(null)
-            _.defer(() => (ajs(), tooltip.refresh())) // rebind anim-js and tooltips
+            _.defer(() => (ajs(), _tooltip())) // rebind anim-js and tooltips
         }
     }
     vm.start = () => {
@@ -138,12 +138,14 @@ var vm = function (params) {
         VM.MODE(vm.mode())
         if (typeof params.firstRun != 'undefined' && vm.mode() == SERVER) {
             // this is neccessary to ensure payload integrity as expected at login-screen
-            params = _.assign(params, { 
+            params = _.assign(params, {
                 role: 'ADMIN',
                 info: {
                     name: vm.adminName(),
                     email: vm.logonEmail(),
-                    _id: d? d._id : '',
+                    _id: d
+                        ? d._id
+                        : '',
                     is_first: true
                 }
             })
@@ -164,7 +166,9 @@ var vm = function (params) {
     function authSuccessful(data) {
         vm.schoolData = data
         vm.enterName(true)
-        VM.controlVm.schoolName(data.name) // hack for setting up school name in control footer on first auth
+        VM
+            .controlVm
+            .schoolName(data.name) // hack for setting up school name in control footer on first auth
     }
 
     // subscriptions
@@ -177,7 +181,7 @@ var vm = function (params) {
         vm.seen(true)
         _.defer(() => {
             ajs()
-            tooltip.refresh()
+            _tooltip()
         })
     } else {
         vm.mode(params.mode)
