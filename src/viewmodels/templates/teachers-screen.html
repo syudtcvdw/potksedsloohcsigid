@@ -20,82 +20,13 @@
 		<!-- ko if: teachers().length -->
 		<div class="all-teachers animated fadeInUp flex">
 			<div class="content">
-				<h4 class="title no-underline">All teachers</h4>
+				<h4 class="title no-underline">
+					All teachers
+					<i class="fa fa-fw fa-question-circle section-action orange" data-bind="click: addTeacher"></i>
+					<label class="section-action green" data-bind="click: addTeacher">Add new</label></h4>
 				<ul class="teachers-list row scrollable" data-bind="foreach: teachers">
 					<li class="col span_1_of_3">
 						<h5 data-bind="text: name"></h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Aboluwarin Olaoluwakitan David</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Aboluwarin Olaoluwakitan David</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Aboluwarin Olaoluwakitan David</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Aboluwarin Olaoluwakitan David</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Aboluwarin Olaoluwakitan David</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Aboluwarin Olaoluwakitan David</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Olusetan Akinjuyigbe Anjolaoluwa Aboderin</h5>
-					</li>
-					<li class="col span_1_of_3">
-						<h5>Banjo-Ogunleye Mofesola Paul</h5>
 					</li>
 				</ul>
 			</div>
@@ -112,6 +43,13 @@
 				<input type="text" data-bind="textInput: name" placeholder="Enter teacher's name">
 				<input type="text" data-bind="textInput: email" placeholder="Enter teacher's email address">
 				<input type="text" data-bind="textInput: phone" placeholder="Enter teacher's phone number">
+				<label class="dropdown">
+					<select data-bind="value: gender">
+						<option value="" class="hidden">Select gender</option>
+						<option value="male">Male</option>
+						<option value="female">Female</option>
+					</select>
+				</label>
 				<div class="input-fa pwd-box">
 					<input type="password" name="pwd" data-bind="textInput: password" placeholder="Choose a new password">
 					<i class="fa pwd-btn"></i>

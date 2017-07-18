@@ -37,6 +37,18 @@
 		.title {
 			margin-top: 0;
 		}
+		.content {
+			width: 100%;
+			label.section-action {
+				text-transform: uppercase;
+				font-size: small;
+				font-weight: bold;
+				padding-top: 1px;
+				+.section-action {
+					padding-right: 6px;
+				}
+			}
+		}
 		.teachers-list {
 			max-height: 40vh;
 			overflow-y: auto;

@@ -442,8 +442,8 @@ img {
     font-size: 100% !important;
     select {
         padding: 10px 42px 10px 10px;
-        background: #f8f8f8;
-        color: $theme-text;
+        background: inherit;
+        color: rgba($theme-black, .69);
         border: 2px solid rgba($theme-black, .1);
         border-radius: 0;
         display: inline-block;

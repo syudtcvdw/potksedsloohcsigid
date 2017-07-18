@@ -60,6 +60,7 @@ const vm = function (params) {
         t.email = ko.observable(args.email || '')
         t.phone = ko.observable(args.phone || '')
         t.password = ko.observable(args.password || '')
+        t.gender = ko.observable(args.gender || '')
         t.addDate = ko.observable(args.addDate || null)
 
         // states
