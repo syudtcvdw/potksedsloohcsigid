@@ -99,6 +99,7 @@ module.exports = function (server, force = false) {
                 let DbAdmins = db('admins')
                 DbAdmins
                     .find({})
+                    .sort({is_first: -1, name: 1})
                     .execAsync()
                     .then(d => {
                         cb(!d
@@ -346,12 +347,28 @@ module.exports = function (server, force = false) {
                 let DbTeachers = db('teachers')
                 DbTeachers
                     .find({})
+                    .sort({name: 1})
                     .execAsync()
                     .then(d => {
                         cb(!d
                             ? false
                             : d)
                     })
+                    .catch(() => cb(false))
+            })
+
+            /**
+             * Edits existing teacher
+             */
+            socket.on('edit teacher', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbTeachers = db('teachers')
+                // edit this teacher
+                DbTeachers
+                    .iu(query)
+                    .then(d => cb(true))
                     .catch(() => cb(false))
             })
 
@@ -383,12 +400,28 @@ module.exports = function (server, force = false) {
                 let DbSubjects = db('subjects')
                 DbSubjects
                     .find({})
+                    .sort({title: 1})
                     .execAsync()
                     .then(d => {
                         cb(!d
                             ? false
                             : d)
                     })
+                    .catch(() => cb(false))
+            })
+
+            /**
+             * Edits existing subject
+             */
+            socket.on('edit subject', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbTeachers = db('subjects')
+                // edit this subject
+                DbTeachers
+                    .iu(query)
+                    .then(d => cb(true))
                     .catch(() => cb(false))
             })
 

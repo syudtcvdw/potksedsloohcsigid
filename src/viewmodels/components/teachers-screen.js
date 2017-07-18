@@ -10,13 +10,16 @@ const vm = function (params) {
     vm.newTeacher = ko.observable()
     vm.confirmPassword = ko.observable()
     vm.teacherDetail = ko.observable()
+    vm.newTeacherActionName = ko.observable()
 
     // states
     vm.connected = ko.observable(false)
     vm.teachersFetchFailed = ko.observable(false)
+    vm.loadingTeachers = ko.observable(false)
 
     // behaviours
     vm.addTeacher = () => {
+        vm.newTeacherActionName('Add New Teacher')
         vm.confirmPassword(null)
         vm.newTeacher(new Teacher)
         _tooltip()
@@ -25,9 +28,12 @@ const vm = function (params) {
         vm.newTeacher(null)
         _tooltip()
     }
+
     vm.loadTeachers = () => {
         vm.teachersFetchFailed(false)
+        vm.loadingTeachers(true)
         sockets.emit('get all teachers', null, data => {
+            vm.loadingTeachers(false)
             if (!data.status) {
                 vm.teachersFetchFailed(true)
                 VM.notify("Unable to fetch teachers list, could not reach Control Workstation", "error", {
@@ -36,6 +42,7 @@ const vm = function (params) {
             } else {
                 vm.teachersFetchFailed(false)
                 if (data.response) {
+                    vm.teachers.removeAll()
                     data
                         .response
                         .map(t => {
@@ -110,6 +117,25 @@ const vm = function (params) {
                         t.saving(false)
                     }
                 })
+            } else {
+                // edit
+                if (t.password() !== vm.confirmPassword()) 
+                    VM.notify("Passwords do not match, use the reveal buttons to confirm", "error")
+                t.saving(true)
+                sockets.emit('edit teacher', teacher, data => {
+                    if (!data.status) 
+                        return t.saving(false),
+                        VM.notify('Problem editing teacher, could not reach Control Workstation', 'error', {
+                            'try again': t.save
+                        }, 'retry edit teacher')
+                    else {
+                        if (data.response) 
+                            VM.notify("Details updated successfully")
+                        else 
+                            VM.notify("Unable to update profile")
+                        t.saving(false)
+                    }
+                })
             }
         }
         t.open = () => {
@@ -121,9 +147,14 @@ const vm = function (params) {
                 .contextmenu
                 .prep(e)
                 .show({
-                    'View': t.open,
-                    'Edit profile': () => {}, // replace callback here with edit behaviour
-                    'Delete': () => {} // replace callback here with delete behaviour
+                    'Manage': t.open,
+                    'Edit profile': () => {
+                        vm.newTeacherActionName('Edit Teacher Details')
+                        vm.confirmPassword(t.password())
+                        vm.newTeacher(t)
+                    },
+                    'Delete': () => {}, // replace callback here with delete behaviour
+                    'Refresh list': vm.loadTeachers
                 })
         }
 

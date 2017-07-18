@@ -1,7 +1,7 @@
 <div class="teachers-screen sectionizr">
 
 	<section>
-		<!-- ko ifnot: connected() || subjectsFetchFailed() -->
+		<!-- ko ifnot: connected() || (!subjects().length && subjectsFetchFailed()) -->
 		<div class="no-teachers">
 			<h5>Fetching subjects list, please wait</h5>
 			<img src="resx/images/balls.gif" alt="Loading...">
@@ -18,7 +18,7 @@
 		<!-- /ko -->
 
 		<!-- ko if: subjects().length -->
-		<div class="all-teachers animated fadeInUp flex">
+		<div class="all-teachers animated fadeInUp flex" data-bind="css: {disabled: loadingSubjects}">
 			<div class="content">
 				<h4 class="title no-underline">
 					All subjects
@@ -41,7 +41,7 @@
 					<i class="fa fa-fw fa-close section-action orange animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"
 					    data-tooltip="{'class': 'mini white'}"></i></h4>
 				<input type="text" data-bind="textInput: title" placeholder="Enter subject title">
-				<input type="text" data-bind="textInput: code" placeholder="Enter subject code">
+				<input type="text" data-bind="textInput: code, css: {disabled: _id}" placeholder="Enter subject code">
 				<button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: save">Save details</button>
 			</form>
 		</div>

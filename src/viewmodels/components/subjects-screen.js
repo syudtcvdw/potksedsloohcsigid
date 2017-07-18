@@ -9,13 +9,16 @@ const vm = function (params) {
     vm.subjects = ko.observableArray()
     vm.newSubject = ko.observable()
     vm.subjectDetail = ko.observable()
+    vm.newSubjectActionName = ko.observable()
 
     // states
     vm.connected = ko.observable(false)
     vm.subjectsFetchFailed = ko.observable(false)
+    vm.loadingSubjects = ko.observable(false)
 
     // behaviours
     vm.addSubject = () => {
+        vm.newSubjectActionName("Add New Subject")
         vm.newSubject(new Subject)
         _tooltip()
     }
@@ -25,7 +28,9 @@ const vm = function (params) {
     }
     vm.loadSubjects = () => {
         vm.subjectsFetchFailed(false)
+        vm.loadingSubjects(true)
         sockets.emit('get all subjects', null, data => {
+            vm.loadingSubjects(false)
             if (!data.status) {
                 vm.subjectsFetchFailed(true)
                 VM.notify("Unable to fetch subjects list, could not reach Control Workstation", "error", {
@@ -34,6 +39,9 @@ const vm = function (params) {
             } else {
                 vm.subjectsFetchFailed(false)
                 if (data.response) {
+                    vm
+                        .subjects
+                        .removeAll()
                     data
                         .response
                         .map(s => {
@@ -100,6 +108,23 @@ const vm = function (params) {
                         s.saving(false)
                     }
                 })
+            } else {
+                // edit
+                s.saving(true)
+                sockets.emit('edit subject', subject, data => {
+                    if (!data.status) 
+                        return s.saving(false),
+                        VM.notify('Problem editing subject, could not reach Control Workstation', 'error', {
+                            'try again': s.save
+                        }, 'retry edit subject')
+                    else {
+                        if (data.response) 
+                            VM.notify("Subject updated successfully")
+                        else 
+                            VM.notify("Unable to update subject")
+                        s.saving(false)
+                    }
+                })
             }
         }
         s.open = () => {
@@ -112,8 +137,12 @@ const vm = function (params) {
                 .prep(e)
                 .show({
                     'Manage': s.open,
-                    'Edit subject': () => {}, // replace callback here with edit behaviour
-                    'Delete': () => {} // replace callback here with delete behaviour
+                    'Edit subject': () => {
+                        vm.newSubjectActionName('Edit Subject')
+                        vm.newSubject(s)
+                    },
+                    'Delete': () => {}, // replace callback here with delete behaviour
+                    'Refresh list': vm.loadSubjects
                 })
         }
 

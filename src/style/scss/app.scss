@@ -337,8 +337,9 @@ table {
 }
 
 .disabled {
-    filter: grayscale(.5) sepia(.5);
+    filter: grayscale(1);
     pointer-events: none;
+    opacity: .6;
 }
 
 .error-text {
