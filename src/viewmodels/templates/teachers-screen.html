@@ -37,7 +37,7 @@
 		<div class="add-teacher animated fadeIn">
 			<form class="content animated fadeInDown" data-bind="with: newTeacher,css: {disabled: newTeacher().saving}">
 				<h4 class="title">
-					Add New Teacher
+					<span data-bind="text: $parent.newTeacherActionName"></span>
 					<i class="fa fa-fw fa-close section-action red animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"
 					    data-tooltip="{'class': 'mini white'}"></i></h4>
 				<input type="text" data-bind="textInput: name" placeholder="Enter teacher's name">
