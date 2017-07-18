@@ -3,11 +3,13 @@ const vm = function (params) {
 
     // props
     let controlla
+    vm.info = "Click on a teacher's name to view their details, and manage them."
 
     // observables
     vm.teachers = ko.observableArray()
     vm.newTeacher = ko.observable()
     vm.confirmPassword = ko.observable()
+    vm.teacherDetail = ko.observable()
 
     // states
     vm.connected = ko.observable(false)
@@ -24,6 +26,7 @@ const vm = function (params) {
         _tooltip()
     }
     vm.loadTeachers = () => {
+        vm.teachersFetchFailed(false)
         sockets.emit('get all teachers', null, data => {
             if (!data.status) {
                 vm.teachersFetchFailed(true)
@@ -50,9 +53,8 @@ const vm = function (params) {
     // sub-vm
     function Teacher() {
         let t = this
-        let args = arguments.length > 0
-            ? arguments[0]
-            : {}
+        let args = arguments.length > 0 ?
+            arguments[0] : {}
 
         // props
         t._id = ko.observable(args._id || '')
@@ -68,9 +70,9 @@ const vm = function (params) {
 
         // behaviours
         t.save = () => {
-            if (_anyEmpty(t.name(), t.email(), t.phone(), _new
-                ? t.password()
-                : 'empty')) 
+            if (_anyEmpty(t.name(), t.email(), t.phone(), _new ?
+                    t.password() :
+                    'empty'))
                 return VM.notify("Do not leave any detail empty", "warn")
 
             let teacher = ko.toJS(t)
@@ -78,20 +80,20 @@ const vm = function (params) {
 
             if (_new) {
                 // add
-                if (t.password() != vm.confirmPassword()) 
+                if (t.password() != vm.confirmPassword())
                     return VM.notify("Passwords do not match, use the reveal buttons to comfirm", "error")
 
                 t.saving(true)
-                teacher.addDate = teacher.addDate
-                    ? teacher.addDate
-                    : _getUTCTime() / 1000 // to secs
+                teacher.addDate = teacher.addDate ?
+                    teacher.addDate :
+                    _getUTCTime() / 1000 // to secs
                 delete teacher._id
                 sockets.emit('add teacher', teacher, data => {
-                    if (!data.status) 
+                    if (!data.status)
                         return t.saving(false),
-                        VM.notify('Problem adding teacher, could not reach Control Workstation', 'error', {
-                            'try again': t.save
-                        }, 'retry add teacher')
+                            VM.notify('Problem adding teacher, could not reach Control Workstation', 'error', {
+                                'try again': t.save
+                            }, 'retry add teacher')
                     else {
                         console.log(data)
                         if (typeof data.response == 'object') {
@@ -100,18 +102,37 @@ const vm = function (params) {
                                 .teachers
                                 .push(new Teacher(data.response))
                             vm.addTeacher()
-                        } else if (data.response === false) 
+                        } else if (data.response === false)
                             VM.notify('Unable to add teacher', 'error')
-                        else 
+                        else
                             VM.notify(data.response, 'error')
                         t.saving(false)
                     }
                 })
             }
         }
+        t.open = () => {
+            vm.teacherDetail(new TeacherDetail(t))
+            controlla.next()
+        }
+        t.contextmenu = (o,e) => {
+            VM.contextmenu.prep(e).show({
+                'View': t.open,
+                'Edit profile': () => {}, // replace callback here with edit behaviour
+                'Delete': () => {} // replace callback here with delete behaviour
+            })
+        }
 
         // init
         let _new = !t._id()
+    }
+
+    function TeacherDetail(teacher) {
+        let t = this
+        if (!teacher) return
+        // props
+        t.me = teacher
+        // behaviours
     }
 
     // init

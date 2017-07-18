@@ -44,9 +44,9 @@
 				font-size: small;
 				font-weight: bold;
 				padding-top: 1px;
-				+.section-action {
-					padding-right: 6px;
-				}
+			}
+			.section-action {
+				padding-left: 6px;
 			}
 		}
 		.teachers-list {
@@ -55,14 +55,60 @@
 			li {
 				background: $theme-gray;
 				padding: 0 5px;
+				position: relative;
+				overflow: hidden;
 				&:hover {
 					color: $theme-green;
 					background: lighten($theme-gray, 2%);
+					&:before {
+						transform: rotateZ(-45deg)
+					}
+					&:after {
+						transform: rotateZ(45deg)
+					}
+					h5 {
+						padding-left: 5px;
+					}
 				}
 				h5 {
 					margin: .8rem 0;
 					overflow: hidden;
 					text-overflow: ellipsis;
+					transition-duration: .25s;
+				}
+				&:before,
+				&:after {
+					content: '';
+					background: $theme-white;
+					height: 100%;
+					width: 42px;
+					left: 100%;
+					position: absolute;
+					transition-duration: .25s;
+				}
+				&:before {
+					top: -50%;
+					transform-origin: 0 100%;
+				}
+				&:after {
+					bottom: -50%;
+					transform-origin: 0 0;
+				}
+			}
+		}
+	}
+	.teacher-details {
+		padding: 0 2rem;
+		header {
+			h3 {
+				margin-bottom: .5rem;
+			}
+			.about {
+				font-size: 80%;
+				display: inline-block;
+				color: $theme-green;
+				label+label {
+					margin-left: .4rem;
 				}
 			}
 		}

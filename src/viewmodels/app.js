@@ -34,8 +34,11 @@ var VM = new function () {
     vm.ROLE = ko.observable() // logged in user's role as far as the system is concerned: Admin, Teacher, blah blah
     vm.connectionInfo = ko.observable() // connection info
     vm.loading = ko.observable() // toggles the loading guy on the header
-    vm.notifs = new notifs() // notifications viewmodel
     vm.skipModeSub = false // tells whether to ignore subscription update on MODE
+
+    // sub-vms
+    vm.notifs = new notifs() // notifications viewmodel
+    vm.contextmenu = new contextmenu() // contextmenu viewmodel
 
     // tmp
     vm.RESETDB = ko.observable(true)
@@ -127,7 +130,9 @@ var VM = new function () {
         .view
         .subscribe(() => {
             vm.loading(false)
-            vm.notifs.clear()
+            vm
+                .notifs
+                .clear()
         })
 
     // sub-vm
@@ -291,6 +296,39 @@ var VM = new function () {
             // init
             if (!n.sticky()) 
                 n.die()
+        }
+    }
+
+    function contextmenu() {
+        let c = this
+        // observables
+        c.xpos = ko.observable(0)
+        c.ypos = ko.observable(0)
+        c.options = ko.observableArray()
+        c.shown = ko.observable(false)
+        // behaviours
+        c.prep = (event) => {
+            c.xpos(`${event.screenX - 3}px`)
+            c.ypos(`${event.screenY - 3}px`)
+            return c
+        }
+        c.show = (options) => {
+            c
+                .options
+                .removeAll()
+            for (let o in options) 
+                c.options.push(new Menu(o, options[o]))
+            c.shown(true)
+        }
+        c.dismiss = () => c.shown(false)
+        // local
+        function Menu(title, cb) {
+            let m = this
+            m.title = title
+            m.trigger = () => {
+                c.dismiss()
+                cb()
+            }
         }
     }
 };

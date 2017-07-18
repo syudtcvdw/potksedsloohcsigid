@@ -102,7 +102,9 @@ var vm = function (params) {
             'schoolDisplaysPositions': vm.schoolDisplaysPositions()
         }, data => {
             if (!data.status) 
-                return VM.notify('Unable to update school profile, could not reach Control Workstation', 'error', {'Try again': vm.updateProfile}, 'retry profile update')
+                return VM.notify('Unable to update school profile, could not reach Control Workstation', 'error', {
+                    'Try again': vm.updateProfile
+                }, 'retry profile update')
             else {
                 if (!data.response) {
                     VM.notify("Problem updating school profile", "error")
@@ -181,6 +183,17 @@ var vm = function (params) {
                 }
             }
         })
+    }
+    vm.logoMenu = (o, e) => {
+        let menu = {'Change': vm.selectLogo}
+        if (vm.logoChanged()) {
+            menu['Reset'] = vm.resetLogo
+            menu['Upload'] = vm.uploadLogo
+        }
+        VM
+            .contextmenu
+            .prep(e)
+            .show(menu)
     }
 
     // subscription
@@ -263,7 +276,9 @@ var vm = function (params) {
         am.loadMetrics = () => {
             sockets.emit('fetch setting', 'schoolMetrics', data => {
                 if (!data.status) 
-                    VM.notify("Unable to fetch assessment metrics, could not reach Control Workstation", "error", {'try again': am.loadMetrics}, 'retry load metrics')
+                    VM.notify("Unable to fetch assessment metrics, could not reach Control Workstation", "error", {
+                        'try again': am.loadMetrics
+                    }, 'retry load metrics')
                 else {
                     if (data.response) {
                         data
@@ -362,7 +377,9 @@ var vm = function (params) {
             gs.saving(true)
                 sockets.emit('save grading sys', ko.toJS(gs.grades()), data => {
                     if (!data.status) 
-                        return VM.notify('Problem updating Grading system, could not reach Control Workstation', 'error', {'try again': vm.saveGradingSys}, 'retry save grading sys')
+                        return VM.notify('Problem updating Grading system, could not reach Control Workstation', 'error', {
+                            'try again': vm.saveGradingSys
+                        }, 'retry save grading sys')
                     else {
                         if (data.response) {
                             VM.notify('Successfully saved.')
@@ -378,7 +395,9 @@ var vm = function (params) {
         gs.loadGrades = () => {
             sockets.emit('fetch setting', 'gradingSystem', data => {
                 if (!data.status) 
-                    VM.notify("Unable to fetch grading system, could not reach Control Workstation", "error", {'try again': vm.loadGradingSystem}, 'retry load grading system')
+                    VM.notify("Unable to fetch grading system, could not reach Control Workstation", "error", {
+                        'try again': vm.loadGradingSystem
+                    }, 'retry load grading system')
                 else {
                     if (data.response) {
                         data

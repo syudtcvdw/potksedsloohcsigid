@@ -37,7 +37,7 @@
 			</h4>
 			<!-- ko ifnot: noAdmins -->
 			<div class="row" data-bind="foreach: admins">
-				<div class="admin-card col span_1_of_3 animated fadeIn">
+				<div class="admin-card col span_1_of_3 animated fadeIn" data-bind="event: {contextmenu: contextmenu}">
 					<div class="info">
 						<h4 class="admin-name" data-bind="text: name"></h4>
 						<small data-bind="text: email">mpdepaule1@gmail.com</small>

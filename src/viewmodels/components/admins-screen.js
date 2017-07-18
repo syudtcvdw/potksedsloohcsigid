@@ -272,6 +272,13 @@ const vm = function (params) {
             }
         }
 
+        a.contextmenu = (o,e) => {
+            VM.contextmenu.prep(e).show({
+                'Change password': a.changePwd,
+                'Delete': a.removeMe
+            })
+        }
+
     }
 
     // local

@@ -34,8 +34,17 @@ $.fn.sectionize = $.fn.sectionizr = function () {
                     return false
                 return offset(false)
             }
-            snzr.go = step => {
+            snzr.step = step => {
                 snzr.position += step
+                snzr.position = snzr.position < 1
+                    ? 1
+                    : (snzr.position > snzr.sections.length
+                        ? snzr.sections.length
+                        : snzr.position)
+                offset(null)
+            }
+            snzr.go = where => {
+                snzr.position = where
                 snzr.position = snzr.position < 1
                     ? 1
                     : (snzr.position > snzr.sections.length
@@ -53,7 +62,7 @@ $.fn.sectionize = $.fn.sectionizr = function () {
             }
             snzr.hasNext = () => snzr.position < snzr.sections.length
             snzr.hasPrev = () => snzr.position > 1
-            snzr.refresh = snzr.init
+            snzr.refresh = init
 
             // local
             function offset(forward = true) {
@@ -73,7 +82,7 @@ $.fn.sectionize = $.fn.sectionizr = function () {
                 return true
             }
             function init() {
-                snzr.el.isVertical = $(snzr.el).hasClass('vertical')
+                isVertical = $(snzr.el).hasClass('vertical')
                 snzr.sections.length = 0
                 $('section', $(snzr.el)).each((i, s) => snzr.sections.push(s))
             }

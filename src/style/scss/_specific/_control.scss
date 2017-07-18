@@ -13,14 +13,6 @@
 @include use-inconsolata;
 @include anim-loading-strip;
 //
-control-frame {
-    ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-}
-
 .control-footer {
     position: fixed;
     height: 32px;
@@ -131,7 +123,7 @@ control-frame {
     transition: 500ms ease-out;
     ul {
         letter-spacing: -4px;
-        box-shadow: rgba(1,22,39,0.05) 0px -5px 3px inset;
+        box-shadow: rgba(1, 22, 39, 0.05) 0px -5px 3px inset;
         li {
             padding: .5rem 1rem;
             text-align: center;
@@ -168,5 +160,27 @@ control-frame {
         left: -20%;
         top: 0;
         animation: loading-strip 1s ease-out infinite;
+    }
+}
+
+.contextmenu {
+    background: $theme-white;
+    box-shadow: rgba($theme-black, .5) 0px 0px 3px;
+    padding: 5px;
+    position: fixed;
+    z-index: 99999;
+    ul {
+        width: 200px;
+        li {
+            padding: .5rem .7rem;
+            color: $theme-text;
+            @include font-inconsolata;
+            +li {
+                border-top: $theme-gray thin solid;
+            }
+            &:hover {
+                color: $theme-orange
+            }
+        }
     }
 }

@@ -167,6 +167,14 @@ $('body')
         $parent.toggleClass('seen')
     })
 
+$('body').on('mouseleave', '.contextmenu', function () {
+    try {
+        VM
+            .contextmenu
+            .dismiss()
+    } catch (e) {}
+})
+
 /**
  * A depth-inclusive match extension for javascript string
  * @param   {RegExp} regex The regex pattern to match against

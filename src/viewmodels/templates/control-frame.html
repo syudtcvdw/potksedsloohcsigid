@@ -1,7 +1,8 @@
 <!-- ko if: $root.ROLE -->
 <header class="control-header">
     <ul data-bind="foreach: getMenu">
-        <li data-tooltip="{ 'class': 'mini white' }" data-bind="attr: {title: label, 'data-ajs-delay': ($index() * 250) + 'ms'}, css: {active: isActive}, click: go" class="anim-js fadeInRight" data-ajs-duration="650ms">
+        <li data-tooltip="{ 'class': 'mini white' }" data-bind="attr: {title: label, 'data-ajs-delay': ($index() * 250) + 'ms'}, css: {active: isActive}, click: go"
+            class="anim-js fadeInRight" data-ajs-duration="650ms">
             <img alt="" data-bind="attr: {src: icon}">
         </li>
     </ul>
@@ -11,6 +12,7 @@
         <!-- /ko -->
     </div>
 </header>
+
 <footer class="control-footer">
     <ul>
         <li data-bind="text: schoolName"></li>
@@ -24,11 +26,6 @@
         <!-- /ko -->
     </ul>
 </footer>
-<!-- ko ifnot: $root.connectionInfo().connected -->
-<!--<div class="curtain connection-lost">
-    <header class="animated fadeInDown">Connection to server lost [<span data-bind="text: disconnectionTime"></span>]</header>
-</div>-->
-<!-- /ko -->
 
 <div class="notifs" data-bind="with: $root.notifs">
     <!-- ko foreach: notifs -->
@@ -57,5 +54,13 @@
     </div>
     <!-- /ko -->
 </div>
+
+<!-- ko if: $root.contextmenu.shown -->
+<div class="contextmenu" data-bind="with: $root.contextmenu, style: {top: $root.contextmenu.ypos,left: $root.contextmenu.xpos}">
+    <ul data-bind="foreach: options">
+        <li data-bind="click: trigger,text: title"></li>
+    </ul>
+</div>
+<!-- /ko -->
 
 <!-- /ko -->

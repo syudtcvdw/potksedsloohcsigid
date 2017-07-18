@@ -22,10 +22,10 @@
 			<div class="content">
 				<h4 class="title no-underline">
 					All teachers
-					<i class="fa fa-fw fa-question-circle section-action orange" data-bind="click: addTeacher"></i>
+					<i class="fa fa-fw fa-question-circle section-action orange" data-bind="click: addTeacher, attr: {title: info}" data-tooltip="{}"></i>
 					<label class="section-action green" data-bind="click: addTeacher">Add new</label></h4>
 				<ul class="teachers-list row scrollable" data-bind="foreach: teachers">
-					<li class="col span_1_of_3">
+					<li class="col span_1_of_3" data-bind="click: open, event: {contextmenu: contextmenu}">
 						<h5 data-bind="text: name"></h5>
 					</li>
 				</ul>
@@ -64,5 +64,15 @@
 		<!-- /ko -->
 		<!-- /ko -->
 	</section>
-	<section></section>
+	<section class="teacher-details" data-bind="with: teacherDetail">
+		<header data-bind="with: me">
+			<h3 data-bind="text: name"></h3>
+			<div class="about">
+				<label><i class="fa fa-fw fa-male"></i> <span data-bind="text: gender"></span></label>
+				<label><i class="fa fa-fw fa-phone"></i> <span data-bind="text: phone"></span></label>
+				<label><i class="fa fa-fw fa-envelope"></i> <span data-bind="text: email"></span></label>
+			</div>
+		</header>
+		<!-- /ko -->
+	</section>
 </div>
