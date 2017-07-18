@@ -16,7 +16,12 @@ var vm = function (params) {
             kind: MENU_SUPER
         }, {
             id: 'teachers',
-            label: 'Manage Teachers'
+            label: 'Manage Teachers',
+            kind: MENU_ADMIN
+        }, {
+            id: 'subjects',
+            label: 'Manage Subjects',
+            kind: MENU_ADMIN
         }
     ]
     vm.schoolUid = '' // what the school uid is
@@ -110,7 +115,10 @@ var vm = function (params) {
         })
     vm
         .serverTime
-        .subscribe(t => {vm.timeOffset = t - _getUTCTime(), console.log(vm.timeOffset)})
+        .subscribe(t => {
+            vm.timeOffset = t - _getUTCTime(),
+            console.log(vm.timeOffset)
+        })
 
     // sub vm
     function MenuItem(config) {
@@ -126,6 +134,8 @@ var vm = function (params) {
 
         // behaviours
         m.go = () => {
+            if (m.component == VM.view()) 
+                return
             VM.loadView(m.component)
         }
 

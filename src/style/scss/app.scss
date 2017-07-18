@@ -551,6 +551,10 @@ form {
     justify-content: center;
 }
 
+.uppercase {
+    text-transform: uppercase;
+}
+
 // specific
 @import '_specific/splash';
 @import '_specific/start';

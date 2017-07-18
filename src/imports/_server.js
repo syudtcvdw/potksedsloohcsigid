@@ -308,7 +308,7 @@ module.exports = function (server, force = false) {
             })
 
             /**
-             * adds new teacher
+             * Adds new teacher
              */
             socket.on('add teacher', (query, cb) => {
                 if (expired(query)) 
@@ -345,6 +345,43 @@ module.exports = function (server, force = false) {
                     return
                 let DbTeachers = db('teachers')
                 DbTeachers
+                    .find({})
+                    .execAsync()
+                    .then(d => {
+                        cb(!d
+                            ? false
+                            : d)
+                    })
+                    .catch(() => cb(false))
+            })
+
+            /**
+             * Adds new subject
+             */
+            socket.on('add subject', (query, cb) => {
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbSubjects = db('subjects')
+                DbSubjects
+                    .exists({code: query.code})
+                    .then(() => cb("This subject code is already assigned"))
+                    .catch(() => {
+                        DbSubjects
+                            .i(query)
+                            .then(d => cb(d))
+                            .catch(() => cb(false))
+                    })
+            })
+
+            /**
+			 * Returns list of all subjects
+			 */
+            socket.on('get all subjects', (query, cb) => { // success: [docs]
+                if (expired(query)) 
+                    return
+                let DbSubjects = db('subjects')
+                DbSubjects
                     .find({})
                     .execAsync()
                     .then(d => {

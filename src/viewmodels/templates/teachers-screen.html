@@ -38,7 +38,7 @@
 			<form class="content animated fadeInDown" data-bind="with: newTeacher,css: {disabled: newTeacher().saving}">
 				<h4 class="title">
 					Add New Teacher
-					<i class="fa fa-fw fa-close section-action red animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"
+					<i class="fa fa-fw fa-close section-action orange animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"
 					    data-tooltip="{'class': 'mini white'}"></i></h4>
 				<input type="text" data-bind="textInput: name" placeholder="Enter teacher's name">
 				<input type="text" data-bind="textInput: email" placeholder="Enter teacher's email address">
@@ -66,13 +66,16 @@
 	</section>
 	<section class="teacher-details" data-bind="with: teacherDetail">
 		<header data-bind="with: me">
+			<a data-bind="click: $parent.back" class="back-btn"></a>
 			<h3 data-bind="text: name"></h3>
 			<div class="about">
-				<label><i class="fa fa-fw fa-male"></i> <span data-bind="text: gender"></span></label>
+				<label><i class="fa fa-male"></i> <span data-bind="text: gender"></span></label>
 				<label><i class="fa fa-fw fa-phone"></i> <span data-bind="text: phone"></span></label>
 				<label><i class="fa fa-fw fa-envelope"></i> <span data-bind="text: email"></span></label>
 			</div>
 		</header>
-		<!-- /ko -->
+		<div class="content">
+			
+		</div>
 	</section>
 </div>
