@@ -9,6 +9,7 @@ var vm = function (params) {
 
         // school props
     let logoUri = DEFAULT_SCHOOL_LOGO
+    let controlla
 
     // school props
     vm.logo = ko.observable()
@@ -16,6 +17,7 @@ var vm = function (params) {
     vm.schoolSlogan = ko.observable()
     vm.schoolAddress = ko.observable()
     vm.schoolDisplaysPositions = ko.observable()
+    vm.section = ko.observable(1)
 
     // ops & terminology
     vm.termsPerSessionLists = ko.observableArray(termsPerSessionArr)
@@ -26,6 +28,7 @@ var vm = function (params) {
     vm.currentTerm = ko.observable()
 
     // grading system
+    vm.promotionCutoff = ko.observable();
     vm.gradingSystem = new GradingSystem;
 
     // assessment metrics
@@ -134,7 +137,7 @@ var vm = function (params) {
     }
     vm.updateOpsAndTerms = () => {
         // check if any filed is empty
-        if (_anyEmpty(vm.subSession(), vm.sessionName(), vm.termsPerSession(), vm.currentTerm())) 
+        if (_anyEmpty(vm.subSession(), vm.sessionName(), vm.termsPerSession(), vm.currentTerm(), vm.promotionCutoff())) 
             return VM.notify('Please select all fields as appropriate', 'warn'),
             null
 
@@ -144,7 +147,8 @@ var vm = function (params) {
             'schoolSubSession': vm.subSession(),
             'schoolSessionName': vm.sessionName(),
             'schoolTermsPerSession': vm.termsPerSession(),
-            'schoolCurrentTerm': vm.currentTerm()
+            'schoolCurrentTerm': vm.currentTerm(),
+            'schoolPromotionCutoff': vm.currentTerm()
         }, data => {
             if (!data.status) 
                 return VM.notify('Problem updating Operations and Terminology, could not reach Control Workstation', 'error')
@@ -164,12 +168,16 @@ var vm = function (params) {
                         }, {
                             label: 'schoolCurrentTerm',
                             value: vm.currentTerm()
+                        }, {
+                            label: 'schoolPromotionCutoff',
+                            value: vm.promotionCutoff()
                         }
                     ]).then(d => {
                         VM.controlVm.schoolSubSession = vm.subSession()
                         VM.controlVm.schoolSessionName = vm.sessionName()
                         VM.controlVm.schoolTermsPerSession = vm.termsPerSession()
                         VM.controlVm.schoolCurrentTerm = vm.currentTerm()
+                        VM.controlVm.schoolPromotionCutoff = vm.promotionCutoff()
 
                         VM.notify('Operations and Terminology successfully updated!')
                         vm.updatingOps(false)
@@ -185,7 +193,9 @@ var vm = function (params) {
         })
     }
     vm.logoMenu = (o, e) => {
-        let menu = {'Change': vm.selectLogo}
+        let menu = {
+            'Change': vm.selectLogo
+        }
         if (vm.logoChanged()) {
             menu['Reset'] = vm.resetLogo
             menu['Upload'] = vm.uploadLogo
@@ -202,6 +212,11 @@ var vm = function (params) {
         .subscribe(b => {
             if (b) 
                 _tooltip()
+        })
+    vm
+        .section
+        .subscribe(index => {
+            controlla.go(index)
         })
 
     // computed
@@ -237,7 +252,7 @@ var vm = function (params) {
             am
                 .metrics
                 .push(new Metric())
-            redraw(evt) // redraw layout
+            _tooltip()
         }
         am.clear = () => {
             VM.notify("Are you sure you want to clear all metrics, this action is not reversible", "black", {
@@ -245,7 +260,7 @@ var vm = function (params) {
                     am
                         .metrics
                         .removeAll()
-                    redraw()
+                    _tooltip()
                 }
             }, "clear metrics")
         }
@@ -288,7 +303,7 @@ var vm = function (params) {
                                     .metrics
                                     .push(new Metric(m))
                             })
-                        redraw()
+                        _tooltip()
                         am.connected(true)
                     }
                 }
@@ -327,7 +342,7 @@ var vm = function (params) {
                 am
                     .metrics
                     .remove(this)
-                redraw()
+                _tooltip()
             }
         }
 
@@ -359,7 +374,7 @@ var vm = function (params) {
             gs
                 .grades
                 .push(new Grade({maxScore: lastScore}))
-            redraw(evt)
+            _tooltip()
         }
         gs.pop = () => {
             gs
@@ -408,7 +423,7 @@ var vm = function (params) {
                                     .push(new Grade(g))
                             })
                         gs.connected(true)
-                        redraw()
+                        _tooltip()
                     }
                 }
             }, true)
@@ -472,24 +487,6 @@ var vm = function (params) {
         let _t = -(dimen.h - against) / 2;
         return {'l': _l, 't': _t}
     }
-    function redraw() {
-        let container = arguments.length == 0
-            ? null
-            : $(arguments[0].target)
-                .closest('.card')
-                .find('.content.scrollable')[0]
-        _.defer(() => {
-            $
-                .fn
-                .matchHeight
-                ._update()
-            if (container) {
-                $('.school-config-screen').scrollTop(10000)
-                $(container).scrollTop(10000)
-            }
-            _tooltip()
-        }) // redraw layout
-    }
     /**
      * Generates the session the school is currently on based on the current year
      */
@@ -504,13 +501,15 @@ var vm = function (params) {
 
     // init
     _.defer(() => {
+        // sectionizr
+        controlla = $('.sectionizr').sectionize()
+
         // setup tooltips
         _tooltip()
 
         // when logo is loaded
         $('.school-logo').on('load', function () {
             // match heights because the profile pic card is the standard
-            $('.card').matchHeight({})
             vm.uiVisible(true)
         })
 
@@ -530,6 +529,7 @@ var vm = function (params) {
         vm.sessionName(VM.controlVm.schoolSessionName)
         vm.termsPerSession(VM.controlVm.schoolTermsPerSession)
         vm.currentTerm(VM.controlVm.schoolCurrentTerm)
+        vm.promotionCutoff(VM.controlVm.schoolPromotionCutoff)
 
         // confirm logo from server
         let DbSettings = db('settings')

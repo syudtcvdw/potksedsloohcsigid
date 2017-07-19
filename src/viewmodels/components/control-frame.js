@@ -33,6 +33,7 @@ var vm = function (params) {
     vm.schoolSessionName = '' // what session the school is in currently
     vm.schoolTermsPerSession = null // how many terms per session
     vm.schoolCurrentTerm = null // what term the school's in
+    vm.schoolPromotionCutoff = null // promotion cutoff used in the school
 
     // observables
     vm.schoolName = ko.observable() // what school is this

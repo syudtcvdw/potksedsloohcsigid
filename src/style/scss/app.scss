@@ -410,13 +410,13 @@ img {
             box-sizing: border-box;
         }
         &:before {
-            content: "Publish positions";
+            content: "Publish students' positions";
             padding-left: 21px;
             background-color: $theme-black;
             color: #FFFFFF;
         }
         &:after {
-            content: "Do not publish positions";
+            content: "Do not publish students' positions";
             padding-right: 21px;
             background-color: $theme-gray;
             color: #999;
@@ -550,6 +550,9 @@ form {
     display: flex;
     align-items: center;
     justify-content: center;
+    > .content {
+        width: 100%;
+    }
 }
 
 .uppercase {

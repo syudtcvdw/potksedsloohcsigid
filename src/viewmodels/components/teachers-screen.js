@@ -42,7 +42,9 @@ const vm = function (params) {
             } else {
                 vm.teachersFetchFailed(false)
                 if (data.response) {
-                    vm.teachers.removeAll()
+                    vm
+                        .teachers
+                        .removeAll()
                     data
                         .response
                         .map(t => {
@@ -132,7 +134,7 @@ const vm = function (params) {
                         if (data.response) 
                             VM.notify("Details updated successfully")
                         else 
-                            VM.notify("Unable to update profile")
+                            VM.notify("Unable to update profile", "error")
                         t.saving(false)
                     }
                 })
@@ -148,14 +150,30 @@ const vm = function (params) {
                 .prep(e)
                 .show({
                     'Manage': t.open,
-                    'Edit profile': () => {
-                        vm.newTeacherActionName('Edit Teacher Details')
-                        vm.confirmPassword(t.password())
-                        vm.newTeacher(t)
-                    },
-                    'Delete': () => {}, // replace callback here with delete behaviour
+                    'Edit profile': t.edit,
+                    'Delete': t.remove,
                     'Refresh list': vm.loadTeachers
                 })
+        }
+        t.edit = () => {
+            vm.newTeacherActionName('Edit Teacher Details')
+            vm.confirmPassword(t.password())
+            vm.newTeacher(t)
+        }
+        t.remove = () => {
+            sockets.emit('remove teacher', {
+                email: t.email()
+            }, data => {
+                if (!data.status) 
+                    return t.saving(false),
+                    VM.notify('Problem deleting teacher, could not reach Control Workstation', 'error', {
+                        'try again': t.remove
+                    }, 'retry remove teacher')
+                else {
+                    if (!data.response) 
+                        VM.notify("Unable to delete teacher", "error")
+                }
+            })
         }
 
         // init

@@ -440,7 +440,8 @@ module.exports = function (server, force = false) {
                         'schoolSubSession',
                         'schoolSessionName',
                         'schoolTermsPerSession',
-                        'schoolCurrentTerm'
+                        'schoolCurrentTerm',
+                        'schoolPromotionCutoff'
                     ]
                 }
             })

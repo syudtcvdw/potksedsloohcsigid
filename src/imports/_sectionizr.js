@@ -96,5 +96,5 @@ $.fn.sectionize = $.fn.sectionizr = function () {
         ? guys[0]
         : guys
 }
-if (module && module.exports) 
+if (typeof module != 'undefined' && module.exports) 
     module.exports = {}
