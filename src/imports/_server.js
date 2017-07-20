@@ -373,6 +373,21 @@ module.exports = function (server, force = false) {
             })
 
             /**
+			 * Deletes teacher identified by supplied email
+			 */
+            socket.on('remove teacher', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbTeachers = db("teachers")
+                DbTeachers.remove({
+                    email: query
+                }, {}, (err, num) => {
+                    cb(!err && num > 0)
+                })
+            })
+
+            /**
              * Adds new subject
              */
             socket.on('add subject', (query, cb) => {
@@ -417,12 +432,95 @@ module.exports = function (server, force = false) {
                 if (expired(query)) 
                     return
                 query = query.payload || query
-                let DbTeachers = db('subjects')
+                let DbSubjects = db('subjects')
                 // edit this subject
-                DbTeachers
+                DbSubjects
                     .iu(query)
                     .then(d => cb(true))
                     .catch(() => cb(false))
+            })
+
+            /**
+			 * Deletes subject identified by supplied code
+			 */
+            socket.on('remove subject', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbSubjects = db("subjects")
+                DbSubjects.remove({
+                    code: query
+                }, {}, (err, num) => {
+                    cb(!err && num > 0)
+                })
+            })
+
+            /**
+             * Adds new class
+             */
+            socket.on('add class', (query, cb) => {
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbClasses = db('classes')
+                DbClasses
+                    .exists({code: query.code})
+                    .then(() => cb("This class code is already assigned"))
+                    .catch(() => {
+                        DbClasses
+                            .i(query)
+                            .then(d => cb(d))
+                            .catch(() => cb(false))
+                    })
+            })
+
+            /**
+			 * Returns list of all classes
+			 */
+            socket.on('get all classes', (query, cb) => { // success: [docs]
+                if (expired(query)) 
+                    return
+                let DbClasses = db('classes')
+                DbClasses
+                    .find({})
+                    .sort({name: 1})
+                    .execAsync()
+                    .then(d => {
+                        cb(!d
+                            ? false
+                            : d)
+                    })
+                    .catch(() => cb(false))
+            })
+
+            /**
+             * Edits existing class
+             */
+            socket.on('edit class', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbClasses = db('classes')
+                // edit this subject
+                DbClasses
+                    .iu(query)
+                    .then(d => cb(true))
+                    .catch(() => cb(false))
+            })
+
+            /**
+			 * Deletes class identified by supplied code
+			 */
+            socket.on('remove class', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbClasses = db('classes')
+                DbClasses.remove({
+                    code: query
+                }, {}, (err, num) => {
+                    cb(!err && num > 0)
+                })
             })
 
             resolve(socket)

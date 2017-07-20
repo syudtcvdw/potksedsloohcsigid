@@ -148,12 +148,7 @@ const vm = function (params) {
             VM
                 .contextmenu
                 .prep(e)
-                .show({
-                    'Manage': t.open,
-                    'Edit profile': t.edit,
-                    'Delete': t.remove,
-                    'Refresh list': vm.loadTeachers
-                })
+                .show({'Manage': t.open, 'Edit profile': t.edit, 'Delete': t.remove, 'Refresh list': vm.loadTeachers})
         }
         t.edit = () => {
             vm.newTeacherActionName('Edit Teacher Details')
@@ -161,18 +156,19 @@ const vm = function (params) {
             vm.newTeacher(t)
         }
         t.remove = () => {
-            sockets.emit('remove teacher', {
-                email: t.email()
-            }, data => {
+            sockets.emit('remove teacher', t.email(), data => {
                 if (!data.status) 
-                    return t.saving(false),
                     VM.notify('Problem deleting teacher, could not reach Control Workstation', 'error', {
                         'try again': t.remove
                     }, 'retry remove teacher')
                 else {
                     if (!data.response) 
                         VM.notify("Unable to delete teacher", "error")
-                }
+                    else 
+                        vm
+                            .teachers
+                            .remove(t)
+                    }
             })
         }
 

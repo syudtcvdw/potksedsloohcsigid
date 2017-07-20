@@ -135,15 +135,27 @@ const vm = function (params) {
             VM
                 .contextmenu
                 .prep(e)
-                .show({
-                    'Manage': s.open,
-                    'Edit subject': () => {
-                        vm.newSubjectActionName('Edit Subject')
-                        vm.newSubject(s)
-                    },
-                    'Delete': () => {}, // replace callback here with delete behaviour
-                    'Refresh list': vm.loadSubjects
-                })
+                .show({'Manage': s.open, 'Edit subject': s.edit, 'Delete': s.remove, 'Refresh list': vm.loadSubjects})
+        }
+        s.edit = () => {
+            vm.newSubjectActionName('Edit Subject')
+            vm.newSubject(s)
+        }
+        s.remove = () => {
+            sockets.emit('remove subject', s.code(), data => {
+                if (!data.status) 
+                    VM.notify('Problem deleting subject, could not reach Control Workstation', 'error', {
+                        'try again': s.remove
+                    }, 'retry remove subject')
+                else {
+                    if (!data.response) 
+                        VM.notify("Unable to delete subject", "error")
+                    else 
+                        vm
+                            .subjects
+                            .remove(s)
+                    }
+            })
         }
 
         // init
