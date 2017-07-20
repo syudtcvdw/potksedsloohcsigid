@@ -527,22 +527,7 @@ module.exports = function (server, force = false) {
         }).then((socket) => {
             let DbSettings = db('settings')
             DbSettings
-                .find({
-                label: {
-                    $in: [
-                        'schoolUid',
-                        'schoolName',
-                        'schoolSlogan',
-                        'schoolAddress',
-                        'schoolDisplaysPositions',
-                        'schoolSubSession',
-                        'schoolSessionName',
-                        'schoolTermsPerSession',
-                        'schoolCurrentTerm',
-                        'schoolPromotionCutoff'
-                    ]
-                }
-            })
+                .find({})
                 .execAsync()
                 .then(docs => {
                     let d = {}

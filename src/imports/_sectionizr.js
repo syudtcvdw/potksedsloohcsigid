@@ -10,6 +10,7 @@ $.fn.sectionize = $.fn.sectionizr = function () {
             el
                 .sectionizr
                 .refresh()
+            guys.push(el.sectionizr)
             return
         }
         el.sectionizr = new(function () {
@@ -25,31 +26,31 @@ $.fn.sectionize = $.fn.sectionizr = function () {
 
             // behaviours
             snzr.next = () => {
-                if (!snzr.hasNext())
+                if (!snzr.hasNext()) 
                     return false
                 return offset()
             }
             snzr.prev = () => {
-                if (!snzr.hasPrev())
+                if (!snzr.hasPrev()) 
                     return false
                 return offset(false)
             }
             snzr.step = step => {
                 snzr.position += step
-                snzr.position = snzr.position < 1 ?
-                    1 :
-                    (snzr.position > snzr.sections.length ?
-                        snzr.sections.length :
-                        snzr.position)
+                snzr.position = snzr.position < 1
+                    ? 1
+                    : (snzr.position > snzr.sections.length
+                        ? snzr.sections.length
+                        : snzr.position)
                 offset(null)
             }
             snzr.go = where => {
                 snzr.position = where
-                snzr.position = snzr.position < 1 ?
-                    1 :
-                    (snzr.position > snzr.sections.length ?
-                        snzr.sections.length :
-                        snzr.position)
+                snzr.position = snzr.position < 1
+                    ? 1
+                    : (snzr.position > snzr.sections.length
+                        ? snzr.sections.length
+                        : snzr.position)
                 offset(null)
             }
             snzr.first = () => {
@@ -66,24 +67,23 @@ $.fn.sectionize = $.fn.sectionizr = function () {
 
             // local
             function offset(forward = true) {
-                (forward === true ?
-                    snzr.position++ : (forward === false ?
-                        snzr.position--
-                        :
-                        null))
-                let _prop = isVertical ?
-                    'marginTop' :
-                    'marginLeft'
+                (forward === true
+                    ? snzr.position++
+                    : (forward === false
+                        ? snzr.position--
+                        : null))
+                let _prop = isVertical
+                    ? 'marginTop'
+                    : 'marginLeft'
                 let _offset = `-${ (snzr.position - 1) * (isVertical
                     ? snzr.sections[0].clientHeight
                     : 100)}${isVertical
                     ? 'px'
                     : '%'}`
-                $(snzr.sections[0]).css({
-                    [_prop]: _offset
-                })
+                $(snzr.sections[0]).css({[_prop]: _offset})
 
-                // manage visibility : collapsing out-of-view sections keeps them from being tabbed into
+                // manage visibility : collapsing out-of-view sections keeps them from being
+                // tabbed into
                 $('.snzr').removeClass('snzr')
                 $('.snzr-visible').removeClass('snzr-visible')
                 _delay(() => {
@@ -102,10 +102,7 @@ $.fn.sectionize = $.fn.sectionizr = function () {
                 isVertical = $(snzr.el).hasClass('vertical')
                 snzr.sections.length = 0
                 $('>section', $(snzr.el)).each((i, s) => snzr.sections.push(s))
-                $(snzr.sections).css({
-                    marginLeft: 0,
-                    marginTop: 0
-                })
+                $(snzr.sections).css({marginLeft: 0, marginTop: 0})
                 snzr.go(snzr.position)
             }
 
@@ -114,9 +111,9 @@ $.fn.sectionize = $.fn.sectionizr = function () {
         })()
         guys.push(el.sectionizr)
     })
-    return guys.length == 1 ?
-        guys[0] :
-        guys
+    return guys.length == 1
+        ? guys[0]
+        : guys
 }
-if (typeof module != 'undefined' && module.exports)
+if (typeof module != 'undefined' && module.exports) 
     module.exports = {}

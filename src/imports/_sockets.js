@@ -101,6 +101,7 @@ function getSockets() {
                          * Initializer payload delivered from the server
                          */
                         _io_client.on('init-payload', (info) => {
+                            console.log(info)
                             let DbSettings = db("settings")
                             VM.controlVm.schoolUid = info.schoolUid
                             VM.controlVm.schoolSlogan = info.schoolSlogan || ''

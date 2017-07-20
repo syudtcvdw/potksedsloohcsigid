@@ -28,7 +28,6 @@ const vm = function (params) {
         vm.newTeacher(null)
         _tooltip()
     }
-
     vm.loadTeachers = () => {
         vm.teachersFetchFailed(false)
         vm.loadingTeachers(true)
@@ -183,8 +182,33 @@ const vm = function (params) {
         
         // props
         t.me = teacher
+
+        // observables
+        t.allClasses = ko.observableArray()
+
         // behaviours
         t.back = () => controlla.prev()
+        t.getClasses = () => {
+            sockets.emit('get all classes', null, data => {
+                if (data.status) {
+                    if (data.response) {
+                        t
+                            .allClasses
+                            .removeAll()
+                        data
+                            .response
+                            .map(c => {
+                                t
+                                    .allClasses
+                                    .push(c)
+                            })
+                    }
+                }
+            }, true)
+        }
+
+        // init
+        _.defer(() => {})
     }
 
     // init
