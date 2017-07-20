@@ -41,6 +41,14 @@ const schemas = {
             type: String,
             unique: true
         }
+    },
+    subjects: {
+        title: String,
+        addDate: Number,
+        code: {
+            type: String,
+            unique: true
+        }
     }
 }
 

@@ -1,26 +1,33 @@
-@import '../_partials/_fonts.scss';
-@import '../_partials/_mixins.scss';
-@import '../_partials/_vars.scss';
-//
+/*! @author | Banjo Mofesola Paul | Chief Developer, Planet NEST | mofesolapaul@planetnest.org | Wednesday, 19th July, 2017 */
+
 .sectionizr {
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: hidden !important;
     padding: 0 !important;
     margin: 0 !important;
-    section {
+    >section {
         width: 100%;
         height: 100%;
-        transition: margin 500ms ease-in-out;
+        &.snzr {
+            visibility: collapse;
+        }
+        &.snzr-visible {
+            visibility: visible;
+        }
+    }
+    &.vertical>section {
+        transition: margin-top 500ms ease-in-out;
     }
     &:not(.vertical) {
         white-space: nowrap;
-        section {
+        >section {
+            transition: margin-left 500ms ease-in-out;
             display: inline-block;
             vertical-align: top;
-            &:not(:first-child) {
-                margin-left: -4px; // remove inline-block default spacing
+            &:not(:first-of-type) {
+                margin-left: -4px !important; // remove inline-block default spacing
             }
         }
     }

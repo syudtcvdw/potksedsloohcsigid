@@ -110,6 +110,7 @@ function getSockets() {
                             VM.controlVm.schoolSessionName = info.schoolSessionName || ''
                             VM.controlVm.schoolTermsPerSession = info.schoolTermsPerSession || null
                             VM.controlVm.schoolCurrentTerm = info.schoolCurrentTerm || null
+                            VM.controlVm.schoolPromotionCutoff = info.schoolPromotionCutoff || null
                             DbSettings.iu([
                                 {
                                     label: 'schoolUid',
@@ -138,6 +139,9 @@ function getSockets() {
                                 }, {
                                     label: 'schoolCurrentTerm',
                                     value: info.schoolCurrentTerm || null
+                                }, {
+                                    label: 'schoolPromotionCutoff',
+                                    value: info.schoolPromotionCutoff || null
                                 }
                             ])
                         })

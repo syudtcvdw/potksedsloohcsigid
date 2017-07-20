@@ -16,7 +16,16 @@ var vm = function (params) {
             kind: MENU_SUPER
         }, {
             id: 'teachers',
-            label: 'Manage Teachers'
+            label: 'Manage Teachers',
+            kind: MENU_ADMIN
+        }, {
+            id: 'subjects',
+            label: 'Manage Subjects',
+            kind: MENU_ADMIN
+        }, {
+            id: 'classes',
+            label: 'Manage Classes',
+            kind: MENU_ADMIN
         }
     ]
     vm.schoolUid = '' // what the school uid is
@@ -28,6 +37,7 @@ var vm = function (params) {
     vm.schoolSessionName = '' // what session the school is in currently
     vm.schoolTermsPerSession = null // how many terms per session
     vm.schoolCurrentTerm = null // what term the school's in
+    vm.schoolPromotionCutoff = null // promotion cutoff used in the school
 
     // observables
     vm.schoolName = ko.observable() // what school is this
@@ -110,7 +120,10 @@ var vm = function (params) {
         })
     vm
         .serverTime
-        .subscribe(t => {vm.timeOffset = t - _getUTCTime(), console.log(vm.timeOffset)})
+        .subscribe(t => {
+            vm.timeOffset = t - _getUTCTime(),
+            console.log(vm.timeOffset)
+        })
 
     // sub vm
     function MenuItem(config) {
@@ -126,6 +139,8 @@ var vm = function (params) {
 
         // behaviours
         m.go = () => {
+            if (m.component == VM.view()) 
+                return
             VM.loadView(m.component)
         }
 

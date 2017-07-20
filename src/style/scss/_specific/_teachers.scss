@@ -1,6 +1,7 @@
 @import '../_partials/_fonts.scss';
 @import '../_partials/_mixins.scss';
 @import '../_partials/_vars.scss';
+@include use-inconsolata;
 //
 .teachers-screen {
 	height: 100%;
@@ -38,7 +39,6 @@
 			margin-top: 0;
 		}
 		.content {
-			width: 100%;
 			label.section-action {
 				text-transform: uppercase;
 				font-size: small;
@@ -100,17 +100,34 @@
 	.teacher-details {
 		padding: 0 2rem;
 		header {
+			.back-btn {
+				width: 47px;
+				height: 47px;
+				margin-right: 5px;
+				float: left;
+				background: url(../../resx/icons/back-arrow.png) center no-repeat;
+				background-size: 70%;
+				opacity: .2;
+				transition: opacity 250ms ease-in-out;
+				&:hover {
+					opacity: .8;
+				}
+			}
 			h3 {
 				margin-bottom: .5rem;
 			}
 			.about {
-				font-size: 80%;
+				font-size: 90%;
 				display: inline-block;
 				color: $theme-green;
+				@include font-inconsolata;
 				label+label {
 					margin-left: .4rem;
 				}
 			}
+		}
+		.content {
+			padding: 2rem .7rem 5px;
 		}
 	}
 }

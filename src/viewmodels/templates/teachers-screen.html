@@ -1,7 +1,7 @@
 <div class="teachers-screen sectionizr">
 
 	<section>
-		<!-- ko ifnot: connected() || teachersFetchFailed() -->
+		<!-- ko ifnot: connected() || (!teachers().length && teachersFetchFailed()) -->
 		<div class="no-teachers">
 			<h5>Fetching teachers list, please wait</h5>
 			<img src="resx/images/balls.gif" alt="Loading...">
@@ -18,7 +18,7 @@
 		<!-- /ko -->
 
 		<!-- ko if: teachers().length -->
-		<div class="all-teachers animated fadeInUp flex">
+		<div class="all-teachers animated fadeInUp flex" data-bind="css: {disabled: loadingTeachers}">
 			<div class="content">
 				<h4 class="title no-underline">
 					All teachers
@@ -66,13 +66,16 @@
 	</section>
 	<section class="teacher-details" data-bind="with: teacherDetail">
 		<header data-bind="with: me">
+			<a data-bind="click: $parent.back" class="back-btn"></a>
 			<h3 data-bind="text: name"></h3>
 			<div class="about">
-				<label><i class="fa fa-fw fa-male"></i> <span data-bind="text: gender"></span></label>
+				<label><i class="fa fa-male"></i> <span data-bind="text: gender"></span></label>
 				<label><i class="fa fa-fw fa-phone"></i> <span data-bind="text: phone"></span></label>
 				<label><i class="fa fa-fw fa-envelope"></i> <span data-bind="text: email"></span></label>
 			</div>
 		</header>
-		<!-- /ko -->
+		<div class="content">
+			
+		</div>
 	</section>
 </div>

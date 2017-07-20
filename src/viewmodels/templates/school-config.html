@@ -1,131 +1,151 @@
-<div class="school-config-screen">
+<div class="school-config-screen sectionizr vertical">
 
-	<div class="row" data-bind="visible: uiVisible">
-		<div class="col span_2_of_2">
-			<div class="col span_1_of_3 card" data-mh-target data-bind="css: {disabled: uploadingLogo}">
-				<h4 class="title">
-					School Logo
-					<span data-bind="visible: logoChanged">
-						<!-- prefer visibility binding over `if` because of tooltip preservation -->
-						<i class="fa fa-fw fa-upload section-action green animated slideInDown" title="Click to upload" data-bind="click: uploadLogo" data-tooltip="{'class': 'mini white'}"></i>
-						<i class="fa fa-fw fa-refresh section-action orange animated slideInDown" title="Reset logo" data-bind="click: resetLogo" data-tooltip="{'class': 'mini white'}"></i>
-					</span>
-					<i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to change" data-bind="click: selectLogo"></i>
-				</h4>
+	<div class="nav animated fadeInRight flex">
+		<ul>
+			<li title="Manage logo" data-tooltip="{'class':'mini white'}" data-bind="click: function() {section(1)}, css: {active: section() == 1}">1</li>
+			<li title="School profile" data-tooltip="{'class':'mini white'}" data-bind="click: function() {section(2)}, css: {active: section() == 2}">2</li>
+			<li title="Operations & Terminology" data-tooltip="{'class':'mini white'}" data-bind="click: function() {section(3)}, css: {active: section() == 3}">3</li>
+			<li title="Grading system" data-tooltip="{'class':'mini white'}" data-bind="click: function() {section(4)}, css: {active: section() == 4}">4</li>
+			<li title="Manage assessment metrics" data-tooltip="{'class':'mini white'}" data-bind="click: function() {section(5)}, css: {active: section() == 5}">5</li>
+		</ul>
+	</div>
+
+	<section>
+		<div class="logo-section flex" data-bind="css: {disabled: uploadingLogo}">
+			<div class="content">
 				<div class="logo-pane">
 					<img class="school-logo" responds alt="" data-bind="attr: {src: logo},click: selectLogo,event: {contextmenu: logoMenu}">
 				</div>
+				<div>
+					<h4>School Logo</h4>
+				</div>
+				<div class="actions">
+					<a class="btn btn-green" data-bind="click: selectLogo"><i class="fa fa-fw fa-plus"></i> Change logo</a>
+					<span data-bind="visible: logoChanged">
+					<a class="btn btn-green" data-bind="click: uploadLogo"><i class="fa fa-fw fa-upload"></i> Save new logo</a>
+					<a class="btn btn-orange" data-bind="click: resetLogo"><i class="fa fa-fw fa-refresh"></i> Revert changes</a>
+					</span>
+				</div>
 			</div>
-
-			<div class="col span_1_of_3 card">
+		</div>
+	</section>
+	<section>
+		<div class="profile-section flex">
+			<div class="content">
 				<h4 class="title">School Profile</h4>
-				<div class="content scrollable">
-					<form>
-						<div>
-							<label>School name</label>
-							<input type="text" data-bind="textInput: schoolName" placeholder="Enter school name">
-						</div>
-						<div>
-							<label>Motto/slogan</label>
-							<input type="text" data-bind="textInput: schoolSlogan" placeholder="Enter school motto/slogan">
-						</div>
-						<div>
-							<label>School address</label>
-							<textarea rows="5" data-bind="textInput: schoolAddress" placeholder="Enter school address"></textarea>
-						</div>
-						<div class="row">
-							<div class="col span_2_of_3">
-								<div class="onoffswitch">
-									<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="display-positions-switch" data-bind="checked: schoolDisplaysPositions">
-									<label class="onoffswitch-label" for="display-positions-switch">
+				<form>
+					<div>
+						<label>School name</label>
+						<input type="text" data-bind="textInput: schoolName" placeholder="Enter school name">
+					</div>
+					<div>
+						<label>Motto/slogan</label>
+						<input type="text" data-bind="textInput: schoolSlogan" placeholder="Enter school motto/slogan">
+					</div>
+					<div>
+						<label>School address</label>
+						<textarea rows="5" data-bind="textInput: schoolAddress" placeholder="Enter school address"></textarea>
+					</div>
+					<div class="row">
+						<div class="col span_2_of_3">
+							<div class="onoffswitch">
+								<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="display-positions-switch" data-bind="checked: schoolDisplaysPositions">
+								<label class="onoffswitch-label" for="display-positions-switch">
 										<span class="onoffswitch-inner"></span>
 										<span class="onoffswitch-switch"></span>
 									</label>
-								</div>
-							</div>
-							<div class="col span_1_of_3">
-								<button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: updateProfile">Save</button>
 							</div>
 						</div>
-					</form>
-				</div>
+						<div class="col span_1_of_3">
+							<button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: updateProfile">Save</button>
+						</div>
+					</div>
+				</form>
 			</div>
-
-			<div class="col span_1_of_3 card" title="Careful, changing these settings affect school operations, only edit when necessary"
-			    data-tooltip="{'class':'mini white'}">
-				<h4 class="title">Operations &amp; Terminology</h4>
-				<div class="content scrollable">
-					<form>
-						<div>
-							<label>What do you call sub-sessions?</label>
-							<label class="dropdown">
+		</div>
+	</section>
+	<section>
+		<div class="profile-section flex">
+			<div class="content">
+				<h4 class="title">School Operations &amp; Terminology</h4>
+				<form>
+					<div>
+						<label>What do you call sub-sessions?</label>
+						<label class="dropdown">
 								<select data-bind="value: subSession">
 									<option value="" class="hidden">Choose an option</option>
 									<option value="term">Term</option>
 									<option value="semester">Semester</option>
 								</select>
 							</label>
-						</div>
-						<div>
-							<label>Session name</label>
-							<label class="dropdown">
+					</div>
+					<div>
+						<label>Session name</label>
+						<label class="dropdown">
 								<select data-bind="value: sessionName, options: sessionNameList">
 								</select>
 							</label>
-						</div>
-						<div>
-							<label>How many <span data-bind="text: subSession"></span>s make one session?</label>
-							<label class="dropdown">
+					</div>
+					<div>
+						<label>How many <span data-bind="text: subSession"></span>s make one session?</label>
+						<label class="dropdown">
 								<select data-bind="options: termsPerSessionLists, optionsText: 'name', optionsValue: 'val', value: termsPerSession"></select>
 							</label>
-						</div>
-						<div>
-							<label>What <span data-bind="text: subSession"></span> is the school currently in?</label>
-							<label class="dropdown">
+					</div>
+					<div>
+						<label>What <span data-bind="text: subSession"></span> is the school currently in?</label>
+						<label class="dropdown">
 								<select data-bind="options: currentTermList, optionsText: 'name', optionsValue: 'val', value: currentTerm"></select>
 							</label>
-						</div>
-						<button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: updateOpsAndTerms">Update settings</button>
-					</form>
-				</div>
+					</div>
+					<div>
+						<label>What is the cut-off percentage for promotion?</label>
+						<input type="number" data-bind="textInput: promotionCutoff" min="5" max="100" placeholder="e.g. 70">
+					</div>
+					<button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: updateOpsAndTerms">Update settings</button>
+				</form>
 			</div>
-
-			<div class="col span_1_of_3 card" data-bind="with: gradingSystem, css: {disabled: gradingSystem.saving() || !gradingSystem.connected()}">
+		</div>
+	</section>
+	<section>
+		<div class="profile-section flex" data-bind="with: gradingSystem, css: {disabled: gradingSystem.saving() || !gradingSystem.connected()}">
+			<div class="content">
 				<h4 class="title">Grading system</h4>
-				<div class="content scrollable">
-					<form>
-						<div>
-							<span class="justify" data-bind="visible: !grades().length">Design your grading system (e.g Excellent, V.Good or A, B, C and specify corresponding scores)</span>
-							<!-- ko foreach: grades -->
-							<div class="row group">
-								<div class="col span_2_of_3">
-									<input type="text" data-bind="textInput: grade" placeholder="Grade">
-								</div>
-								<div class="col span_1_of_3">
-									<input type="number" data-bind="textInput: score, attr: { max: maxScore}" step="5" min="5" placeholder="Score">
-								</div>
+				<form>
+					<div>
+						<span class="justify" data-bind="visible: !grades().length">Design your grading system (e.g Excellent, V.Good or A, B, C and specify corresponding scores)</span>
+						<!-- ko foreach: grades -->
+						<div class="row group">
+							<div class="col span_2_of_3">
+								<input type="text" data-bind="textInput: grade" placeholder="Grade">
 							</div>
-							<!-- /ko -->
+							<div class="col span_1_of_3">
+								<input type="number" data-bind="textInput: score, attr: { max: maxScore}" step="5" min="5" placeholder="Score">
+							</div>
 						</div>
-						<!-- ko if: grades().length -->
-						<small data-bind="click: pop"><i class="fa fa-fw fa-times"></i>Delete last row</small>
 						<!-- /ko -->
-						<div class="row">
-							<button type="submit" class="btn btn-orange btn-shift-down col span_2_of_3" data-bind="click: add"><i class="fa fa-fw fa-plus"></i> Add Field</button>
-							<button type="submit" class="btn btn-green btn-shift-down col span_1_of_3" data-bind="click: save">Save</button>
-						</div>
-					</form>
-				</div>
+					</div>
+					<!-- ko if: grades().length -->
+					<small data-bind="click: pop"><i class="fa fa-fw fa-times"></i>Delete last row</small>
+					<!-- /ko -->
+					<div class="row">
+						<button type="submit" class="btn btn-orange btn-shift-down col span_2_of_3" data-bind="click: add"><i class="fa fa-fw fa-plus"></i> Add Field</button>
+						<button type="submit" class="btn btn-green btn-shift-down col span_1_of_3" data-bind="click: save">Save</button>
+					</div>
+				</form>
 			</div>
-
-			<div class="col span_2_of_3 card sm-full preserve-col" data-bind="with: metrics, css: {disabled: metrics.updatingMetrics() || !metrics.connected()}">
+		</div>
+	</section>
+	<section>
+		<div class="profile-section assessment-section flex" data-bind="with: metrics, css: {disabled: metrics.updatingMetrics() || !metrics.connected()}">
+			<div class="content">
 				<h4 class="title">
 					Assessment metrics
 					<i class="fa fa-fw fa-plus section-action" data-tooltip="{'class': 'mini white'}" title="Click to add metric" data-bind="click: add"></i>
 					<label class="section-action" data-tooltip="{'class': 'mini white'}" title="Total percentage composition" data-bind="css: {error: totalCompo() > 100, green: totalCompo() == 100}"><span data-bind="text: totalCompo"></span>%</label>
 					<label class="section-action" data-tooltip="{'class': 'mini white'}" title="Total marks obtainable">Marks: <span data-bind="text: totalMarks"></span></label>
 				</h4>
-				<div class="content scrollable metrics-list">
+				<div class="metrics-list">
 					<!-- ko ifnot: metrics().length -->
 					<p class="animated fadeInUp justify">Assessment metrics refer to the stages of assessments in the school, e.g (Assignments, Continuous Assessments, Exams).
 						Add all levels of assessments that determine students' overall performance at the end of each <span data-bind="text: $parent.subSession"></span>.</p>
@@ -138,7 +158,7 @@
 							<label>Metric title</label>
 							<input type="text" data-bind="textInput: title" placeholder="e.g. Continuous assessment 1">
 						</div>
-						<div class="col span_2_of_3">
+						<div class="col preserve-col span_2_of_3">
 							<div class="col span_1_of_3">
 								<label>Abbrev</label>
 								<input type="text" data-bind="textInput: label" placeholder="e.g. CA1">
@@ -160,8 +180,7 @@
 					</div>
 				</div>
 			</div>
-
-			<canvas id="canva" class="hidden" width="512" height="512"></canvas>
 		</div>
-	</div>
+	</section>
+	<canvas id="canva" class="hidden" width="512" height="512"></canvas>
 </div>
