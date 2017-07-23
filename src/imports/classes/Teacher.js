@@ -19,17 +19,17 @@ module.exports = class Teacher extends Exportable {
         this.password = ko.observable(args.password || '')
         this.gender = ko.observable(args.gender || '')
         this.addDate = ko.observable(args.addDate || null)
-        this.$assignedClass = ko.observable(args.$assignedClass || false)
+        this.assignedClass = ko.observable(args.assignedClass || null)
 
         // computed
         this.$assignmentInfo = ko.computed(() => {
-            return this.$assignedClass()
-                ? `Class teacher for ${this.$assignedClass()}`
+            return this.assignedClass()
+                ? `Class teacher for ${this.assignedClass()}`
                 : 'Not a class teacher'
         })
 
         // states
-        this.saving = ko.observable(false)
+        this.$saving = ko.observable(false)
 
         // init
         this._new = !this._id()

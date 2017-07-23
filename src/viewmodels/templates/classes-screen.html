@@ -35,7 +35,7 @@
 
 		<!-- ko if: newClass -->
 		<div class="add-teacher animated fadeIn">
-			<form class="content animated fadeInDown" data-bind="with: newClass,css: {disabled: newClass().saving}">
+			<form class="content animated fadeInDown" data-bind="with: newClass,css: {disabled: newClass().$saving}">
 				<h4 class="title">
 					Create New Class
 					<i class="fa fa-fw fa-close section-action orange animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"

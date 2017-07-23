@@ -16,9 +16,10 @@ module.exports = class Klass extends Exportable {
         this.name = ko.observable(args.name || '')
         this.code = ko.observable(args.code || '')
         this.addDate = ko.observable(args.addDate || null)
+        this.classteacher = ko.observable(args.classteacher || null)
 
         // states
-        this.saving = ko.observable(false)
+        this.$saving = ko.observable(false)
 
         // init
         this._new = !this._id()

@@ -35,10 +35,10 @@
 
 		<!-- ko if: newTeacher -->
 		<div class="add-teacher animated fadeIn">
-			<form class="content animated fadeInDown" data-bind="with: newTeacher,css: {disabled: newTeacher().saving}">
+			<form class="content animated fadeInDown" data-bind="with: newTeacher,css: {disabled: newTeacher().$saving}">
 				<h4 class="title">
 					<span data-bind="text: $parent.newTeacherActionName"></span>
-					<i class="fa fa-fw fa-close section-action red animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"
+					<i class="fa fa-fw fa-close section-action orange animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"
 					    data-tooltip="{'class': 'mini white'}"></i></h4>
 				<input type="text" data-bind="textInput: name" placeholder="Enter teacher's name">
 				<input type="text" data-bind="textInput: email" placeholder="Enter teacher's email address">
@@ -76,17 +76,22 @@
 		</header>
 		<div class="content sectionized">
 			<div class="sectionizr" data-peek>
-				<section class="assign-classteacher" data-bind="css: { assigned: me.$assignedClass}">
+				<section class="assign-classteacher" data-bind="css: { assigned: me.assignedClass, disabled: assigning }">
 					<blockquote>
 						<h4 data-bind="text: me.$assignmentInfo"></h4>
-						<!-- ko if: me.$assignedClass -->
+						<!-- ko if: me.assignedClass -->
 						<a class="btn btn-gray mini">Decommission</a>
 						<!-- /ko -->
 					</blockquote>
-					<h5><span data-bind="text: me.$assignedClass()? 'Re-assign':'Assign'"></span> to class</h5>
+					<h5><span data-bind="text: me.assignedClass()? 'Re-assign':'Assign'"></span> to class</h5>
 					<ul data-bind="foreach: allClasses">
-						<li class="signpost">
+						<li class="signpost class" data-bind="click: $parent.assignClass, css: {active: code() == $parent.me.assignedClass()}">
 							<h5 data-bind="text: name"></h5>
+							<!-- ko if: code() != $parent.me.assignedClass() -->
+							<div data-bind="css: {shown: $selected}">
+								<a class="btn btn-green mini">Assign Classteacher</a>
+							</div>
+							<!-- /ko -->
 						</li>
 					</ul>
 				</section>

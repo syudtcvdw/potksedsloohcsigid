@@ -108,7 +108,7 @@
 		</div>
 	</section>
 	<section>
-		<div class="profile-section flex" data-bind="with: gradingSystem, css: {disabled: gradingSystem.saving() || !gradingSystem.connected()}">
+		<div class="profile-section flex" data-bind="with: gradingSystem, css: {disabled: gradingSystem.$saving() || !gradingSystem.connected()}">
 			<div class="content">
 				<h4 class="title">Grading system</h4>
 				<form>

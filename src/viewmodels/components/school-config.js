@@ -355,7 +355,7 @@ var vm = function (params) {
 
         // observables
         gs.grades = ko.observableArray()
-        gs.saving = ko.observable(false)
+        gs.$saving = ko.observable(false)
         gs.connected = ko.observable(false)
 
         // behaviours
@@ -389,7 +389,7 @@ var vm = function (params) {
                     if (_anyEmpty(g.grade(), g.score())) 
                         return VM.notify('Do not leave any field empty or delete excess rows.', 'warn')
 
-            gs.saving(true)
+            gs.$saving(true)
                 sockets.emit('save grading sys', ko.toJS(gs.grades()), data => {
                     if (!data.status) 
                         return VM.notify('Problem updating Grading system, could not reach Control Workstation', 'error', {
@@ -398,10 +398,10 @@ var vm = function (params) {
                     else {
                         if (data.response) {
                             VM.notify('Successfully saved.')
-                            gs.saving(false)
+                            gs.$saving(false)
                         } else {
                             VM.notify('Unable to save Grading System', 'error')
-                            gs.saving(false)
+                            gs.$saving(false)
                         }
                     }
                 })

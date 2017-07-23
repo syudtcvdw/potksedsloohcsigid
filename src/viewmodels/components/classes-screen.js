@@ -61,7 +61,7 @@ const vm = function (params) {
     class klass extends Klass {
         constructor() {
             super(arguments)
-            console.log(this.export('saving'))
+            console.log(this.export())
         }
 
         // behaviours
@@ -69,17 +69,17 @@ const vm = function (params) {
             if (_anyEmpty(this.name(), this.code())) 
                 return VM.notify("Do not leave any detail empty", "warn")
 
-            let _klass = this.export('saving')
+            let _klass = this.export()
 
             if (this._new) {
                 // add
-                this.saving(true)
+                this.$saving(true)
                 _klass.addDate = _klass.addDate
                     ? _klass.addDate
                     : _getUTCTime() / 1000 // to secs
                 sockets.emit('add class', _klass, data => {
                     if (!data.status) 
-                        return this.saving(false),
+                        return this.$saving(false),
                         VM.notify('Problem creating class, could not reach Control Workstation', 'error', {
                             'try again': this.save.bind(this)
                         }, 'retry add class')
@@ -95,15 +95,15 @@ const vm = function (params) {
                             VM.notify('Unable to create class', 'error')
                         else 
                             VM.notify(data.response, 'error')
-                        this.saving(false)
+                        this.$saving(false)
                     }
                 })
             } else {
                 // edit
-                this.saving(true)
+                this.$saving(true)
                 sockets.emit('edit class', _klass, data => {
                     if (!data.status) 
-                        return this.saving(false),
+                        return this.$saving(false),
                         VM.notify('Problem editing class, could not reach Control Workstation', 'error', {
                             'try again': this.save.bind(this)
                         }, 'retry edit class')
@@ -112,7 +112,7 @@ const vm = function (params) {
                             VM.notify("Class updated successfully")
                         else 
                             VM.notify("Unable to update class")
-                        this.saving(false)
+                        this.$saving(false)
                     }
                 })
             }

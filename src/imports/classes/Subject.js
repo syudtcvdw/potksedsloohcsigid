@@ -15,7 +15,7 @@ module.exports = class Subject extends Exportable {
         this.addDate = ko.observable(args.addDate || null)
 
         // states
-        this.saving = ko.observable(false)
+        this.$saving = ko.observable(false)
 
         // init
         this._new = !this._id()

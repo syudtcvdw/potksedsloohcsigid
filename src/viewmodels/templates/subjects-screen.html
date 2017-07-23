@@ -35,7 +35,7 @@
 
 		<!-- ko if: newSubject -->
 		<div class="add-teacher animated fadeIn">
-			<form class="content animated fadeInDown" data-bind="with: newSubject,css: {disabled: newSubject().saving}">
+			<form class="content animated fadeInDown" data-bind="with: newSubject,css: {disabled: newSubject().$saving}">
 				<h4 class="title">
 					Add New Subject
 					<i class="fa fa-fw fa-close section-action orange animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"

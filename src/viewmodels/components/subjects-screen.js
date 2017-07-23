@@ -61,7 +61,7 @@ const vm = function (params) {
     class subject extends Subject {
         constructor() {
             super(arguments)
-            console.log(this.export('saving'))
+            console.log(this.export())
         }
 
         // behaviours
@@ -69,16 +69,16 @@ const vm = function (params) {
             if (_anyEmpty(this.title(), this.code())) 
                 return VM.notify("Do not leave any detail empty", "warn")
 
-            let _subject = this.export('saving')
+            let _subject = this.export()
             if (this._new) {
                 // add
-                this.saving(true)
+                this.$saving(true)
                 _subject.addDate = _subject.addDate
                     ? _subject.addDate
                     : _getUTCTime() / 1000 // to secs
                 sockets.emit('add subject', _subject, data => {
                     if (!data.status) 
-                        return this.saving(false),
+                        return this.$saving(false),
                         VM.notify('Problem adding subject, could not reach Control Workstation', 'error', {
                             'try again': this.save.bind(this)
                         }, 'retry add subject')
@@ -94,15 +94,15 @@ const vm = function (params) {
                             VM.notify('Unable to add subject', 'error')
                         else 
                             VM.notify(data.response, 'error')
-                        this.saving(false)
+                        this.$saving(false)
                     }
                 })
             } else {
                 // edit
-                this.saving(true)
+                this.$saving(true)
                 sockets.emit('edit subject', _subject, data => {
                     if (!data.status) 
-                        return this.saving(false),
+                        return this.$saving(false),
                         VM.notify('Problem editing subject, could not reach Control Workstation', 'error', {
                             'try again': this.save.bind(this)
                         }, 'retry edit subject')
@@ -111,7 +111,7 @@ const vm = function (params) {
                             VM.notify("Subject updated successfully")
                         else 
                             VM.notify("Unable to update subject")
-                        this.saving(false)
+                        this.$saving(false)
                     }
                 })
             }

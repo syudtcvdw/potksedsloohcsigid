@@ -11,6 +11,20 @@ module.exports = function (...args) {
                 constructor() {
                     super(arguments)
                 }
+                /**
+                 * Use this to extend each new instance with properties
+                 * Formatted object style as {propName: value}
+                 * Each extended property is wrapped as an observable,
+                 * and the prop name is prepended with a '$'
+                 */
+                $extend() {
+                    if (arguments.length <= 0) 
+                        return
+                    let args = arguments[0]
+                    for (let o in args) 
+                        this[`$${o}`] = ko.observable(args[o])
+                    return this
+                }
             }
             classes.push(c)
         }

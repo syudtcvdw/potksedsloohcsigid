@@ -33,11 +33,21 @@ const schemas = {
         password: String,
         addDate: Number,
         gender: String,
+        assignedClass: String,
         email: {
             type: String,
             unique: true
         },
         phone: {
+            type: String,
+            unique: true
+        }
+    },
+    classes: {
+        name: String,
+        classteacher: String,
+        addDate: Number,
+        code: {
             type: String,
             unique: true
         }

@@ -64,7 +64,7 @@ const vm = function (params) {
     class teacher extends Teacher {
         constructor() {
             super(arguments)
-            console.log(this.export('saving'))
+            console.log(this.export())
         }
 
         // behaviours
@@ -74,20 +74,20 @@ const vm = function (params) {
                 : 'empty')) 
                 return VM.notify("Do not leave any detail empty", "warn")
 
-            let _teacher = this.export('saving')
+            let _teacher = this.export()
             if (this._new) {
                 // add
                 if (this.password() != vm.confirmPassword()) 
                     return VM.notify("Passwords do not match, use the reveal buttons to comfirm", "error")
 
-                this.saving(true)
+                this.$saving(true)
                 _teacher.addDate = _teacher.addDate
                     ? _teacher.addDate
                     : _getUTCTime() / 1000 // to secs
 
                 sockets.emit('add teacher', _teacher, data => {
                     if (!data.status) 
-                        return this.saving(false),
+                        return this.$saving(false),
                         VM.notify('Problem adding teacher, could not reach Control Workstation', 'error', {
                             'try again': this
                                 .save
@@ -105,17 +105,17 @@ const vm = function (params) {
                             VM.notify('Unable to add teacher', 'error')
                         else 
                             VM.notify(data.response, 'error')
-                        this.saving(false)
+                        this.$saving(false)
                     }
                 })
             } else {
                 // edit
                 if (this.password() !== vm.confirmPassword()) 
                     VM.notify("Passwords do not match, use the reveal buttons to confirm", "error")
-                this.saving(true)
+                this.$saving(true)
                 sockets.emit('edit teacher', _teacher, data => {
                     if (!data.status) 
-                        return this.saving(false),
+                        return this.$saving(false),
                         VM.notify('Problem editing teacher, could not reach Control Workstation', 'error', {
                             'try again': this
                                 .save
@@ -126,7 +126,7 @@ const vm = function (params) {
                             VM.notify("Details updated successfully")
                         else 
                             VM.notify("Unable to update profile", "error")
-                        this.saving(false)
+                        this.$saving(false)
                     }
                 })
             }
@@ -190,16 +190,7 @@ const vm = function (params) {
         // observables
         t.allClasses = ko.observableArray()
         t.pos = ko.observable(1)
-        t.next = () => {
-            kontrolla.next()
-            t.pos(kontrolla.position)
-            _tooltip()
-        }
-        t.prev = () => {
-            kontrolla.prev()
-            t.pos(kontrolla.position)
-            _tooltip()
-        }
+        t.assigning = ko.observable(false)
 
         // computed
         t.prevTooltip = ko.computed(() => {
@@ -212,6 +203,43 @@ const vm = function (params) {
                 ? ''
                 : tips[t.pos()]
         })
+        t.assignClass = (which, e) => {
+            t
+                .allClasses()
+                .forEach(c => {
+                    if (c != which) 
+                        c.$selected(false)
+                })
+            if (!which.$selected()) 
+                return which.$selected(true)
+            else {
+                if (e.target.nodeName != 'A') 
+                    which.$selected(false)
+                else {
+                    t.assigning(true)
+                    sockets.emit('assign classteacher', {
+                        who: t
+                            .me
+                            .email(),
+                        which: which.code()
+                    }, data => {
+                        if (!data.status) 
+                            VM.notify("Unable to assign classteacher, could not reach Control Workstation", "error")
+                        else {
+                            if (data.response) {
+                                which.classteacher(t.me.email())
+                                t
+                                    .me
+                                    .assignedClass(which.code())
+                                VM.notify("Assigned as classteacher successfully")
+                            } else 
+                                VM.notify("There was a problem assigning classteacher, could not reach Control Workstation", "error")
+                        }
+                        t.assigning(false)
+                    })
+                }
+            }
+        }
 
         // behaviours
         t.back = () => controlla.prev()
@@ -227,11 +255,21 @@ const vm = function (params) {
                             .map(c => {
                                 t
                                     .allClasses
-                                    .push(new klass(c))
+                                    .push(new klass(c).$extend({selected: false}))
                             })
                     }
                 }
             }, true)
+        }
+        t.next = () => {
+            kontrolla.next()
+            t.pos(kontrolla.position)
+            _tooltip()
+        }
+        t.prev = () => {
+            kontrolla.prev()
+            t.pos(kontrolla.position)
+            _tooltip()
         }
 
         // init

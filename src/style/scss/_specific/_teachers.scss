@@ -178,6 +178,9 @@
 			}
 		}
 		.assign-classteacher {
+			ul {
+				position: relative;
+			}
 			&.assigned {
 				blockquote {
 					border-left-color: $theme-green;
@@ -204,6 +207,19 @@
 					width: 100%;
 					top: 0;
 					left: 0;
+				}
+				&.class>div {
+					overflow: hidden;
+					transition: height 250ms ease-in-out;
+					text-align: right;
+					height: 35px;
+					&:not(.shown) {
+						height: 0;
+					}
+					.btn {
+						margin: 0 0 .5rem;
+						text-transform: none;
+					}
 				}
 			}
 		}
