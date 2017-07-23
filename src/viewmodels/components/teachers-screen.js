@@ -1,3 +1,5 @@
+const [Teacher,
+    klass] = maker('Teacher', 'klass')
 const vm = function (params) {
     let vm = this
 
@@ -21,7 +23,7 @@ const vm = function (params) {
     vm.addTeacher = () => {
         vm.newTeacherActionName('Add New Teacher')
         vm.confirmPassword(null)
-        vm.newTeacher(new Teacher)
+        vm.newTeacher(new teacher)
         _tooltip()
     }
     vm.dismissAdd = () => {
@@ -49,7 +51,7 @@ const vm = function (params) {
                         .map(t => {
                             vm
                                 .teachers
-                                .push(new Teacher(t))
+                                .push(new teacher(t))
                         })
                     vm.connected(true)
                     _tooltip()
@@ -59,49 +61,37 @@ const vm = function (params) {
     }
 
     // sub-vm
-    function Teacher() {
-        let t = this
-        let args = arguments.length > 0
-            ? arguments[0]
-            : {}
-
-        // props
-        t._id = ko.observable(args._id || '')
-        t.name = ko.observable(args.name || '')
-        t.email = ko.observable(args.email || '')
-        t.phone = ko.observable(args.phone || '')
-        t.password = ko.observable(args.password || '')
-        t.gender = ko.observable(args.gender || '')
-        t.addDate = ko.observable(args.addDate || null)
-
-        // states
-        t.saving = ko.observable(false)
+    class teacher extends Teacher {
+        constructor() {
+            super(arguments)
+            console.log(this.export('saving'))
+        }
 
         // behaviours
-        t.save = () => {
-            if (_anyEmpty(t.name(), t.email(), t.phone(), _new
-                ? t.password()
+        save() {
+            if (_anyEmpty(this.name(), this.email(), this.phone(), this._new
+                ? this.password()
                 : 'empty')) 
                 return VM.notify("Do not leave any detail empty", "warn")
 
-            let teacher = ko.toJS(t)
-            delete teacher.saving // not needed
-
-            if (_new) {
+            let _teacher = this.export('saving')
+            if (this._new) {
                 // add
-                if (t.password() != vm.confirmPassword()) 
+                if (this.password() != vm.confirmPassword()) 
                     return VM.notify("Passwords do not match, use the reveal buttons to comfirm", "error")
 
-                t.saving(true)
-                teacher.addDate = teacher.addDate
-                    ? teacher.addDate
+                this.saving(true)
+                _teacher.addDate = _teacher.addDate
+                    ? _teacher.addDate
                     : _getUTCTime() / 1000 // to secs
-                delete teacher._id
-                sockets.emit('add teacher', teacher, data => {
+
+                sockets.emit('add teacher', _teacher, data => {
                     if (!data.status) 
-                        return t.saving(false),
+                        return this.saving(false),
                         VM.notify('Problem adding teacher, could not reach Control Workstation', 'error', {
-                            'try again': t.save
+                            'try again': this
+                                .save
+                                .bind(this)
                         }, 'retry add teacher')
                     else {
                         console.log(data)
@@ -109,56 +99,71 @@ const vm = function (params) {
                             VM.notify('Teacher added successfully.')
                             vm
                                 .teachers
-                                .push(new Teacher(data.response))
+                                .push(new teacher(data.response))
                             vm.addTeacher()
                         } else if (data.response === false) 
                             VM.notify('Unable to add teacher', 'error')
                         else 
                             VM.notify(data.response, 'error')
-                        t.saving(false)
+                        this.saving(false)
                     }
                 })
             } else {
                 // edit
-                if (t.password() !== vm.confirmPassword()) 
+                if (this.password() !== vm.confirmPassword()) 
                     VM.notify("Passwords do not match, use the reveal buttons to confirm", "error")
-                t.saving(true)
-                sockets.emit('edit teacher', teacher, data => {
+                this.saving(true)
+                sockets.emit('edit teacher', _teacher, data => {
                     if (!data.status) 
-                        return t.saving(false),
+                        return this.saving(false),
                         VM.notify('Problem editing teacher, could not reach Control Workstation', 'error', {
-                            'try again': t.save
+                            'try again': this
+                                .save
+                                .bind(this)
                         }, 'retry edit teacher')
                     else {
                         if (data.response) 
                             VM.notify("Details updated successfully")
                         else 
                             VM.notify("Unable to update profile", "error")
-                        t.saving(false)
+                        this.saving(false)
                     }
                 })
             }
         }
-        t.open = () => {
-            vm.teacherDetail(new TeacherDetail(t))
+        open() {
+            vm.teacherDetail(new TeacherDetail(this))
             controlla.next()
         }
-        t.contextmenu = (o, e) => {
+        contextmenu(o, e) {
             VM
                 .contextmenu
                 .prep(e)
-                .show({'Manage': t.open, 'Edit profile': t.edit, 'Delete': t.remove, 'Refresh list': vm.loadTeachers})
+                .show({
+                    'Manage': this
+                        .open
+                        .bind(this),
+                    'Edit profile': this
+                        .edit
+                        .bind(this),
+                    'Delete': this
+                        .remove
+                        .bind(this),
+                    'Refresh list': vm.loadTeachers
+                })
         }
-        t.edit = () => {
+        edit() {
             vm.newTeacherActionName('Edit Teacher Details')
-            vm.confirmPassword(t.password())
-            vm.newTeacher(t)
+            vm.confirmPassword(this.password())
+            vm.newTeacher(this)
         }
-        t.remove = () => {
-            sockets.emit('remove teacher', t.email(), data => {
+        remove() {
+            sockets.emit('remove teacher', this.email(), data => {
                 if (!data.status) 
                     VM.notify('Problem deleting teacher, could not reach Control Workstation', 'error', {
-                        'try again': t.remove
+                        'try again': this
+                            .remove
+                            .bind(this)
                     }, 'retry remove teacher')
                 else {
                     if (!data.response) 
@@ -166,17 +171,16 @@ const vm = function (params) {
                     else 
                         vm
                             .teachers
-                            .remove(t)
+                            .remove(this)
                     }
             })
         }
-
-        // init
-        let _new = !t._id()
     }
 
     function TeacherDetail(teacher) {
-        let t = this
+        let t = this,
+            kontrolla,
+            tips = ["Update classteacher status", "Assign subjects"]
         if (!teacher) 
             return;
         
@@ -185,6 +189,29 @@ const vm = function (params) {
 
         // observables
         t.allClasses = ko.observableArray()
+        t.pos = ko.observable(1)
+        t.next = () => {
+            kontrolla.next()
+            t.pos(kontrolla.position)
+            _tooltip()
+        }
+        t.prev = () => {
+            kontrolla.prev()
+            t.pos(kontrolla.position)
+            _tooltip()
+        }
+
+        // computed
+        t.prevTooltip = ko.computed(() => {
+            return t.pos() <= 1
+                ? ''
+                : tips[t.pos() - 2]
+        })
+        t.nxtTooltip = ko.computed(() => {
+            return t.pos() >= tips.length
+                ? ''
+                : tips[t.pos()]
+        })
 
         // behaviours
         t.back = () => controlla.prev()
@@ -200,7 +227,7 @@ const vm = function (params) {
                             .map(c => {
                                 t
                                     .allClasses
-                                    .push(c)
+                                    .push(new klass(c))
                             })
                     }
                 }
@@ -208,7 +235,11 @@ const vm = function (params) {
         }
 
         // init
-        _.defer(() => {})
+        _.defer(() => {
+            t.getClasses()
+            kontrolla = $('.sectionizr').sectionize()[1]
+            _tooltip()
+        })
     }
 
     // init

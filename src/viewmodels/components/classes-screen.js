@@ -1,3 +1,4 @@
+const Klass = maker('Klass')
 const vm = function (params) {
     let vm = this
 
@@ -19,7 +20,7 @@ const vm = function (params) {
     // behaviours
     vm.addClass = () => {
         vm.newClassActionName("Add New Class")
-        vm.newClass(new Klass)
+        vm.newClass(new klass)
         _tooltip()
     }
     vm.dismissAdd = () => {
@@ -47,7 +48,7 @@ const vm = function (params) {
                         .map(c => {
                             vm
                                 .classes
-                                .push(new Klass(c))
+                                .push(new klass(c))
                         })
                     vm.connected(true)
                     _tooltip()
@@ -57,41 +58,30 @@ const vm = function (params) {
     }
 
     // sub-vm
-    function Klass() {
-        let c = this
-        let args = arguments.length > 0
-            ? arguments[0]
-            : {}
-
-        // props
-        c._id = ko.observable(args._id || '')
-        c.name = ko.observable(args.name || '')
-        c.code = ko.observable(args.code || '')
-        c.addDate = ko.observable(args.addDate || null)
-
-        // states
-        c.saving = ko.observable(false)
+    class klass extends Klass {
+        constructor() {
+            super(arguments)
+            console.log(this.export('saving'))
+        }
 
         // behaviours
-        c.save = () => {
-            if (_anyEmpty(c.name(), c.code())) 
+        save() {
+            if (_anyEmpty(this.name(), this.code())) 
                 return VM.notify("Do not leave any detail empty", "warn")
 
-            let klass = ko.toJS(c)
-            delete klass.saving // not needed
+            let _klass = this.export('saving')
 
-            if (_new) {
+            if (this._new) {
                 // add
-                c.saving(true)
-                klass.addDate = klass.addDate
-                    ? klass.addDate
+                this.saving(true)
+                _klass.addDate = _klass.addDate
+                    ? _klass.addDate
                     : _getUTCTime() / 1000 // to secs
-                delete klass._id
-                sockets.emit('add class', klass, data => {
+                sockets.emit('add class', _klass, data => {
                     if (!data.status) 
-                        return c.saving(false),
+                        return this.saving(false),
                         VM.notify('Problem creating class, could not reach Control Workstation', 'error', {
-                            'try again': c.save
+                            'try again': this.save.bind(this)
                         }, 'retry add class')
                     else {
                         console.log(data)
@@ -99,53 +89,53 @@ const vm = function (params) {
                             VM.notify('Class created successfully.')
                             vm
                                 .classes
-                                .push(new Klass(data.response))
+                                .push(new klass(data.response))
                             vm.addClass()
                         } else if (data.response === false) 
                             VM.notify('Unable to create class', 'error')
                         else 
                             VM.notify(data.response, 'error')
-                        c.saving(false)
+                        this.saving(false)
                     }
                 })
             } else {
                 // edit
-                c.saving(true)
-                sockets.emit('edit class', klass, data => {
+                this.saving(true)
+                sockets.emit('edit class', _klass, data => {
                     if (!data.status) 
-                        return c.saving(false),
+                        return this.saving(false),
                         VM.notify('Problem editing class, could not reach Control Workstation', 'error', {
-                            'try again': c.save
+                            'try again': this.save.bind(this)
                         }, 'retry edit class')
                     else {
                         if (data.response) 
                             VM.notify("Class updated successfully")
                         else 
                             VM.notify("Unable to update class")
-                        c.saving(false)
+                        this.saving(false)
                     }
                 })
             }
         }
-        c.open = () => {
-            vm.classDetail(new ClassDetail(c))
+        open() {
+            vm.classDetail(new ClassDetail(this))
             controlla.next()
         }
-        c.contextmenu = (o, e) => {
+        contextmenu(o, e) {
             VM
                 .contextmenu
                 .prep(e)
-                .show({'Manage': c.open, 'Edit class': c.edit, 'Delete': c.remove, 'Refresh list': vm.loadClasses})
+                .show({'Manage': this.open.bind(this), 'Edit class': this.edit.bind(this), 'Delete': this.delete.bind(this), 'Refresh list': vm.loadClasses})
         }
-        c.edit = () => {
+        edit() {
             vm.newClassActionName('Edit Class')
-            vm.newClass(c)
+            vm.newClass(this)
         }
-        c.remove = () => {
-            sockets.emit('remove class', c.code(), data => {
+        delete() {
+            sockets.emit('remove class', this.code(), data => {
                 if (!data.status) 
                     VM.notify('Problem removing class, could not reach Control Workstation', 'error', {
-                        'try again': c.remove
+                        'try again': this.delete.bind(this)
                     }, 'retry remove class')
                 else {
                     if (!data.response) 
@@ -153,24 +143,26 @@ const vm = function (params) {
                     else 
                         vm
                             .classes
-                            .remove(c)
+                            .remove(this)
                     }
             })
         }
-
-        // init
-        let _new = !c._id()
     }
 
     function ClassDetail(klass) {
         let c = this
+        let kontrolla
         if (!klass) 
             return;
         
         // props
         c.me = klass
+
         // behaviours
         c.back = () => controlla.prev()
+
+        // init
+        _.defer(() => kontrolla = $('.sectionizr').sectionize()[1])
     }
 
     // init

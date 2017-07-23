@@ -239,6 +239,13 @@ textarea {
             background: $theme-orange
         }
     }
+    &.btn-gray {
+        background: lighten(#ccc, 2%);
+        color: $theme-white;
+        &:hover {
+            background: #ccc
+        }
+    }
     &.btn-black {
         background: lighten($theme-black, 5%);
         color: $theme-white;
@@ -557,6 +564,19 @@ form {
 
 .uppercase {
     text-transform: uppercase;
+}
+
+blockquote {
+    padding: 1rem;
+    background: $theme-gray;
+    border-left: $theme-orange 3px solid;
+    margin: 0;
+    h4 {
+        margin: 0 0 5px;
+    }
+    .btn {
+        text-transform: none;
+    }
 }
 
 // specific

@@ -52,49 +52,49 @@
 		.teachers-list {
 			max-height: 40vh;
 			overflow-y: auto;
-			li {
-				background: $theme-gray;
-				padding: 0 5px;
-				position: relative;
-				overflow: hidden;
-				&:hover {
-					color: $theme-green;
-					background: lighten($theme-gray, 2%);
-					&:before {
-						transform: rotateZ(-45deg)
-					}
-					&:after {
-						transform: rotateZ(45deg)
-					}
-					h5 {
-						padding-left: 5px;
-					}
-				}
-				h5 {
-					margin: .8rem 0;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					transition-duration: .25s;
-				}
-				&:before,
-				&:after {
-					content: '';
-					background: $theme-white;
-					height: 100%;
-					width: 42px;
-					left: 100%;
-					position: absolute;
-					transition-duration: .25s;
-				}
-				&:before {
-					top: -50%;
-					transform-origin: 0 100%;
-				}
-				&:after {
-					bottom: -50%;
-					transform-origin: 0 0;
-				}
+		}
+	}
+	li.signpost {
+		background: $theme-gray;
+		padding: 0 5px;
+		position: relative;
+		overflow: hidden;
+		&:hover {
+			color: $theme-green;
+			background: lighten($theme-gray, 2%);
+			&:before {
+				transform: rotateZ(-45deg)
 			}
+			&:after {
+				transform: rotateZ(45deg)
+			}
+			h5 {
+				padding-left: 5px;
+			}
+		}
+		h5 {
+			margin: .8rem 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			transition-duration: .25s;
+		}
+		&:before,
+		&:after {
+			content: '';
+			background: $theme-white;
+			height: 100%;
+			width: 42px;
+			left: 100%;
+			position: absolute;
+			transition-duration: .25s;
+		}
+		&:before {
+			top: -50%;
+			transform-origin: 0 100%;
+		}
+		&:after {
+			bottom: -50%;
+			transform-origin: 0 0;
 		}
 	}
 	.teacher-details {
@@ -129,14 +129,15 @@
 		.content {
 			padding: 2rem .7rem 5px;
 			&.sectionized {
-				height: calc(100% - 57px);
+				height: calc(100% - 67px);
 				overflow: hidden;
 				.sectionizr {
 					width: 50%;
 					overflow: visible !important;
 					position: relative;
+					padding-bottom: 48px;
 					&:after {
-						content: '';
+						// content: '';
 						background: rgba($theme-white, .9);
 						top: 0;
 						z-index: 1;
@@ -145,6 +146,64 @@
 						height: 100%;
 						position: absolute;
 					}
+					footer {
+						position: absolute;
+						bottom: 0;
+						left: 0;
+						width: 100%;
+						.prev,
+						.next {
+							display: block;
+							opacity: .2;
+							transition: opacity 250ms ease-in-out;
+							width: 48px;
+							height: 48px;
+							background-size: 70%;
+							background-repeat: no-repeat;
+							background-position: center;
+							&:hover {
+								opacity: .8;
+							}
+						}
+						.prev {
+							float: left;
+							background-image: url(../../resx/icons/long-arrow-left.png);
+						}
+						.next {
+							float: right;
+							background-image: url(../../resx/icons/long-arrow-right.png);
+						}
+					}
+				}
+			}
+		}
+		.assign-classteacher {
+			&.assigned {
+				blockquote {
+					border-left-color: $theme-green;
+				}
+				ul {
+					padding-top: 44.59px;
+					position: relative;
+				}
+			}
+			.signpost {
+				background: rgba($theme-orange, .2);
+				&:hover {
+					&:before,
+					&:after {
+						display: none;
+					}
+				}
+				+.signpost {
+					margin-top: 2px;
+				}
+				&.active {
+					background: rgba($theme-green, .2);
+					position: absolute;
+					width: 100%;
+					top: 0;
+					left: 0;
 				}
 			}
 		}

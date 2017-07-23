@@ -1,3 +1,4 @@
+const Subject = maker('Subject')
 const vm = function (params) {
     let vm = this
 
@@ -19,7 +20,7 @@ const vm = function (params) {
     // behaviours
     vm.addSubject = () => {
         vm.newSubjectActionName("Add New Subject")
-        vm.newSubject(new Subject)
+        vm.newSubject(new subject)
         _tooltip()
     }
     vm.dismissAdd = () => {
@@ -47,7 +48,7 @@ const vm = function (params) {
                         .map(s => {
                             vm
                                 .subjects
-                                .push(new Subject(s))
+                                .push(new subject(s))
                         })
                     vm.connected(true)
                     _tooltip()
@@ -57,41 +58,29 @@ const vm = function (params) {
     }
 
     // sub-vm
-    function Subject() {
-        let s = this
-        let args = arguments.length > 0
-            ? arguments[0]
-            : {}
-
-        // props
-        s._id = ko.observable(args._id || '')
-        s.title = ko.observable(args.title || '')
-        s.code = ko.observable(args.code || '')
-        s.addDate = ko.observable(args.addDate || null)
-
-        // states
-        s.saving = ko.observable(false)
+    class subject extends Subject {
+        constructor() {
+            super(arguments)
+            console.log(this.export('saving'))
+        }
 
         // behaviours
-        s.save = () => {
-            if (_anyEmpty(s.title(), s.code())) 
+        save() {
+            if (_anyEmpty(this.title(), this.code())) 
                 return VM.notify("Do not leave any detail empty", "warn")
 
-            let subject = ko.toJS(s)
-            delete subject.saving // not needed
-
-            if (_new) {
+            let _subject = this.export('saving')
+            if (this._new) {
                 // add
-                s.saving(true)
-                subject.addDate = subject.addDate
-                    ? subject.addDate
+                this.saving(true)
+                _subject.addDate = _subject.addDate
+                    ? _subject.addDate
                     : _getUTCTime() / 1000 // to secs
-                delete subject._id
-                sockets.emit('add subject', subject, data => {
+                sockets.emit('add subject', _subject, data => {
                     if (!data.status) 
-                        return s.saving(false),
+                        return this.saving(false),
                         VM.notify('Problem adding subject, could not reach Control Workstation', 'error', {
-                            'try again': s.save
+                            'try again': this.save.bind(this)
                         }, 'retry add subject')
                     else {
                         console.log(data)
@@ -99,53 +88,53 @@ const vm = function (params) {
                             VM.notify('Subject added successfully.')
                             vm
                                 .subjects
-                                .push(new Subject(data.response))
+                                .push(new subject(data.response))
                             vm.addSubject()
                         } else if (data.response === false) 
                             VM.notify('Unable to add subject', 'error')
                         else 
                             VM.notify(data.response, 'error')
-                        s.saving(false)
+                        this.saving(false)
                     }
                 })
             } else {
                 // edit
-                s.saving(true)
-                sockets.emit('edit subject', subject, data => {
+                this.saving(true)
+                sockets.emit('edit subject', _subject, data => {
                     if (!data.status) 
-                        return s.saving(false),
+                        return this.saving(false),
                         VM.notify('Problem editing subject, could not reach Control Workstation', 'error', {
-                            'try again': s.save
+                            'try again': this.save.bind(this)
                         }, 'retry edit subject')
                     else {
                         if (data.response) 
                             VM.notify("Subject updated successfully")
                         else 
                             VM.notify("Unable to update subject")
-                        s.saving(false)
+                        this.saving(false)
                     }
                 })
             }
         }
-        s.open = () => {
-            vm.subjectDetail(new SubjectDetail(s))
+        open() {
+            vm.subjectDetail(new SubjectDetail(this))
             controlla.next()
         }
-        s.contextmenu = (o, e) => {
+        contextmenu(o, e) {
             VM
                 .contextmenu
                 .prep(e)
-                .show({'Manage': s.open, 'Edit subject': s.edit, 'Delete': s.remove, 'Refresh list': vm.loadSubjects})
+                .show({'Manage': this.open.bind(this), 'Edit subject': this.edit.bind(this), 'Delete': this.remove.bind(this), 'Refresh list': vm.loadSubjects})
         }
-        s.edit = () => {
+        edit() {
             vm.newSubjectActionName('Edit Subject')
-            vm.newSubject(s)
+            vm.newSubject(this)
         }
-        s.remove = () => {
-            sockets.emit('remove subject', s.code(), data => {
+        remove() {
+            sockets.emit('remove subject', this.code(), data => {
                 if (!data.status) 
                     VM.notify('Problem deleting subject, could not reach Control Workstation', 'error', {
-                        'try again': s.remove
+                        'try again': this.remove.bind(this)
                     }, 'retry remove subject')
                 else {
                     if (!data.response) 
@@ -153,13 +142,10 @@ const vm = function (params) {
                     else 
                         vm
                             .subjects
-                            .remove(s)
+                            .remove(this)
                     }
             })
         }
-
-        // init
-        let _new = !s._id()
     }
 
     function SubjectDetail(subject) {

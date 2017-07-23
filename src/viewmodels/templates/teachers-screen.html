@@ -22,10 +22,10 @@
 			<div class="content">
 				<h4 class="title no-underline">
 					All teachers
-					<i class="fa fa-fw fa-question-circle section-action orange" data-bind="click: addTeacher, attr: {title: info}" data-tooltip="{}"></i>
+					<i class="fa fa-fw fa-question-circle section-action orange" data-bind="click: addTeacher, attr: {title: info}" data-tooltip="{'class': 'mini white'}"></i>
 					<label class="section-action green" data-bind="click: addTeacher">Add new</label></h4>
 				<ul class="teachers-list row scrollable" data-bind="foreach: teachers">
-					<li class="col span_1_of_3" data-bind="click: open, event: {contextmenu: contextmenu}">
+					<li class="col span_1_of_3 signpost" data-bind="click: open, event: {contextmenu: contextmenu}">
 						<h5 data-bind="text: name"></h5>
 					</li>
 				</ul>
@@ -74,8 +74,28 @@
 				<label><i class="fa fa-fw fa-envelope"></i> <span data-bind="text: email"></span></label>
 			</div>
 		</header>
-		<div class="content">
-			
+		<div class="content sectionized">
+			<div class="sectionizr" data-peek>
+				<section class="assign-classteacher" data-bind="css: { assigned: me.$assignedClass}">
+					<blockquote>
+						<h4 data-bind="text: me.$assignmentInfo"></h4>
+						<!-- ko if: me.$assignedClass -->
+						<a class="btn btn-gray mini">Decommission</a>
+						<!-- /ko -->
+					</blockquote>
+					<h5><span data-bind="text: me.$assignedClass()? 'Re-assign':'Assign'"></span> to class</h5>
+					<ul data-bind="foreach: allClasses">
+						<li class="signpost">
+							<h5 data-bind="text: name"></h5>
+						</li>
+					</ul>
+				</section>
+				<section></section>
+				<footer class="row group">
+					<a class="prev" data-tooltip="{'class': 'mini white'}" data-bind="attr: {title: prevTooltip}, css: {disabled: !prevTooltip()}, click: prev"></a>
+					<a class="next" data-tooltip="{'class': 'mini white'}" data-bind="attr: {title: nxtTooltip}, css: {disabled: !nxtTooltip()}, click: next"></a>
+				</footer>
+			</div>
 		</div>
 	</section>
 </div>

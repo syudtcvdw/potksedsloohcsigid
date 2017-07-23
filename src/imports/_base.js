@@ -2,6 +2,7 @@ const VIEWMODELS_PATH = __dirname + '/viewmodels/'
 const IMPORTS_PATH = __dirname + '/imports/'
 const COMPONENTS_PATH = VIEWMODELS_PATH + 'components/'
 const TEMPLATES_PATH = VIEWMODELS_PATH + 'templates/'
+const CLASSES_PATH = IMPORTS_PATH + 'classes/'
 const DEFAULT_SCHOOL_LOGO = 'resx/images/school-logo.png'
 
 const SERVER = 'SERVER'
@@ -26,6 +27,7 @@ const _server = require(IMPORTS_PATH + '_server.js')
 const {remote, BrowserWindow} = require('electron')
 const app = remote.getGlobal('thisApp')
 const currentWindow = remote.getCurrentWindow()
+const maker = require(CLASSES_PATH + 'classmaker.js')
 
 require(IMPORTS_PATH + '_sectionizr.js')
 

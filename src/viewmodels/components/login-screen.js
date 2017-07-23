@@ -58,7 +58,7 @@ var vm = function (params) {
             .personEmail(data.info.email)
         VM.controlVm.personId = data.info._id
 
-        VM.loadView('classes-screen')
+        VM.loadView('teachers-screen')
     }
 
     // init

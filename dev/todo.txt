@@ -1,0 +1,13 @@
+When Classes:
+    Subjects stats
+    Students stats
+    Class teacher
+    Teacher stats
+When Subjects
+    Taught in x Classes
+    By y Teachers
+    To z Students
+When Teachers
+    Is class teacher? Do assign
+    Assign Subjects
+        Assign classes
