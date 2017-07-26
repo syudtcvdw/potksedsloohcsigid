@@ -180,7 +180,7 @@ const vm = function (params) {
     function TeacherDetail(teacher) {
         let t = this,
             kontrolla,
-            tips = ["Update classteacher status", "Assign subjects"]
+            tips = ["Update classteacher status", "Assigned subjects"]
         if (!teacher) 
             return;
         
@@ -203,7 +203,40 @@ const vm = function (params) {
                 ? ''
                 : tips[t.pos()]
         })
-        t.assignClass = (which, e) => {
+
+        // behaviours
+        t.back = () => kontrolla.position != 1
+            ? t.prev()
+            : controlla.prev()
+        t.getClasses = () => {
+            sockets.emit('get all classes', null, data => {
+                if (data.status) {
+                    if (data.response) {
+                        t
+                            .allClasses
+                            .removeAll()
+                        data
+                            .response
+                            .map(c => {
+                                t
+                                    .allClasses
+                                    .push(new klass(c).$extend({$selected: false}))
+                            })
+                    }
+                }
+            }, true)
+        }
+        t.next = () => {
+            kontrolla.next()
+            t.pos(kontrolla.position)
+            _tooltip()
+        }
+        t.prev = () => {
+            kontrolla.prev()
+            t.pos(kontrolla.position)
+            _tooltip()
+        }
+        t.assignClass = (which, e, proceed = false) => {
             t
                 .allClasses()
                 .forEach(c => {
@@ -216,6 +249,17 @@ const vm = function (params) {
                 if (e.target.nodeName != 'A') 
                     which.$selected(false)
                 else {
+                    if (!proceed && which.classteacher()) {
+                        return VM.notify(`${which.code()} already has a classteacher '${vm.teachers().find(t => which.code() == t.assignedClass()).name()}' Do you want to proceed?`, 'warn', {
+                            proceed: () => {
+                                vm // deassign the existing classteacher
+                                    .teachers()
+                                    .find(t => which.code() == t.assignedClass())
+                                    .assignedClass('')
+                                t.assignClass(which, e, true) // assign the new guy
+                            }
+                        }, 'proceed with classteacher assign')
+                    }
                     t.assigning(true)
                     sockets.emit('assign classteacher', {
                         who: t
@@ -240,36 +284,31 @@ const vm = function (params) {
                 }
             }
         }
-
-        // behaviours
-        t.back = () => controlla.prev()
-        t.getClasses = () => {
-            sockets.emit('get all classes', null, data => {
-                if (data.status) {
-                    if (data.response) {
+        t.decommission = () => {
+            t.assigning(true)
+            sockets.emit('decommission classteacher', {
+                who: t
+                    .me
+                    .email()
+            }, data => {
+                if (!data.status) 
+                    VM.notify("Unable to decommission classteacher, could not reach Control Workstation", "error")
+                else {
+                    if (!data.response) 
+                        VM.notify("Problem decommissioning classteacher")
+                    else {
                         t
-                            .allClasses
-                            .removeAll()
-                        data
-                            .response
-                            .map(c => {
-                                t
-                                    .allClasses
-                                    .push(new klass(c).$extend({selected: false}))
-                            })
+                            .allClasses()
+                            .find(c => c.code() == t.me.assignedClass())
+                            .classteacher('')
+                        t
+                            .me
+                            .assignedClass('')
+                        VM.notify("Classteacher decommissioned successfully")
                     }
                 }
-            }, true)
-        }
-        t.next = () => {
-            kontrolla.next()
-            t.pos(kontrolla.position)
-            _tooltip()
-        }
-        t.prev = () => {
-            kontrolla.prev()
-            t.pos(kontrolla.position)
-            _tooltip()
+                t.assigning(false)
+            })
         }
 
         // init

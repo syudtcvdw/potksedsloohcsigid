@@ -15,14 +15,17 @@ module.exports = function (...args) {
                  * Use this to extend each new instance with properties
                  * Formatted object style as {propName: value}
                  * Each extended property is wrapped as an observable,
-                 * and the prop name is prepended with a '$'
+                 * and the prop name [is NO LONGER auto-prepended with a '$']
                  */
                 $extend() {
                     if (arguments.length <= 0) 
                         return
                     let args = arguments[0]
-                    for (let o in args) 
-                        this[`$${o}`] = ko.observable(args[o])
+                    for (let o in args) {
+                        this[o] = typeof args[o] != 'function'
+                            ? ko.observable(args[o])
+                            : args[o].bind(this)
+                    }
                     return this
                 }
             }

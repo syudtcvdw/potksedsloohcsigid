@@ -379,11 +379,19 @@ module.exports = function (server, force = false) {
                 if (expired(query)) 
                     return
                 query = query.payload || query
-                let DbTeachers = db("teachers")
-                DbTeachers.remove({
+                db("teachers").remove({
                     email: query
                 }, {}, (err, num) => {
-                    cb(!err && num > 0)
+                    let r = !err && num > 0
+                    if (r) 
+                        db('classes').update({ // deassign classteacher
+                            classteacher: query
+                        }, {
+                            $set: {
+                                classteacher: ''
+                            }
+                        }, () => null)
+                    cb(r)
                 })
             })
 
@@ -515,9 +523,156 @@ module.exports = function (server, force = false) {
                 if (expired(query)) 
                     return
                 query = query.payload || query
-                let DbClasses = db('classes')
-                DbClasses.remove({
+                db('classes').remove({
                     code: query
+                }, {}, (err, num) => {
+                    let r = !err && num > 0
+                    if (r) 
+                        db('teachers').update({ // deassign classteacher
+                            assignedClass: query
+                        }, {
+                            $set: {
+                                assignedClass: ''
+                            }
+                        }, () => null)
+                    cb(r)
+                })
+            })
+
+            /**
+             * Assigns classteacher for specified class
+             */
+            socket.on('assign classteacher', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let [DbClasses,
+                    DbTeachers] = db('classes', 'teachers')
+                DbTeachers.update({
+                    assignedClass: query.which,
+                    $not: {
+                        email: query.who
+                    }
+                }, {
+                    $set: {
+                        assignedClass: ''
+                    }
+                }, (err, doc) => {
+                    DbClasses.update({
+                        code: query.which
+                    }, {
+                        $set: {
+                            classteacher: query.who
+                        }
+                    }, (err, doc) => {
+                        DbTeachers.update({
+                            email: query.who
+                        }, {
+                            $set: {
+                                assignedClass: query.which
+                            }
+                        }, (err, doc) => {
+                            cb(true)
+                        })
+                    })
+                })
+            })
+
+            /**
+             * Decommissions specified classteacher
+             */
+            socket.on('decommission classteacher', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let [DbClasses,
+                    DbTeachers] = db('classes', 'teachers')
+                DbTeachers.update({
+                    email: query.who
+                }, {
+                    $set: {
+                        assignedClass: ''
+                    }
+                }, (err, doc) => {
+                    DbClasses.update({
+                        classteacher: query.who
+                    }, {
+                        $set: {
+                            classteacher: ''
+                        }
+                    }, (err, doc) => {
+                        cb(true)
+                    })
+                })
+            })
+
+            /**
+             * Assigns teacher to a subject for a class on the roster
+             */
+            socket.on('assign teacher to subject', (query, cb) => { // success: doc
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                let DbRoster = db('roster')
+                DbRoster.remove({
+                    $and: [
+                        {
+                            class: query.class
+                        }, {
+                            subject : query.subject
+                        }
+                    ]
+                }, {}, () => {
+                    DbRoster.i({
+                        class: query.class,
+                        subject: query.subject,
+                        teacher: query.teacher,
+                        addDate: _getUTCTime() / 1000
+                        })
+                        .then(d => cb(d))
+                        .catch(e => cb(false))
+                })
+            })
+
+            /**
+			 * Returns the roster
+			 */
+            socket.on('get roster', (query, cb) => { // success: {subject: teacher}
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                db('roster')
+                    .find({class: query})
+                    .execAsync()
+                    .then(d => {
+                        if (!d) 
+                            cb(false)
+                        else {
+                            let o = {}
+                            d.map(r => {
+                                o[r.subject] = r.teacher
+                            })
+                            cb(o)
+                        }
+                    })
+                    .catch(() => cb(false))
+            })
+
+            /**
+			 * Removes specified subject from class roster
+			 */
+            socket.on('remove subject from roster', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                db('roster').remove({
+                    $and: [
+                        {
+                            class: query.class
+                        }, {
+                            subject : query.subject
+                        }
+                    ]
                 }, {}, (err, num) => {
                     cb(!err && num > 0)
                 })
@@ -525,8 +680,7 @@ module.exports = function (server, force = false) {
 
             resolve(socket)
         }).then((socket) => {
-            let DbSettings = db('settings')
-            DbSettings
+            db('settings')
                 .find({})
                 .execAsync()
                 .then(docs => {

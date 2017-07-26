@@ -56,7 +56,47 @@
 				<label class="uppercase">Class code: <span data-bind="text: code"></span></label>
 			</div>
 		</header>
-		<div class="content sectionized">
+		<div class="content sectionized" data-bind="css: {disabled: assigning}">
+			<div class="sectionizr" data-peek>
+				<section class="assign-classteacher class-subjects">
+					<h4 class="title">Class Subjects</h4>
+					<blockquote data-bind="css: {green: subjects[0]().length}">
+						<span data-bind="text: subjects[0]().length? subjects[0]().length + ' subject' + (subjects[0]().length == 1?'':'s'):'No subjects'"></span>						added for this class
+					</blockquote>
+					<ul class="row group" data-bind="foreach: subjects[0]">
+						<li class="signpost no-float active col span_1_of_2 mt0" data-bind="click: $parent.openSubject, event: {contextmenu: $parent.subjectCtx}">
+							<h5>(<span data-bind="text: code"></span>) <span data-bind="text: title"></span></h5>
+						</li>
+					</ul>
+					<!-- ko if: subjects[1]().length -->
+					<h5>Add more subjects</h5>
+					<ul class="row group" data-bind="foreach: subjects[1]">
+						<li class="signpost col span_1_of_2 mt0" data-bind="click: $parent.openSubject, event: {contextmenu: $parent.subjectCtx}">
+							<h5>(<span data-bind="text: code"></span>) <span data-bind="text: title"></span></h5>
+						</li>
+					</ul>
+					<!-- /ko -->
+				</section>
+				<section class="assign-classteacher" data-bind="css: {assigned: selectedSubjectHasTeacher}">
+					<h4 class="title">
+						Attach Teacher for <span data-bind="text: selectedSubject()? selectedSubject().code:'Subject'"></span>
+						<label class="section-action green mini-goback" data-bind="click: backToSubjects"><i class="fa fa-chevron-left"></i> back</label>
+					</h4>
+					<ul data-bind="foreach: teachers">
+						<li class="signpost class" data-bind="click: $parent.assignTeacher, css: {active: $attached}">
+							<h5 class="teacher-name" data-bind="css: {female: gender() == 'female'}">
+								<i class="fa fa-fw"></i>
+								<span data-bind="text: name"></span>
+							</h5>
+							<!-- ko ifnot: $attached -->
+							<div data-bind="css: {shown: $selected}">
+								<a class="btn btn-green mini">Assign to teach</a>
+							</div>
+							<!-- /ko -->
+						</li>
+					</ul>
+				</section>
+			</div>
 		</div>
 	</section>
 </div>

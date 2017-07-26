@@ -112,6 +112,8 @@ body {
         color: $theme-orange;
         position: relative;
         padding-bottom: 3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
         &::before {
             content: '';
             position: absolute;
@@ -131,6 +133,10 @@ body {
             float: right;
             color: $theme-black;
             opacity: .7;
+            text-transform: uppercase;
+            font-size: small;
+            font-weight: bold;
+            padding-top: 1px;
             &:hover {
                 opacity: 1
             }
@@ -340,7 +346,7 @@ table {
 }
 
 .mt0 {
-    margin-top: 0;
+    margin-top: 0 !important;
 }
 
 .disabled {
@@ -557,7 +563,7 @@ form {
     display: flex;
     align-items: center;
     justify-content: center;
-    > .content {
+    >.content {
         width: 100%;
     }
 }
@@ -576,6 +582,9 @@ blockquote {
     }
     .btn {
         text-transform: none;
+    }
+    &.green {
+        border-left-color: $theme-green;
     }
 }
 

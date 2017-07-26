@@ -59,6 +59,12 @@ const schemas = {
             type: String,
             unique: true
         }
+    },
+    roster: {
+        class: String,
+        subject: String,
+        teacher: String,
+        addDate: Number
     }
 }
 

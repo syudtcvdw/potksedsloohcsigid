@@ -1,4 +1,6 @@
-const Klass = maker('Klass')
+const [Klass,
+    teacher,
+    subject] = maker('Klass', 'teacher', 'subject')
 const vm = function (params) {
     let vm = this
 
@@ -81,7 +83,9 @@ const vm = function (params) {
                     if (!data.status) 
                         return this.$saving(false),
                         VM.notify('Problem creating class, could not reach Control Workstation', 'error', {
-                            'try again': this.save.bind(this)
+                            'try again': this
+                                .save
+                                .bind(this)
                         }, 'retry add class')
                     else {
                         console.log(data)
@@ -105,7 +109,9 @@ const vm = function (params) {
                     if (!data.status) 
                         return this.$saving(false),
                         VM.notify('Problem editing class, could not reach Control Workstation', 'error', {
-                            'try again': this.save.bind(this)
+                            'try again': this
+                                .save
+                                .bind(this)
                         }, 'retry edit class')
                     else {
                         if (data.response) 
@@ -125,7 +131,18 @@ const vm = function (params) {
             VM
                 .contextmenu
                 .prep(e)
-                .show({'Manage': this.open.bind(this), 'Edit class': this.edit.bind(this), 'Delete': this.delete.bind(this), 'Refresh list': vm.loadClasses})
+                .show({
+                    'Manage': this
+                        .open
+                        .bind(this),
+                    'Edit class': this
+                        .edit
+                        .bind(this),
+                    'Delete': this
+                        .delete
+                        .bind(this),
+                    'Refresh list': vm.loadClasses
+                })
         }
         edit() {
             vm.newClassActionName('Edit Class')
@@ -135,7 +152,9 @@ const vm = function (params) {
             sockets.emit('remove class', this.code(), data => {
                 if (!data.status) 
                     VM.notify('Problem removing class, could not reach Control Workstation', 'error', {
-                        'try again': this.delete.bind(this)
+                        'try again': this
+                            .delete
+                            .bind(this)
                     }, 'retry remove class')
                 else {
                     if (!data.response) 
@@ -157,12 +176,202 @@ const vm = function (params) {
         
         // props
         c.me = klass
+        c.roster = {}
+        c.subjects = [
+            ko.observableArray(),
+            ko.observableArray()
+        ]
+
+        // observables
+        c.selectedSubject = ko.observable()
+        c.teachers = ko.observableArray()
+        c.selectedSubjectHasTeacher = ko.observable()
+        c.assigning = ko.observable(false)
+
+        // subscriptions
+        c
+            .selectedSubject
+            .subscribe(s => {
+                if (!s) 
+                    return
+                let hasTeacher = false;
+                c
+                    .teachers()
+                    .map(t => {
+                        t.$selected(false)
+                        t.$attached(false)
+                        if (typeof c.roster[s.code()] != 'undefined' && c.roster[s.code()] == t.email()) {
+                            t.$attached(true)
+                            hasTeacher = true
+                        }
+                    })
+                c.selectedSubjectHasTeacher(hasTeacher)
+            })
 
         // behaviours
-        c.back = () => controlla.prev()
+        c.back = () => kontrolla.position > 1
+            ? kontrolla.prev()
+            : controlla.prev()
+        c.loadSubjects = () => {
+            sockets.emit('get all subjects', null, data => {
+                if (data.status) {
+                    if (data.response) {
+                        c
+                            .subjects
+                            .forEach(s => {
+                                s.removeAll()
+                            });
+                        data
+                            .response
+                            .map(s => {
+                                if (typeof c.roster[s.code] == 'undefined') 
+                                    c.subjects[1].push(new subject(s).$extend({$taught: false}))
+                                else 
+                                    c
+                                        .subjects[0]
+                                        .push(new subject(s).$extend({$taught: true}))
+                                })
+                    } else 
+                        VM.notify("Unable to fetch subjects list", "error")
+                } else 
+                    VM.notify("Unable to fetch subjects list", "error")
+            }, true)
+        }
+        c.loadTeachers = () => {
+            sockets.emit('get all teachers', null, data => {
+                if (data.status) {
+                    if (data.response) {
+                        c
+                            .teachers
+                            .removeAll()
+                        data
+                            .response
+                            .map(t => {
+                                c
+                                    .teachers
+                                    .push(new teacher(t).$extend({$selected: false, $attached: false}))
+                            })
+                    } else 
+                        VM.notify("Unable to fetch teachers list", "error")
+                } else 
+                    VM.notify("Unable to fetch teachers list", "error")
+            }, true)
+        }
+        c.openSubject = (o, e) => {
+            c.selectedSubject(o)
+            kontrolla.next()
+        }
+        c.assignTeacher = (which, e, proceed = false) => {
+            c
+                .teachers()
+                .forEach(t => {
+                    if (t != which) 
+                        t.$selected(false)
+                })
+            if (!which.$selected()) 
+                return which.$selected(true)
+            else {
+                if (e.target.nodeName != 'A') 
+                    which.$selected(false)
+                else {
+                    c.assigning(true)
+                    sockets.emit('assign teacher to subject', {
+                        teacher: which.email(),
+                        subject: c
+                            .selectedSubject()
+                            .code(),
+                        class: c
+                            .me
+                            .code()
+                    }, data => {
+                        if (!data.status) 
+                            VM.notify("Unable to assign teacher, could not reach Control Workstation", "error")
+                        else {
+                            if (!data.response) 
+                                VM.notify(`Problem assigning teacher for ${c.selectedSubject().code()} in this class`, "error")
+                            else {
+                                c.roster[
+                                    c
+                                        .selectedSubject()
+                                        .code()
+                                ] = which.email()
+                                c
+                                    .subjects[1]
+                                    .remove(c.selectedSubject())
+                                c
+                                    .subjects[0]
+                                    .push(c.selectedSubject())
+                                kontrolla.prev()
+                                VM.notify("Teacher assigned to teach subject successfully")
+                            }
+                        }
+                        c.assigning(false)
+                    })
+                }
+            }
+        }
+        c.backToSubjects = () => {
+            kontrolla.prev()
+            c.selectedSubject(null)
+        }
+        c.loadRoster = () => {
+            sockets.emit('get roster', c.me.code(), data => {
+                if (data.status) {
+                    if (data.response) 
+                        c.roster = data.response
+                    else 
+                        VM.notify("Unable to fetch teaching roster", "error")
+                } else 
+                    VM.notify("Unable to fetch teaching roster", "error")
+            }, true)
+        }
+        c.subjectCtx = (o, e) => {
+            let menu = {
+                'Manage': () => c.openSubject(o, e)
+            }
+            if (o.$taught()) 
+                _.extend(menu, {
+                    'Remove subject': () => {
+                        c.assigning(true)
+                        sockets.emit('remove subject from roster', {
+                            class: c
+                                .me
+                                .code(),
+                            subject: o.code()
+                        }, data => {
+                            if (!data.status) 
+                                VM.notify("Unable to remove subject from class, could not reach Control Workstation", "error")
+                            else {
+                                if (!data.response) 
+                                    VM.notify("Unable to remove subject from class", "error")
+                                else {
+                                    delete c.roster[o.code()]
+                                    c
+                                        .subjects[0]
+                                        .remove(o)
+                                    c
+                                        .subjects[1]
+                                        .push(o)
+                                    VM.notify("Subject removed from class successfully")
+                                }
+                            }
+                            c.assigning(false)
+                        })
+                    }
+                });
+            VM
+                .contextmenu
+                .prep(e)
+                .show(menu)
+        }
 
         // init
-        _.defer(() => kontrolla = $('.sectionizr').sectionize()[1])
+        _.defer(() => {
+            c.loadRoster()
+            c.loadSubjects()
+            c.loadTeachers()
+            kontrolla = $('.sectionizr').sectionize()[1]
+        })
     }
 
     // init
