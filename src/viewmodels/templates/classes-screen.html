@@ -60,7 +60,7 @@
 			<div class="sectionizr" data-peek>
 				<section class="assign-classteacher class-subjects">
 					<h4 class="title">Class Subjects</h4>
-					<blockquote data-bind="css: {green: subjects[0]().length}">
+					<blockquote data-bind="css: {green: subjects[0]().length}, event: {contextmenu: ctx}">
 						<span data-bind="text: subjects[0]().length? subjects[0]().length + ' subject' + (subjects[0]().length == 1?'':'s'):'No subjects'"></span>						added for this class
 					</blockquote>
 					<ul class="row group" data-bind="foreach: subjects[0]">

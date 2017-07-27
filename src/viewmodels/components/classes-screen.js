@@ -232,7 +232,9 @@ const vm = function (params) {
                     } else 
                         VM.notify("Unable to fetch subjects list", "error")
                 } else 
-                    VM.notify("Unable to fetch subjects list", "error")
+                    VM.notify("Unable to fetch subjects list", "error", {
+                        retry: c.loadSubjects()
+                    }, 'retry load subjects')
             }, true)
         }
         c.loadTeachers = () => {
@@ -252,7 +254,9 @@ const vm = function (params) {
                     } else 
                         VM.notify("Unable to fetch teachers list", "error")
                 } else 
-                    VM.notify("Unable to fetch teachers list", "error")
+                    VM.notify("Unable to fetch teachers list", "error", {
+                        retry: c.loadTeachers()
+                    }, 'retry load teachers')
             }, true)
         }
         c.openSubject = (o, e) => {
@@ -366,6 +370,12 @@ const vm = function (params) {
                 .contextmenu
                 .prep(e)
                 .show(menu)
+        }
+        c.ctx = (o, e) => {
+            VM
+                .contextmenu
+                .prep(e)
+                .show({"Refresh list": c.loadRoster})
         }
 
         // init
