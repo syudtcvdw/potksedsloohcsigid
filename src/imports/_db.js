@@ -225,14 +225,14 @@ module.exports = (...name) => {
         function PendingQuery(DB, query = null) {
             let pq = this
             let firstQueryDone = false
-            
-            pq.queries = query
+
+            let pqQueries = query
                 ? [query]
                 : []
-            pq.result = []
+            let _strict = true
+            let _soloFirst = false
+            let pqResult = []
             pq.size = 0
-            pq._strict = true
-            pq._soloFirst = false
             pq.promisedResult = {
                 resolve: null,
                 reject: null
@@ -242,24 +242,24 @@ module.exports = (...name) => {
              * Switch to specify findOne() on the first query instead of the default find()
              */
             pq.soloFirst = (solofirst = true) => {
-                pq._soloFirst = solofirst
+                _soloFirst = solofirst
                 return pq
             }
             /**
              * Run as non-strict
              */
             pq.loose = (strict = false) => {
-                pq._strict = strict
+                _strict = strict
                 return pq
             }
             /**
              * Append a new query
              */
-            pq.with = (query) => {
-                pq
-                    .queries
-                    .push(query)
-                pq.size++;
+            pq.with = (query = {}) => {
+                if (!query) 
+                    return pq
+                pqQueries.push(query)
+                pq.size = pqQueries.length;
                 return pq
             }
             /**
@@ -267,7 +267,7 @@ module.exports = (...name) => {
              */
             pq.exec = () => {
                 return new Promise(function (resolve, reject) {
-                    if (!pq.queries.length) 
+                    if (!pqQueries.length) 
                         reject(null)
                     else {
                         pq.promisedResult.resolve = resolve
@@ -282,15 +282,13 @@ module.exports = (...name) => {
              * Runs all queued queries, one after the other
              */
             function performQuery() {
-                if (!pq.queries.length) 
-                    pq.promisedResult.resolve(pq.result)
-                let _query = pq
-                    .queries
-                    .shift()
+                if (!pqQueries.length) 
+                    pq.promisedResult.resolve(pqResult)
+                let _query = pqQueries.shift()
 
                 if (!firstQueryDone) {
                     firstQueryDone = true
-                    DB[pq._soloFirst
+                    DB[_soloFirst
                                 ? 'findOne'
                                 : 'find'](_query)
                         .execAsync()
@@ -298,7 +296,9 @@ module.exports = (...name) => {
                             if (!d) 
                                 pq.promisedResult.reject(false)
                             else {
-                                pq.result = Array.isArray(d)? d:[d]
+                                pqResult = Array.isArray(d)
+                                    ? d
+                                    : [d]
                                 performQuery()
                             }
                         })
@@ -332,9 +332,15 @@ module.exports = (...name) => {
                     $or: []
                 }
                 let _matches = query.match(/\$r\.([A-Za-z0-9\.]*)/g);
-                pq
-                    .result
-                    .map($r => {
+                if (!_matches) {
+                    if (!Object.keys({query}).length) 
+                        queries = {}
+                    else 
+                        queries
+                            .$or
+                            .push(query)
+                    } else 
+                    pqResult.map($r => {
                         let _q = query
                         _matches.map(_m => _q = _q.replace(_m, _dig($r, _m.substring(3))))
                         queries
@@ -352,38 +358,47 @@ module.exports = (...name) => {
              */
             function stitchResult(result, query) {
                 let comp = getComparators(query.$query)
-                if (pq._strict) {
-                    pq.result = pq
-                        .result
-                        .filter(r => {
-                            let found = result.filter(_r => {
-                                let exists = false
-                                for (let c in comp) {
-                                    if (_dig(_r, c) == _dig(r, comp[c])) 
-                                        exists = true
-                                }
-                                return exists
-                            })
-                            if (found.length) {
-                                r[query.$as] = found
-                                return true
+                if (_strict && Object.keys({comp}).length) {
+                    pqResult = pqResult.filter(r => {
+                        let found = result.filter(_r => {
+                            let exists = false
+                            for (let c in comp) {
+                                if (_dig(_r, c) == _dig(r, comp[c])) 
+                                    exists = true
                             }
+                            return exists
                         })
+                        if (found.length) {
+                            delete r[query.$as] // because if the property was intended to be overwritten, it still retains its data type and casts our poor result to that type, e.g: casting an object into the string form [object Object]
+                            r[query.$as] = found.length == 1
+                                ? found[0]
+                                : found.length == 0
+                                    ? null
+                                    : found
+                            return true
+                        }
+                    })
                 } else {
-                    pq.result = pq
-                        .result
-                        .map(r => {
-                            let found = result.filter(_r => {
-                                let exists = false
-                                for (let c in comp) {
-                                    if (_dig(_r, c) == _dig(r, comp[c])) 
-                                        exists = true
-                                }
-                                return exists
-                            })
-                            r[query.$as] = found
-                            return r
+                    pqResult = pqResult.map(r => {
+                        let found = result.filter(_r => {
+                            let exists = !Object
+                                .keys({comp})
+                                .length // return true when there's no comparator
+                                ? true
+                                : false
+                            for (let c in comp) {
+                                if (_dig(_r, c) == _dig(r, comp[c])) 
+                                    exists = true
+                            }
+                            return exists
                         })
+                        r[query.$as] = found.length == 1
+                            ? found[0]
+                            : found.length == 0
+                                ? null
+                                : found
+                        return r
+                    })
                 }
             }
 
@@ -394,10 +409,22 @@ module.exports = (...name) => {
              */
             function getComparators(query) {
                 let comp = {}
-                for (let q in query) {
-                    if (query[q].toString().startsWith('$r.')) 
-                        comp[q] = query[q].replace('$r.', '')
+
+                /**
+                 * Peels an object, and performs specific operation on its non-object props
+                 * Further peels its object props too
+                 * @param {object} bucket The bucket in which to drop matches
+                 * @param {object} banana The object to peel
+                 */
+                function peel(bucket, banana) {
+                    for (o in banana) {
+                        if (typeof banana[o] == 'object') 
+                            peel(bucket, banana[o])
+                        else if (banana[o].toString().startsWith('$r.')) 
+                            bucket[o] = banana[o].replace('$r.', '')
+                    }
                 }
+                peel(comp, query)
                 return comp
             }
         }

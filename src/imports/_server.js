@@ -426,29 +426,40 @@ module.exports = function (server, force = false) {
             socket.on('get all subjects', (query, cb) => { // success: [docs]
                 if (expired(query)) 
                     return
-                query = query.payload || query
-                let [DbSubjects,
-                    DbRoster] = db('subjects', 'roster')
-                DbSubjects
-                    .find({})
-                    .sort({title: 1})
-                    .exec((err, docs) => {
-                        if (docs) {
-                            docs.forEach((s,i) => {
-                                console.log(i)
-                                if (!query) 
-                                    return s // query can optionally be a class code
-                                DbRoster
-                                    .findOne({subject: s.code, class: query})
-                                    .exec((err, doc) => {
-                                        if (doc) 
-                                            s.$teacher = doc.teacher
-                                    })
-                                return s
-                            })
+                query = query.payload || null // we're nulling it here cos sending in an actual query is an exception for this guy, so it defaults to null
+                let DbSubjects = db('subjects')
+                let q = DbSubjects.join({})
+
+                if (query) {
+                    q.with ({
+                        $table: 'roster',
+                        $as: 'teacher',
+                        $query: {
+                            $and: [
+                                {
+                                    class: query
+                                }, {
+                                    subject: '$r.code'
+                                }
+                            ]
                         }
-                        _.delay(() => cb(docs || false),100)
+                    }) .with ({
+                            $table: 'teachers',
+                            $as: 'teacher',
+                            $query: {
+                                email: '$r.teacher.teacher'
+                            }
+                        }) 
+                        }
+                    
+                q
+                    .exec()
+                    .then(d => {
+                        cb(!d
+                            ? false
+                            : d)
                     })
+                    .catch(() => cb(false))
             })
 
             /**

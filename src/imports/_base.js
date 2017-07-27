@@ -164,7 +164,7 @@ function _tooltip() {
  * @param {string} strata The layers of earth to dig through to find the stone
  */
 function _dig(obj, strata) {
-    if (!strata) 
+    if (!strata || !obj) 
         return obj;
     let _props = strata.split(/[\.\-\s]+/)
     return _dig(obj[_props.shift()], _props.join('.'))
