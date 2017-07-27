@@ -383,7 +383,7 @@ module.exports = function (server, force = false) {
                     email: query
                 }, {}, (err, num) => {
                     let r = !err && num > 0
-                    if (r) 
+                    if (r) {
                         db('classes').update({ // deassign classteacher
                             classteacher: query
                         }, {
@@ -391,6 +391,12 @@ module.exports = function (server, force = false) {
                                 classteacher: ''
                             }
                         }, () => null)
+                        db('roster').remove({ // remove all roster entries
+                            teacher: query
+                        }, {
+                            multi: true
+                        }, (err, num) => null)
+                    }
                     cb(r)
                 })
             })
@@ -420,17 +426,29 @@ module.exports = function (server, force = false) {
             socket.on('get all subjects', (query, cb) => { // success: [docs]
                 if (expired(query)) 
                     return
-                let DbSubjects = db('subjects')
+                query = query.payload || query
+                let [DbSubjects,
+                    DbRoster] = db('subjects', 'roster')
                 DbSubjects
                     .find({})
                     .sort({title: 1})
-                    .execAsync()
-                    .then(d => {
-                        cb(!d
-                            ? false
-                            : d)
+                    .exec((err, docs) => {
+                        if (docs) {
+                            docs.forEach((s,i) => {
+                                console.log(i)
+                                if (!query) 
+                                    return s // query can optionally be a class code
+                                DbRoster
+                                    .findOne({subject: s.code, class: query})
+                                    .exec((err, doc) => {
+                                        if (doc) 
+                                            s.$teacher = doc.teacher
+                                    })
+                                return s
+                            })
+                        }
+                        _.delay(() => cb(docs || false),100)
                     })
-                    .catch(() => cb(false))
             })
 
             /**
@@ -455,11 +473,19 @@ module.exports = function (server, force = false) {
                 if (expired(query)) 
                     return
                 query = query.payload || query
-                let DbSubjects = db("subjects")
+                let [DbSubjects,
+                    DbRoster] = db("subjects", "roster")
                 DbSubjects.remove({
                     code: query
                 }, {}, (err, num) => {
-                    cb(!err && num > 0)
+                    let r = !err && num > 0
+                    if (r) 
+                        DbRoster.remove({ // remove all roster entries
+                            subject: query
+                        }, {
+                            multi: true
+                        }, (err, num) => null)
+                    cb(r)
                 })
             })
 
@@ -527,7 +553,7 @@ module.exports = function (server, force = false) {
                     code: query
                 }, {}, (err, num) => {
                     let r = !err && num > 0
-                    if (r) 
+                    if (r) {
                         db('teachers').update({ // deassign classteacher
                             assignedClass: query
                         }, {
@@ -535,6 +561,12 @@ module.exports = function (server, force = false) {
                                 assignedClass: ''
                             }
                         }, () => null)
+                        db('roster').remove({ // remove all roster entries
+                            class: query
+                        }, {
+                            multi: true
+                        }, (err, num) => null)
+                    }
                     cb(r)
                 })
             })

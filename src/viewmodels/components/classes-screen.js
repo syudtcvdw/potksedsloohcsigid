@@ -210,12 +210,13 @@ const vm = function (params) {
 
         // behaviours
         c.back = () => kontrolla.position > 1
-            ? kontrolla.prev()
+            ? c.backToSubjects()
             : controlla.prev()
         c.loadSubjects = () => {
-            sockets.emit('get all subjects', null, data => {
+            sockets.emit('get all subjects', c.me.code(), data => { // send in the class code so we get subjects with their subject teachers
                 if (data.status) {
                     if (data.response) {
+                        console.log(data.response)
                         c
                             .subjects
                             .forEach(s => {
@@ -311,18 +312,23 @@ const vm = function (params) {
             }
         }
         c.backToSubjects = () => {
+            VM.closeNotification('load roster')
             kontrolla.prev()
             c.selectedSubject(null)
         }
         c.loadRoster = () => {
             sockets.emit('get roster', c.me.code(), data => {
                 if (data.status) {
-                    if (data.response) 
+                    if (data.response) {
                         c.roster = data.response
-                    else 
+                        c.loadTeachers()
+                        c.loadSubjects()
+                    } else 
                         VM.notify("Unable to fetch teaching roster", "error")
                 } else 
-                    VM.notify("Unable to fetch teaching roster", "error")
+                    VM.notify("Unable to fetch teaching roster", "error", {
+                        'try again': c.loadRoster
+                    }, 'load roster')
             }, true)
         }
         c.subjectCtx = (o, e) => {
@@ -364,12 +370,13 @@ const vm = function (params) {
                 .prep(e)
                 .show(menu)
         }
+        c.expandTaughtSubject = (o) => {
+            console.log(o)
+        }
 
         // init
         _.defer(() => {
             c.loadRoster()
-            c.loadSubjects()
-            c.loadTeachers()
             kontrolla = $('.sectionizr').sectionize()[1]
         })
     }

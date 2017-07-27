@@ -71,6 +71,7 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			transition-duration: .25s;
+			white-space: nowrap;
 		}
 		&:before,
 		&:after {

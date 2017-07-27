@@ -62,11 +62,7 @@ var VM = new function () {
     vm.closeNotification = (id) => {
         vm
             .notifs
-            .notifs()
-            .map(n => {
-                if (n.id == id) 
-                    n.die()
-            })
+            .kill(id)
     }
 
     // subscriptions
@@ -248,6 +244,14 @@ var VM = new function () {
                 .notifs()
                 .map(n => {
                     if (!n.stubborn) 
+                        n.die()
+                })
+        }
+        nt.kill = (id) => {
+            nt
+                .notifs()
+                .map(n => {
+                    if (n.id == id) 
                         n.die()
                 })
         }

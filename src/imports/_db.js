@@ -206,10 +206,200 @@ module.exports = (...name) => {
                             })
                             .catch(() => reject())
                     })
+                },
+                join: function (query = null) {
+                    return new PendingQuery(this, query)
                 }
             })
             map[n] = ds
             dbs.push(ds)
+        }
+
+        /**
+         * Pending Query object, allows query concatenation and supports final execution
+         * Returning a PendingQuery object helps simulate an SQL 'join' statement
+         * Usage:
+         * new PendingQuery(firstDoc, {q1})[.with({$table: 'what Doc to check in', $as: 'what to attach result as', $query: {new query}})[...with][.loose()][.soloFirst()]].exec()
+         * Exec returns: Promise
+         */
+        function PendingQuery(DB, query = null) {
+            let pq = this
+            let firstQueryDone = false
+            
+            pq.queries = query
+                ? [query]
+                : []
+            pq.result = []
+            pq.size = 0
+            pq._strict = true
+            pq._soloFirst = false
+            pq.promisedResult = {
+                resolve: null,
+                reject: null
+            }
+
+            /**
+             * Switch to specify findOne() on the first query instead of the default find()
+             */
+            pq.soloFirst = (solofirst = true) => {
+                pq._soloFirst = solofirst
+                return pq
+            }
+            /**
+             * Run as non-strict
+             */
+            pq.loose = (strict = false) => {
+                pq._strict = strict
+                return pq
+            }
+            /**
+             * Append a new query
+             */
+            pq.with = (query) => {
+                pq
+                    .queries
+                    .push(query)
+                pq.size++;
+                return pq
+            }
+            /**
+             * Execute queries
+             */
+            pq.exec = () => {
+                return new Promise(function (resolve, reject) {
+                    if (!pq.queries.length) 
+                        reject(null)
+                    else {
+                        pq.promisedResult.resolve = resolve
+                        pq.promisedResult.reject = reject
+                        performQuery()
+                    }
+                })
+                return pq.promisedResult
+            }
+
+            /**
+             * Runs all queued queries, one after the other
+             */
+            function performQuery() {
+                if (!pq.queries.length) 
+                    pq.promisedResult.resolve(pq.result)
+                let _query = pq
+                    .queries
+                    .shift()
+
+                if (!firstQueryDone) {
+                    firstQueryDone = true
+                    DB[pq._soloFirst
+                                ? 'findOne'
+                                : 'find'](_query)
+                        .execAsync()
+                        .then(d => {
+                            if (!d) 
+                                pq.promisedResult.reject(false)
+                            else {
+                                pq.result = Array.isArray(d)? d:[d]
+                                performQuery()
+                            }
+                        })
+                        .catch(e => pq.promisedResult.reject(e))
+                } else {
+                    if (!_query.$table || !_query.$query || !_query.$as) 
+                        performQuery()
+                    else {
+                        DB = db(_query.$table)
+                        let _q = buildQuery(_query.$query)
+                        DB
+                            .find(_q)
+                            .execAsync()
+                            .then(d => {
+                                if (d) 
+                                    stitchResult(d, _query)
+                                performQuery()
+                            })
+                            .catch(e => pq.promisedResult.reject(e))
+                    }
+                }
+            }
+
+            /**
+             * Builds our special query forms into the normal form
+             * Special query form refers to the previous result as $r
+             */
+            function buildQuery(query) {
+                query = JSON.stringify(query)
+                let queries = {
+                    $or: []
+                }
+                let _matches = query.match(/\$r\.([A-Za-z0-9\.]*)/g);
+                pq
+                    .result
+                    .map($r => {
+                        let _q = query
+                        _matches.map(_m => _q = _q.replace(_m, _dig($r, _m.substring(3))))
+                        queries
+                            .$or
+                            .push(JSON.parse(_q))
+                    })
+                return queries
+            }
+
+            /**
+             * Stitches new result with the existing one
+             * Depending on strict mode or not, eliminates non-matches
+             * @param {object} result The new (incoming) result
+             * @param {object} query The query on which to base the stitch
+             */
+            function stitchResult(result, query) {
+                let comp = getComparators(query.$query)
+                if (pq._strict) {
+                    pq.result = pq
+                        .result
+                        .filter(r => {
+                            let found = result.filter(_r => {
+                                let exists = false
+                                for (let c in comp) {
+                                    if (_dig(_r, c) == _dig(r, comp[c])) 
+                                        exists = true
+                                }
+                                return exists
+                            })
+                            if (found.length) {
+                                r[query.$as] = found
+                                return true
+                            }
+                        })
+                } else {
+                    pq.result = pq
+                        .result
+                        .map(r => {
+                            let found = result.filter(_r => {
+                                let exists = false
+                                for (let c in comp) {
+                                    if (_dig(_r, c) == _dig(r, comp[c])) 
+                                        exists = true
+                                }
+                                return exists
+                            })
+                            r[query.$as] = found
+                            return r
+                        })
+                }
+            }
+
+            /**
+             * Gets the comparators from the query,
+             * so we can compare existing result with the incoming one
+             * @param {object} query
+             */
+            function getComparators(query) {
+                let comp = {}
+                for (let q in query) {
+                    if (query[q].toString().startsWith('$r.')) 
+                        comp[q] = query[q].replace('$r.', '')
+                }
+                return comp
+            }
         }
     })
     return dbs.length == 1
