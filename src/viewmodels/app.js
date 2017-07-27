@@ -164,6 +164,7 @@ var VM = new function () {
 
         // computed
         si.popuReport = ko.computed(() => {
+            app.setBadgeCount(si.population())
             return `${si.population()} Workstation${si.population() != 1
                 ? 's'
                 : ''}`
