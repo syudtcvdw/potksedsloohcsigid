@@ -64,10 +64,10 @@
 						<span data-bind="text: subjects[0]().length? subjects[0]().length + ' subject' + (subjects[0]().length == 1?'':'s'):'No subjects'"></span>						added for this class
 					</blockquote>
 					<ul class="row group" data-bind="foreach: subjects[0]">
-						<li class="signpost no-float active col span_1_of_2 mt0" data-bind="click: $parent.openSubject, event: {contextmenu: $parent.subjectCtx}">
+						<li class="signpost class no-float active col span_1_of_2 mt0" data-bind="click: $parent.openSubject, event: {contextmenu: $parent.subjectCtx}">
 							<h5>(<span data-bind="text: code"></span>) <span data-bind="text: title"></span></h5>
-							<div data-bind="css: {shown: $taught}">
-								<small>Omololu Akinade</small>
+							<div data-bind="css: {shown: $taught}" style="text-align: left">
+								<a class="btn btn-green mini disabled">Teacher: <span data-bind="text: $teacher().name"></span></a>
 							</div>
 						</li>
 					</ul>

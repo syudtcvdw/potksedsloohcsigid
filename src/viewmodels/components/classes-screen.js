@@ -216,7 +216,6 @@ const vm = function (params) {
             sockets.emit('get all subjects', c.me.code(), data => { // send in the class code so we get subjects with their subject teachers
                 if (data.status) {
                     if (data.response) {
-                        console.log(data.response)
                         c
                             .subjects
                             .forEach(s => {
@@ -230,7 +229,7 @@ const vm = function (params) {
                                 else 
                                     c
                                         .subjects[0]
-                                        .push(new subject(s).$extend({$taught: true}))
+                                        .push(new subject(s).$extend({$taught: true, $teacher: s.teacher}))
                                 })
                     } else 
                         VM.notify("Unable to fetch subjects list", "error")
