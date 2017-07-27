@@ -453,6 +453,7 @@ module.exports = function (server, force = false) {
                         }
                     
                 q
+                    .loose()
                     .exec()
                     .then(d => {
                         cb(!d

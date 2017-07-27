@@ -64,7 +64,6 @@ const vm = function (params) {
     class teacher extends Teacher {
         constructor() {
             super(arguments)
-            console.log(this.export())
         }
 
         // behaviours
@@ -93,8 +92,7 @@ const vm = function (params) {
                                 .save
                                 .bind(this)
                         }, 'retry add teacher')
-                    else {
-                        console.log(data)
+                    else {console.log(data)
                         if (typeof data.response == 'object') {
                             VM.notify('Teacher added successfully.')
                             vm

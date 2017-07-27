@@ -63,7 +63,6 @@ const vm = function (params) {
     class klass extends Klass {
         constructor() {
             super(arguments)
-            console.log(this.export())
         }
 
         // behaviours
@@ -88,7 +87,6 @@ const vm = function (params) {
                                 .bind(this)
                         }, 'retry add class')
                     else {
-                        console.log(data)
                         if (typeof data.response == 'object') {
                             VM.notify('Class created successfully.')
                             vm
@@ -225,7 +223,7 @@ const vm = function (params) {
                             .response
                             .map(s => {
                                 if (typeof c.roster[s.code] == 'undefined') 
-                                    c.subjects[1].push(new subject(s).$extend({$taught: false}))
+                                    c.subjects[1].push(new subject(s).$extend({$taught: false, $teacher: s.teacher}))
                                 else 
                                     c
                                         .subjects[0]
@@ -234,7 +232,9 @@ const vm = function (params) {
                     } else 
                         VM.notify("Unable to fetch subjects list", "error")
                 } else 
-                    VM.notify("Unable to fetch subjects list", "error")
+                    VM.notify("Unable to fetch subjects list", "error", {
+                        retry: c.loadSubjects()
+                    }, 'retry load subjects')
             }, true)
         }
         c.loadTeachers = () => {
@@ -254,7 +254,9 @@ const vm = function (params) {
                     } else 
                         VM.notify("Unable to fetch teachers list", "error")
                 } else 
-                    VM.notify("Unable to fetch teachers list", "error")
+                    VM.notify("Unable to fetch teachers list", "error", {
+                        retry: c.loadTeachers()
+                    }, 'retry load teachers')
             }, true)
         }
         c.openSubject = (o, e) => {
@@ -369,8 +371,11 @@ const vm = function (params) {
                 .prep(e)
                 .show(menu)
         }
-        c.expandTaughtSubject = (o) => {
-            console.log(o)
+        c.ctx = (o, e) => {
+            VM
+                .contextmenu
+                .prep(e)
+                .show({"Refresh list": c.loadRoster})
         }
 
         // init
