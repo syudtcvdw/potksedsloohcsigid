@@ -61,7 +61,6 @@ const vm = function (params) {
     class subject extends Subject {
         constructor() {
             super(arguments)
-            console.log(this.export())
         }
 
         // behaviours
@@ -83,7 +82,6 @@ const vm = function (params) {
                             'try again': this.save.bind(this)
                         }, 'retry add subject')
                     else {
-                        console.log(data)
                         if (typeof data.response == 'object') {
                             VM.notify('Subject added successfully.')
                             vm

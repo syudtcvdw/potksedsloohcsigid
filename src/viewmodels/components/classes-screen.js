@@ -63,7 +63,6 @@ const vm = function (params) {
     class klass extends Klass {
         constructor() {
             super(arguments)
-            console.log(this.export())
         }
 
         // behaviours
@@ -88,7 +87,6 @@ const vm = function (params) {
                                 .bind(this)
                         }, 'retry add class')
                     else {
-                        console.log(data)
                         if (typeof data.response == 'object') {
                             VM.notify('Class created successfully.')
                             vm
@@ -225,7 +223,7 @@ const vm = function (params) {
                             .response
                             .map(s => {
                                 if (typeof c.roster[s.code] == 'undefined') 
-                                    c.subjects[1].push(new subject(s).$extend({$taught: false}))
+                                    c.subjects[1].push(new subject(s).$extend({$taught: false, $teacher: s.teacher}))
                                 else 
                                     c
                                         .subjects[0]
@@ -368,9 +366,6 @@ const vm = function (params) {
                 .contextmenu
                 .prep(e)
                 .show(menu)
-        }
-        c.expandTaughtSubject = (o) => {
-            console.log(o)
         }
 
         // init
