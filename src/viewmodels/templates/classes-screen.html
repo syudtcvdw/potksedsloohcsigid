@@ -66,6 +66,9 @@
 					<ul class="row group" data-bind="foreach: subjects[0]">
 						<li class="signpost no-float active col span_1_of_2 mt0" data-bind="click: $parent.openSubject, event: {contextmenu: $parent.subjectCtx}">
 							<h5>(<span data-bind="text: code"></span>) <span data-bind="text: title"></span></h5>
+							<div data-bind="css: {shown: $taught}">
+								<small>Omololu Akinade</small>
+							</div>
 						</li>
 					</ul>
 					<!-- ko if: subjects[1]().length -->

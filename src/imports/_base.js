@@ -158,6 +158,19 @@ function _tooltip() {
 }
 
 /**
+ * Digs through the strata of an object to find a value (stone) buried deep inside
+ * The strata increase in depth, left to right
+ * @param {object} obj Terra herself, the object to dig through
+ * @param {string} strata The layers of earth to dig through to find the stone
+ */
+function _dig(obj, strata) {
+    if (!strata) 
+        return obj;
+    let _props = strata.split(/[\.\-\s]+/)
+    return _dig(obj[_props.shift()], _props.join('.'))
+}
+
+/**
  * Password reveal logic
  */
 $('body')
