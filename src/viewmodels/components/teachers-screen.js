@@ -232,6 +232,19 @@ const vm = function (params) {
     t.next = () => {
       kontrolla.next()
       t.pos(kontrolla.position)
+      // fetch teacher's classes & subjects assignments
+      sockets.emit('fetch teacher from roaster', {
+        email: t.me.email(),
+      }, data => {
+        if ( !data.status )
+          VM.notify('Unable to fetch teacher\'s assigned roaster. Could not reach Control Workstation', 'error')
+        else
+          if ( !data.response ) 
+            VM.notify('There was a problem fetching teacher\'s assigned roaster. Could not reach Control Workstation', 'error')
+          else {
+            console.log('response', data.response)
+          }
+      })
       _tooltip()
     }
     t.prev = () => {
