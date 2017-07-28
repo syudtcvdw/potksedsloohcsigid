@@ -233,6 +233,7 @@ module.exports = (...name) => {
             let _soloFirst = false
             let pqResult = []
             let _sort = {}
+            let _limit = 0
             pq.size = 0
             pq.promisedResult = {
                 resolve: null,
@@ -263,9 +264,19 @@ module.exports = (...name) => {
                 pq.size = pqQueries.length;
                 return pq
             }
+            /**
+             * Sort parameters to use on the first query
+             */
             pq.sort = (params = {}) => {
                 if (typeof params == 'object') 
                     _sort = params
+                return pq
+            }
+            /**
+             * Limit parameter to use on the first query
+             */
+            pq.limit = (lim) => {
+                if (!isNaN(lim)) _limit = lim
                 return pq
             }
             /**
@@ -349,7 +360,9 @@ module.exports = (...name) => {
                     } else 
                     pqResult.map($r => {
                         let _q = query
-                        _matches.map(_m => _q = _q.replace(_m, _dig($r, _m.substring(3))))
+                        _matches.map(_m => {
+                            _q = _q.replace(_m, _dig($r, _m.substring(3)))
+                        })
                         queries
                             .$or
                             .push(JSON.parse(_q))
