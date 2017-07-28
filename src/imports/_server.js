@@ -454,6 +454,7 @@ module.exports = function (server, force = false) {
                     
                 q
                     .loose()
+                    .sort({title: 1})
                     .exec()
                     .then(d => {
                         cb(!d

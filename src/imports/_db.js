@@ -232,6 +232,7 @@ module.exports = (...name) => {
             let _strict = true
             let _soloFirst = false
             let pqResult = []
+            let _sort = {}
             pq.size = 0
             pq.promisedResult = {
                 resolve: null,
@@ -260,6 +261,11 @@ module.exports = (...name) => {
                     return pq
                 pqQueries.push(query)
                 pq.size = pqQueries.length;
+                return pq
+            }
+            pq.sort = (params = {}) => {
+                if (typeof params == 'object') 
+                    _sort = params
                 return pq
             }
             /**
@@ -291,6 +297,7 @@ module.exports = (...name) => {
                     DB[_soloFirst
                                 ? 'findOne'
                                 : 'find'](_query)
+                        .sort(_sort)
                         .execAsync()
                         .then(d => {
                             if (!d) 
