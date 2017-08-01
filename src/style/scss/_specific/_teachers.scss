@@ -131,7 +131,7 @@
 					overflow: visible !important;
 					position: relative;
 					&:not(.no-footer) {
-						padding-bottom: 48px;
+						padding-bottom: 48px !important;
 					}
 					&:after {
 						// content: '';

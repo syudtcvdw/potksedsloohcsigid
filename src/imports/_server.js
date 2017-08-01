@@ -745,11 +745,7 @@ module.exports = function (server, force = false) {
                                 code: '$r.class'
                             }
                         }) .exec().then(d => {
-                                if (!d) 
-                                    cb(false)
-                                else {
-                                    cb(d)
-                                }
+                                cb(d)
                             }).catch(() => cb(false))
                         }
                     )

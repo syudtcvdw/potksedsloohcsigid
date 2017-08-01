@@ -112,7 +112,7 @@ body {
         color: $theme-orange;
         position: relative;
         padding-bottom: 3px;
-        overflow: hidden;
+        // overflow: hidden;
         text-overflow: ellipsis;
         &::before {
             content: '';
@@ -463,7 +463,7 @@ img {
         display: inline-block;
         -webkit-appearance: none;
         -moz-appearance: none;
-        appearance: none;
+        // appearance: none;
         outline: none;
         border-radius: 3px;
         &:-moz-focusring {

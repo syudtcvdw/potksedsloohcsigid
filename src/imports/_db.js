@@ -300,7 +300,7 @@ module.exports = (...name) => {
              */
             function performQuery() {
                 if (!pqQueries.length) 
-                    pq.promisedResult.resolve(pqResult)
+                    pq.promisedResult.resolve(pqResult.length == 0? null:pqResult)
                 let _query = pqQueries.shift()
 
                 if (!firstQueryDone) {

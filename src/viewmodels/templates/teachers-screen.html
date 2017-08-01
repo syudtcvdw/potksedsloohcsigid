@@ -79,7 +79,7 @@
 		</header>
 		<div class="content sectionized">
 			<div class="sectionizr" data-peek>
-				<section class="assign-classteacher" data-bind="css: { assigned: me.assignedClass, disabled: assigning }">
+				<section class="assign-classteacher scrollable" data-bind="css: { assigned: me.assignedClass, disabled: assigning }">
 					<blockquote>
 						<h4 data-bind="text: me.$assignmentInfo"></h4>
 						<!-- ko if: me.assignedClass -->
@@ -98,11 +98,18 @@
 						</li>
 					</ul>
 				</section>
-				<section>
-					<blockquote>
-						Teaching no subject in any class
+				<section class="scrollable">
+					<blockquote data-bind="event: {contextmenu: assignmentContext}">
+						<!-- ko ifnot: assignment -->
+						<span data-bind="text: assignment() === null? 'Teaching no subject in any class':'Assigned subjects and classes not fetched'"></span>
+						<!-- /ko -->
+						<!-- ko if: assignment -->
+						Teaching subjects
+						<!-- /ko -->
 					</blockquote>
+					<!-- ko if: !assignment -->
 					<p class="justify teacher-not-teaching">You can assign this teacher to teach class subjects in the 'Manage Classes' section. Select the class, then the subject, then the teacher</p>
+					<!-- /ko -->
 				</section>
 				<footer class="row group">
 					<a class="prev" data-tooltip="{'class': 'mini white'}" data-bind="attr: {title: prevTooltip}, css: {disabled: !prevTooltip()}, click: prev"></a>
