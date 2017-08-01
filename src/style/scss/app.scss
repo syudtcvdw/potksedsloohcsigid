@@ -111,8 +111,7 @@ body {
         border-bottom: solid 1px rgba($theme-black, .5);
         color: $theme-orange;
         position: relative;
-        padding-bottom: 3px;
-        // overflow: hidden;
+        padding-bottom: 3px; // overflow: hidden;
         text-overflow: ellipsis;
         &::before {
             content: '';
@@ -303,6 +302,25 @@ textarea {
 
 table {
     width: 100%;
+    padding: 0;
+    margin: 1rem 0 0;
+    text-align: left;
+    border-collapse: collapse;
+    thead {
+        border-bottom: solid 3px $theme-gray;
+    }
+    tbody {
+        color: #999
+    }
+    tr {
+        background: rgba($theme-gray, .25);
+        &:nth-child(even) {
+            background: rgba($theme-gray, .35);
+        }
+    }
+    td, th {
+        padding: .8rem .5rem;
+    }
 }
 
 .input-fa {
@@ -462,8 +480,7 @@ img {
         border-radius: 0;
         display: inline-block;
         -webkit-appearance: none;
-        -moz-appearance: none;
-        // appearance: none;
+        -moz-appearance: none; // appearance: none;
         outline: none;
         border-radius: 3px;
         &:-moz-focusring {

@@ -347,7 +347,7 @@ module.exports = function (server, force = false) {
                 let DbTeachers = db('teachers')
                 DbTeachers
                     .find({})
-                    .sort({name: 1})
+                    .sort({assignedClass: -1, name: 1})
                     .execAsync()
                     .then(d => {
                         cb(!d
@@ -732,6 +732,7 @@ module.exports = function (server, force = false) {
                 query = query.payload || query
                 db('roster')
                     .join({teacher: query})
+                    .sort({class: 1, subject: 1})
                     .with ({
                         $table: 'teachers',
                         $as: 'teacher',
@@ -743,6 +744,12 @@ module.exports = function (server, force = false) {
                             $as: 'class',
                             $query: {
                                 code: '$r.class'
+                            }
+                        }) .with ({
+                            $table: 'subjects',
+                            $as: 'subject',
+                            $query: {
+                                code: '$r.subject'
                             }
                         }) .exec().then(d => {
                                 cb(d)

@@ -182,7 +182,6 @@ const vm = function (params) {
 
     function TeacherDetail(teacher) {
         let t = this,
-            kontrolla,
             tips = ["Update classteacher status", "Assigned subjects"]
         if (!teacher) 
             return;
@@ -223,15 +222,13 @@ const vm = function (params) {
             })
             return `Teaching ${s.length} subject${s.length == 1
                 ? ''
-                : 's'} in ${s.length} class${c.length == 1
+                : 's'} in ${c.length} class${c.length == 1
                     ? ''
                     : 'es'}`
         })
 
         // behaviours
-        t.back = () => kontrolla.position != 1
-            ? t.prev()
-            : controlla.prev()
+        t.back = () => controlla.prev()
         t.getClasses = () => {
             sockets.emit('get all classes', null, data => {
                 if (data.status) {
@@ -249,17 +246,6 @@ const vm = function (params) {
                     }
                 }
             }, true)
-        }
-        t.next = () => {
-            t.fetchAssignment()
-            kontrolla.next()
-            t.pos(kontrolla.position)
-            _tooltip()
-        }
-        t.prev = () => {
-            kontrolla.prev()
-            t.pos(kontrolla.position)
-            _tooltip()
         }
         t.assignClass = (which, e, proceed = false) => {
             t
@@ -345,7 +331,7 @@ const vm = function (params) {
                     VM.notify('There was a problem fetching teacher\'s assigned subjects and classes.', 'error')
                 else 
                     t.assignment(data.response)
-                console.log(data)
+                console.log(data.response)
             })
         }
         t.assignmentContext = (o, e) => {
@@ -356,17 +342,16 @@ const vm = function (params) {
         }
 
         // local
-        t.getClassCode = rosterEntry => {
-            console.log(rosterEntry)
+        t.getClassName = rosterEntry => {
             if (!rosterEntry) 
                 return ''
-            return rosterEntry.class.code
+            return rosterEntry.class.name
         }
 
         // init
         _.defer(() => {
             t.getClasses()
-            kontrolla = $('.sectionizr').sectionize()[1]
+            t.fetchAssignment()
             _tooltip()
         })
     }
