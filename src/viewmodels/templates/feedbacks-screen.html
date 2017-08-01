@@ -1,0 +1,18 @@
+<div class="teachers-screen sectionizr">
+
+  <section class="row">
+
+    <div class="all-teachers animated fadeInUp flex" data-bind="css: {disabled: sending}">
+      <div class="content">
+        <h4 class="title">Create New Feedback</h4>
+        <form class="content animated fadeInDown">
+          <input type="text" placeholder="Title" data-bind="textInput: fbTitle">
+          <textarea rows="20" placeholder="Message" data-bind="textInput: fbMsg"></textarea>
+          <button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: sendFeedback">Send feedback</button>
+        </form>
+      </div>
+    </div>
+
+  </section>
+
+</div>
