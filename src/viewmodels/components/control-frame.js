@@ -26,6 +26,10 @@ var vm = function (params) {
             id: 'classes',
             label: 'Manage Classes',
             kind: MENU_ADMIN
+        }, {
+            id: 'feedbacks',
+            label: 'Send feedbacks',
+            kind: MENU_ADMIN
         }
     ]
     vm.schoolUid = '' // what the school uid is
