@@ -161,6 +161,9 @@
 							&:hover {
 								opacity: 1;
 							}
+							&.disabled {
+								opacity: .1;
+							}
 						}
 						.prev {
 							float: left;
