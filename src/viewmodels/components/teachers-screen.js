@@ -207,6 +207,26 @@ const vm = function (params) {
                 ? ''
                 : tips[t.pos()]
         })
+        t.summary = ko.computed(() => {
+            if (!t.assignment() || !Array.isArray(t.assignment())) 
+                return
+            let d = t
+                .assignment()
+                .slice();
+            let c = [],
+                s = []
+            d.map(r => {
+                if (c.indexOf(r.class.code) == -1) 
+                    c.push(r.class.code)
+                if (s.indexOf(r.subject) == -1) 
+                    s.push(r.subject)
+            })
+            return `Teaching ${s.length} subject${s.length == 1
+                ? ''
+                : 's'} in ${s.length} class${c.length == 1
+                    ? ''
+                    : 'es'}`
+        })
 
         // behaviours
         t.back = () => kontrolla.position != 1
@@ -325,6 +345,7 @@ const vm = function (params) {
                     VM.notify('There was a problem fetching teacher\'s assigned subjects and classes.', 'error')
                 else 
                     t.assignment(data.response)
+                console.log(data)
             })
         }
         t.assignmentContext = (o, e) => {
@@ -332,6 +353,14 @@ const vm = function (params) {
                 .contextmenu
                 .prep(e)
                 .show({"Refresh list": t.fetchAssignment})
+        }
+
+        // local
+        t.getClassCode = rosterEntry => {
+            console.log(rosterEntry)
+            if (!rosterEntry) 
+                return ''
+            return rosterEntry.class.code
         }
 
         // init

@@ -104,12 +104,24 @@
 						<span data-bind="text: assignment() === null? 'Teaching no subject in any class':'Assigned subjects and classes not fetched'"></span>
 						<!-- /ko -->
 						<!-- ko if: assignment -->
-						Teaching subjects
+						<span data-bind="text: summary"></span>
 						<!-- /ko -->
 					</blockquote>
-					<!-- ko if: !assignment -->
+					<!-- ko ifnot: assignment -->
 					<p class="justify teacher-not-teaching">You can assign this teacher to teach class subjects in the 'Manage Classes' section. Select the class, then the subject, then the teacher</p>
 					<!-- /ko -->
+					<table>
+						<tr>
+							<th>Class</th>
+							<th>Subjects</th>
+						</tr>
+						<!-- ko foreach: assignment -->
+						<tr>
+							<td data-bind="text: $parent.getClassCode($data)"></td>
+							<td data-bind="text: subject"></td>
+						</tr>
+						<!-- /ko -->
+					</table>
 				</section>
 				<footer class="row group">
 					<a class="prev" data-tooltip="{'class': 'mini white'}" data-bind="attr: {title: prevTooltip}, css: {disabled: !prevTooltip()}, click: prev"></a>
