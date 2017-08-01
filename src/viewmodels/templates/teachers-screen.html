@@ -29,6 +29,8 @@
 						<h5 class="teacher-name" data-bind="css: {female: gender() == 'female'}">
 							<i class="fa fa-fw"></i>
 							<span data-bind="text: name"></span>
+							<!-- ko if: assignedClass -->&mdash; <span data-bind="text: assignedClass"></span>
+							<!-- /ko -->
 						</h5>
 					</li>
 				</ul>
@@ -77,57 +79,58 @@
 				<label><i class="fa fa-fw fa-envelope"></i> <span data-bind="text: email"></span></label>
 			</div>
 		</header>
-		<div class="content sectionized">
-			<div class="sectionizr" data-peek>
-				<section class="assign-classteacher scrollable" data-bind="css: { assigned: me.assignedClass, disabled: assigning }">
-					<blockquote>
-						<h4 data-bind="text: me.$assignmentInfo"></h4>
-						<!-- ko if: me.assignedClass -->
-						<a class="btn btn-gray mini" data-bind="click: decommission">Decommission</a>
-						<!-- /ko -->
-					</blockquote>
-					<h5><span data-bind="text: me.assignedClass()? 'Re-assign':'Assign'"></span> as classteacher</h5>
-					<ul data-bind="foreach: allClasses">
-						<li class="signpost class" data-bind="click: $parent.assignClass, css: {active: code() == $parent.me.assignedClass()}">
-							<h5 data-bind="text: name"></h5>
-							<!-- ko if: code() != $parent.me.assignedClass() -->
-							<div data-bind="css: {shown: $selected}">
-								<a class="btn btn-green mini">Assign Classteacher</a>
-							</div>
-							<!-- /ko -->
-						</li>
-					</ul>
-				</section>
-				<section class="scrollable">
-					<blockquote data-bind="event: {contextmenu: assignmentContext}">
-						<!-- ko ifnot: assignment -->
-						<span data-bind="text: assignment() === null? 'Teaching no subject in any class':'Assigned subjects and classes not fetched'"></span>
-						<!-- /ko -->
-						<!-- ko if: assignment -->
-						<span data-bind="text: summary"></span>
-						<!-- /ko -->
-					</blockquote>
-					<!-- ko ifnot: assignment -->
-					<p class="justify teacher-not-teaching">You can assign this teacher to teach class subjects in the 'Manage Classes' section. Select the class, then the subject, then the teacher</p>
+		<div class="row content sectionized">
+			<section class="col span_1_of_2 assign-classteacher scrollable" data-bind="css: { assigned: me.assignedClass, disabled: assigning }">
+				<blockquote>
+					<h4 data-bind="text: me.$assignmentInfo"></h4>
+					<!-- ko if: me.assignedClass -->
+					<a class="btn btn-gray mini" data-bind="click: decommission">Decommission</a>
 					<!-- /ko -->
-					<table>
+				</blockquote>
+				<h5><span data-bind="text: me.assignedClass()? 'Re-assign':'Assign'"></span> as classteacher</h5>
+				<ul data-bind="foreach: allClasses">
+					<li class="signpost class" data-bind="click: $parent.assignClass, css: {active: code() == $parent.me.assignedClass()}">
+						<h5 data-bind="text: name"></h5>
+						<!-- ko if: code() != $parent.me.assignedClass() -->
+						<div data-bind="css: {shown: $selected}">
+							<a class="btn btn-green mini">Assign Classteacher</a>
+						</div>
+						<!-- /ko -->
+					</li>
+				</ul>
+			</section>
+			<section class="col span_1_of_2 scrollable">
+				<blockquote data-bind="event: {contextmenu: assignmentContext}">
+					<!-- ko ifnot: assignment -->
+					<h4 data-bind="text: assignment() === null? 'Teaching no subject in any class':'Assigned subjects and classes not fetched'"></h4>
+					<!-- /ko -->
+					<!-- ko if: assignment -->
+					<span data-bind="text: summary"></span>
+					<!-- /ko -->
+				</blockquote>
+				<!-- ko ifnot: assignment -->
+				<p class="justify teacher-not-teaching">You can assign this teacher to teach class subjects in the 'Manage Classes' section. Select the class, then the subject,
+					then the teacher</p>
+				<!-- /ko -->
+				<!-- ko if: assignment -->
+				<table>
+					<thead>
 						<tr>
 							<th>Class</th>
-							<th>Subjects</th>
+							<th>Subject</th>
 						</tr>
+					</thead>
+					<tbody>
 						<!-- ko foreach: assignment -->
 						<tr>
-							<td data-bind="text: $parent.getClassCode($data)"></td>
-							<td data-bind="text: subject"></td>
+							<td data-bind="text: $parent.getClassName($data)"></td>
+							<td data-bind="text: subject.title"></td>
 						</tr>
 						<!-- /ko -->
-					</table>
-				</section>
-				<footer class="row group">
-					<a class="prev" data-tooltip="{'class': 'mini white'}" data-bind="attr: {title: prevTooltip}, css: {disabled: !prevTooltip()}, click: prev"></a>
-					<a class="next" data-tooltip="{'class': 'mini white'}" data-bind="attr: {title: nxtTooltip}, css: {disabled: !nxtTooltip()}, click: next"></a>
-				</footer>
-			</div>
+					</tbody>
+				</table>
+				<!-- /ko -->
+			</section>
 		</div>
 	</section>
 </div>

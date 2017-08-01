@@ -58,7 +58,7 @@
 		</header>
 		<div class="content sectionized" data-bind="css: {disabled: assigning}">
 			<div class="sectionizr" data-peek>
-				<section class="assign-classteacher class-subjects">
+				<section class="assign-classteacher class-subjects scrollable">
 					<h4 class="title">Class Subjects</h4>
 					<blockquote data-bind="css: {green: subjects[0]().length}, event: {contextmenu: ctx}">
 						<span data-bind="text: subjects[0]().length? subjects[0]().length + ' subject' + (subjects[0]().length == 1?'':'s'):'No subjects'"></span>						added for this class
@@ -66,9 +66,11 @@
 					<ul class="row group" data-bind="foreach: subjects[0]">
 						<li class="signpost class no-float active col span_1_of_2 mt0" data-bind="click: $parent.openSubject, event: {contextmenu: $parent.subjectCtx}">
 							<h5>(<span data-bind="text: code"></span>) <span data-bind="text: title"></span></h5>
-							<div data-bind="css: {shown: $taught}" style="text-align: left">
-								<a class="btn btn-green mini disabled">Teacher: <span data-bind="text: $teacher().name"></span></a>
+							<!-- ko if: $taught() && $teacher() -->
+							<div class="shown" style="text-align: left">
+								<a class="btn btn-green mini disabled" data-bind="text: $teacher().name"></a>
 							</div>
+							<!-- /ko -->
 						</li>
 					</ul>
 					<!-- ko if: subjects[1]().length -->
@@ -99,7 +101,7 @@
 						</li>
 					</ul>
 				</section>
-			</div>
+			</section>
 		</div>
 	</section>
 </div>
