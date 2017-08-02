@@ -54,8 +54,6 @@ var VM = new function () {
         vm.pagedata(data)
         vm.view(view)
     }
-
-    // methods
     vm.notify = (msg, kind = "", actions = null, id = null, stubborn = false) => {
         if (id != null) 
             vm.closeNotification(id)
@@ -67,6 +65,10 @@ var VM = new function () {
         vm
             .notifs
             .kill(id)
+    }
+    vm.logout = () => {
+        VM.ROLE(null)
+        vm.loadView('login-screen')
     }
 
     // subscriptions
