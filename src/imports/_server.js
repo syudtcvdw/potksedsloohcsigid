@@ -45,19 +45,29 @@ module.exports = function (server, force = false) {
                 if (expired(query)) 
                     return
                 query = query.payload || query
-                let DbAdmins = db('admins')
-                DbAdmins
+                db('admins')
                     .findOne(query)
                     .execAsync()
                     .then(d => {
-                        if (d) 
+                        if (d) {
                             VM.notify(`${d.name} just logged in`)
-                        cb(!d
-                            ? false
-                            : {
-                                role: 'ADMIN',
-                                info: d
-                            })
+                            cb({role: 'ADMIN', info: d})
+                        } else {
+                            db('teachers')
+                                .findOne(query)
+                                .execAsync()
+                                .then(d => {
+                                    if (d) 
+                                        VM.notify(`${d.name} just logged in`)
+                                    cb(!d
+                                        ? false
+                                        : {
+                                            role: 'TEACHER',
+                                            info: d
+                                        })
+                                })
+                                .catch(e => cb(false))
+                        }
                     })
                     .catch(e => cb(false))
             })
@@ -746,16 +756,16 @@ module.exports = function (server, force = false) {
                                 code: '$r.class'
                             }
                         }) .with ({
-                            $table: 'subjects',
-                            $as: 'subject',
-                            $query: {
-                                code: '$r.subject'
+                                $table: 'subjects',
+                                $as: 'subject',
+                                $query: {
+                                    code: '$r.subject'
+                                }
+                            }) .exec().then(d => {
+                                    cb(d)
+                                }).catch(() => cb(false))
                             }
-                        }) .exec().then(d => {
-                                cb(d)
-                            }).catch(() => cb(false))
-                        }
-                    )
+                        )
 
             resolve(socket)
         }).then((socket) => {

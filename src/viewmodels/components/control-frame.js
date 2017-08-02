@@ -28,8 +28,12 @@ var vm = function (params) {
             kind: MENU_ADMIN
         }, {
             id: 'feedbacks',
-            label: 'Send feedbacks',
-            kind: MENU_ADMIN
+            label: 'Feedback',
+            kind: MENU_SUPER
+        }, {
+            id: 'classteacher',
+            label: 'Manage Class',
+            kind: MENU_CLASSTEACHER
         }
     ]
     vm.schoolUid = '' // what the school uid is
@@ -47,8 +51,8 @@ var vm = function (params) {
     vm.schoolName = ko.observable() // what school is this
     vm.personName = ko.observable() // who's currently logged in
     vm.personEmail = ko.observable() // email address of currently logged in guy
-    vm.superAdmin = ko.observable(false) // tells if logged in guy is superadmin
     vm.menu = ko.observableArray() // all menu items (built)
+    vm.superAdmin = ko.observable(false) // tells if logged in guy is superadmin
 
     // time
     vm.disconnectionTime = ko.observable() // what time the connecion the server was lost
@@ -70,6 +74,9 @@ var vm = function (params) {
                 ? 0
                 : cur + 1)
         VM.loadView(menu[nxt].component)
+    }
+    vm.isTeacher = () => {
+        return VM.ROLE() && VM.ROLE().indexOf('TEACHER') >= 0
     }
 
     // computed
@@ -95,7 +102,11 @@ var vm = function (params) {
         vm
             .menu()
             .map(menu => {
-                let skip = (vm.superAdmin() && menu.kind == MENU_TEACHER) || ((VM.ROLE() == 'ADMIN' && !vm.superAdmin()) && (menu.kind == MENU_TEACHER || menu.kind == MENU_SUPER))
+                let skip = (menu.kind == MENU_TEACHER && !vm.isTeacher()) /* only teachers see what only teachers should see */
+                ||
+                (!vm.superAdmin() && menu.kind == MENU_SUPER) /* only superadmin sees what only superadmin should see */
+                ||
+                (vm.isTeacher() && menu.kind == MENU_ADMIN) /* teachers cannot see what belongs to the admins */
                 if (skip) 
                     return
                 m.push(menu)

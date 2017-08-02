@@ -1,15 +1,23 @@
-<div class="teachers-screen sectionizr">
+<div class="teachers-screen feedbacks-screen sectionizr">
 
   <section class="row">
 
     <div class="all-teachers animated fadeInUp flex" data-bind="css: {disabled: sending}">
       <div class="content">
-        <h4 class="title">Create New Feedback</h4>
-        <form class="content animated fadeInDown">
-          <input type="text" placeholder="Title" data-bind="textInput: fbTitle">
-          <textarea rows="20" placeholder="Message" data-bind="textInput: fbMsg"></textarea>
-          <button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: sendFeedback">Send feedback</button>
-        </form>
+        <div class="row">
+          <form class="content animated fadeInDown col span_2_of_3">
+            <input type="text" placeholder="Subject" data-bind="textInput: fbTitle">
+            <textarea rows="20" placeholder="Example: Digischools has enhanced our processes, thank you!" data-bind="textInput: fbMsg"></textarea>
+            <button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: sendFeedback">Send feedback</button>
+          </form>
+          <div class="col span_1_of_3 feedback-info">
+            <h4 class="title">Feedback</h4>
+            If you've got any queries, complaints, suggestions, or you just want to thank the Digischools Team for this awesome piece of software, send us a message viat this form and we'll get back to you in no time.
+            <p>We hope you have a good time using Digischools - just as much good time as we had building it.</p>
+            <p>We'd need you to have an active internet connection to send this feedback</p>
+            💞&emsp;💞&emsp;💞
+          </div>
+        </div>
       </div>
     </div>
 
