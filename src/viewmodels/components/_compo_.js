@@ -49,8 +49,8 @@ exports.Component = function (name) {
         if (!this._defined) 
             throw "Component not defined, call def() first, note that you can only call def() once"
 
-            // delete unneeded properties
-        delete this.build
+        // delete unneeded properties
+        delete this.load
 
         // build and load the ko component
         let _c = {

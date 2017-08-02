@@ -12,6 +12,7 @@ const MENU_GLOBAL = 'MENU-GLOBAL'
 const MENU_ADMIN = 'MENU-ADMIN'
 const MENU_SUPER = 'MENU-SUPER'
 const MENU_TEACHER = 'MENU-TEACHER'
+const MENU_CLASSTEACHER = 'MENU-CLASSTEACHER'
 
 const TERM_LABELS = ['First', 'Second', 'Third', 'Fourth', 'Fifth']
 
@@ -70,22 +71,7 @@ function _backslashCompliant(data) {
  * @param {string} name
  */
 function _getComponentView(name) {
-    return fs.readFileSync(TEMPLATES_PATH + name + '.html', 'utf8')
-}
-
-/**
- * Wrapper for loading a ko component
- * @param {string} name
- * @param {object} component
- */
-function _loadComponent(name, component) {
-    let _c = {
-        viewModel: component,
-        template: _getComponentView(name)
-    }
-    ko
-        .components
-        .register(name, _c)
+    return fs.readFileSync(TEMPLATES_PATH + name + '.html', 'utf8') || '<div />'
 }
 
 /**

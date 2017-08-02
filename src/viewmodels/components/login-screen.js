@@ -46,13 +46,13 @@ var vm = function (params) {
     }
     vm.start = (data) => {
         vm.seen(false)
-        VM.ROLE(data.role)
+        VM.ROLE(data.role == 'TEACHER'? (data.info.assignedClass? 'CLASS TEACHER':data.role):data.role)
         VM
             .controlVm
             .personName(data.info.name)
         VM
             .controlVm
-            .superAdmin(data.info.is_first)
+            .superAdmin(data.info.is_first || false)
         VM
             .controlVm
             .personEmail(data.info.email)
