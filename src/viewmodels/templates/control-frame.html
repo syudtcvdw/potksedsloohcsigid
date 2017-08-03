@@ -44,13 +44,13 @@
   </div>
   <!-- /ko -->
 
-  <!-- ko if: $parent.shouldEditProfile() -->
+  <!-- ko if: $parent.shouldUpdateProfile() -->
   <div class="reconnect-pane notif animated fadeInUp" kind="black">
     <small>Edit your profile</small>
     <form class="input-fa">
       <input type="text" data-bind="textInput: $parent.personName" placeholder="Enter your name">
       <input type="email" data-bind="textInput: $parent.personEmail" placeholder="Enter your email">
-       <button type="submit" class="btn btn-block btn-green" data-bind="click: $parent.updateProfile">Update</button> 
+       <button type="submit" class="btn btn-block btn-green" data-bind="click: $parent.editProfile">Update</button> 
     </form>
   </div>
   <!-- /ko -->

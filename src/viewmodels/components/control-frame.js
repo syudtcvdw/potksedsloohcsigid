@@ -92,14 +92,14 @@ var vm = function (params) {
   vm.editProfile = () => {
     if (vm.updatingProfile()) // quit if profile update is in progress
       return
-    if (_anyEmpty(vm.profileName(), vm.profileEmail())) // no field can be empty
+    if (_anyEmpty(vm.personName(), vm.personEmail())) // no field can be empty
       return VM.notify("No field can be empty", 'warn'),
       null
 
     vm.updatingProfile(true) // processing has begun
     if (vm.personEmail() !== VM.controlVm.personEmail()) return isEditEmail(true)
     sockets.emit('update profile', { // send to the socket ( update profile )
-      'name': vm.profileName(),
+      'name': vm.personName(),
       '_id': VM.controlVm.personId
     }, (data) => { // response
       if (!data.status) { // no response really
@@ -119,12 +119,13 @@ var vm = function (params) {
               vm.isEditEmail(false)
             }
             VM.notify("Profile update successful")
+            vm.shouldUpdateProfile(false)
             vm.updatingProfile(false)
           }
           if (vm.isEditEmail()) { // do an api call
             let updateData = {
               uid: VM.controlVm.schoolUid,
-              email: vm.profileEmail()
+              email: vm.personEmail()
             }
             api
               .p('school/update-email', updateData)
@@ -152,7 +153,7 @@ var vm = function (params) {
               .catch(err => {
                 VM.notify('Unable to reach authentication servers, check your network connection. Email lef' +
                     't unchanged',
-                'warn', {'try again': vm.vm.editProfile})
+                'warn', {'try again': vm.editProfile})
                 vm.updatingProfile(false)
               })
           } else 
