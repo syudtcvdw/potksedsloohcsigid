@@ -1,65 +1,76 @@
 <!-- ko if: $root.ROLE -->
 <header class="control-header">
-    <ul data-bind="foreach: getMenu">
-        <li data-tooltip="{ 'class': 'mini white' }" data-bind="attr: {title: label, 'data-ajs-delay': ($index() * 250) + 'ms'}, css: {active: isActive}, click: go"
-            class="anim-js fadeInRight" data-ajs-duration="650ms">
-            <img alt="" data-bind="attr: {src: icon}">
-        </li>
-    </ul>
-    <div class="loading-strip">
-        <!-- ko if: $root.loading -->
-        <div class="thumb"></div>
-        <!-- /ko -->
-    </div>
+  <ul data-bind="foreach: getMenu">
+    <li data-tooltip="{ 'class': 'mini white' }" data-bind="attr: {title: label, 'data-ajs-delay': ($index() * 250) + 'ms'}, css: {active: isActive}, click: go"
+      class="anim-js fadeInRight" data-ajs-duration="650ms">
+      <img alt="" data-bind="attr: {src: icon}">
+    </li>
+  </ul>
+  <div class="loading-strip">
+    <!-- ko if: $root.loading -->
+    <div class="thumb"></div>
+    <!-- /ko -->
+  </div>
 </header>
 
 <footer class="control-footer">
-    <ul>
-        <li data-bind="text: schoolName"></li>
-        <li data-tooltip="{ 'class': 'mini dark' }" title="Click to logout" data-bind="text: personName"></li>
-        <li data-bind="text: superAdmin()? 'Super Admin':$root.ROLE"></li>
-        <!-- ko if: isServer -->
-        <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.connectionInfo().popuReport"></li>
-        <!-- /ko -->
-        <!-- ko ifnot: isServer -->
-        <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.connectionInfo().connected()? 'Connected':'Not connected'"></li>
-        <!-- /ko -->
-    </ul>
+  <ul>
+    <li data-bind="text: schoolName"></li>
+    <li data-tooltip="{ 'class': 'mini dark' }" title="Click to edit profile" data-bind="text: personName, click: toggleEditPane"></li>
+    <li data-bind="text: superAdmin()? 'Super Admin':$root.ROLE"></li>
+    <!-- ko if: isServer -->
+    <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.connectionInfo().popuReport"></li>
+    <!-- /ko -->
+    <!-- ko ifnot: isServer -->
+    <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.connectionInfo().connected()? 'Connected':'Not connected'"></li>
+    <!-- /ko -->
+  </ul>
 </footer>
 
 <div class="notifs" data-bind="with: $root.notifs">
-    <!-- ko foreach: notifs -->
-    <div class="notif animated" data-bind="css: { slideInRight: !leaving(), slideOutRight: leaving(), sticky: sticky }, attr: { kind: kind }">
-        <span data-bind="text: msg"></span>
-        <!-- ko if: sticky -->
-        <div class="actions">
-            <!-- ko foreach: actions -->
-            <a data-bind="click: $parent.doAction, text: $data"></a>
-            <!-- /ko -->
-            <!-- ko if: !stubborn -->
-            <a data-bind="click: die">Dismiss</a>
-            <!-- /ko -->
-        </div>
-        <!-- /ko -->
+  <!-- ko foreach: notifs -->
+  <div class="notif animated" data-bind="css: { slideInRight: !leaving(), slideOutRight: leaving(), sticky: sticky }, attr: { kind: kind }">
+    <span data-bind="text: msg"></span>
+    <!-- ko if: sticky -->
+    <div class="actions">
+      <!-- ko foreach: actions -->
+      <a data-bind="click: $parent.doAction, text: $data"></a>
+      <!-- /ko -->
+      <!-- ko if: !stubborn -->
+      <a data-bind="click: die">Dismiss</a>
+      <!-- /ko -->
     </div>
     <!-- /ko -->
+  </div>
+  <!-- /ko -->
 
-    <!-- ko if: $root.MODE() == 'CLIENT-RECON' -->
-    <div class="reconnect-pane notif animated fadeInUp" kind="black">
-        <small>Confirm server address for reconnection</small>
-        <div class="input-fa">
-            <input type="text" data-bind="textInput: $root.connectionInfo().ip" placeholder="Enter server address">
-            <i class="fa fa-chevron-right" data-bind="click: $root.connectionInfo().doRecon"></i>
-        </div>
+  <!-- ko if: $parent.shouldEditProfile() -->
+  <div class="reconnect-pane notif animated fadeInUp" kind="black">
+    <small>Edit your profile</small>
+    <form class="input-fa">
+      <input type="text" data-bind="textInput: $parent.personName" placeholder="Enter your name">
+      <input type="email" data-bind="textInput: $parent.personEmail" placeholder="Enter your email">
+       <button type="submit" class="btn btn-block btn-green" data-bind="click: $parent.updateProfile">Update</button> 
+    </form>
+  </div>
+  <!-- /ko -->
+
+  <!-- ko if: $root.MODE() == 'CLIENT-RECON' -->
+  <div class="reconnect-pane notif animated fadeInUp" kind="black">
+    <small>Confirm server address for reconnection</small>
+    <div class="input-fa">
+      <input type="text" data-bind="textInput: $root.connectionInfo().ip" placeholder="Enter server address">
+      <i class="fa fa-chevron-right" data-bind="click: $root.connectionInfo().doRecon"></i>
     </div>
-    <!-- /ko -->
+  </div>
+  <!-- /ko -->
 </div>
 
 <!-- ko if: $root.contextmenu.shown -->
 <div class="contextmenu" data-bind="with: $root.contextmenu, style: {top: $root.contextmenu.ypos,left: $root.contextmenu.xpos}">
-    <ul data-bind="foreach: options">
-        <li data-bind="click: trigger,text: title"></li>
-    </ul>
+  <ul data-bind="foreach: options">
+    <li data-bind="click: trigger,text: title"></li>
+  </ul>
 </div>
 <!-- /ko -->
 
