@@ -51,14 +51,17 @@ var vm = function (params) {
   vm.schoolPromotionCutoff = null // promotion cutoff used in the school
 
   // observables
+  vm.menu = ko.observableArray() // all menu items (built)
   vm.schoolName = ko.observable() // what school is this
   vm.personName = ko.observable() // who's currently logged in
   vm.personEmail = ko.observable() // email address of currently logged in guy
-  vm.menu = ko.observableArray() // all menu items (built)
+  vm.teacherPass = ko.observable() // teacher password
+  vm.teacherConfPass = ko.observable() // confirm teacher password
   vm.superAdmin = ko.observable(false) // tells if logged in guy is superadmin
   vm.shouldUpdateProfile = ko.observable(false) // edit profile?
   vm.updatingProfile = ko.observable(false) // profile update in progress
   vm.isEditEmail = ko.observable(false) // should admin update email? Make an API request
+  vm.editPrompt = ko.observable("Click to edit profile")
 
   // time
   vm.disconnectionTime = ko.observable() // what time the connecion the server was lost
@@ -88,6 +91,10 @@ var vm = function (params) {
   }
   vm.toggleEditPane = () => {
     vm.shouldUpdateProfile(!vm.shouldUpdateProfile())
+    vm.editPrompt(vm.shouldUpdateProfile()
+      ? "Click to hide edit pane"
+      : "Click to edit profile")
+    _tooltip();
   }
   vm.editProfile = () => {
     if (vm.updatingProfile()) // quit if profile update is in progress
@@ -97,73 +104,112 @@ var vm = function (params) {
       null
 
     vm.updatingProfile(true) // processing has begun
-    if (vm.personEmail() !== VM.controlVm.personEmail()) return isEditEmail(true)
-    sockets.emit('update profile', { // send to the socket ( update profile )
-      'name': vm.personName(),
-      '_id': VM.controlVm.personId
-    }, (data) => { // response
-      if (!data.status) { // no response really
-        VM.notify("Profile update failed, no reponse from Control Workstation", "error")
-        vm.updatingProfile(false)
-      } else {
-        if (data.response) { // name update successful
-          function proceed(data) {
-            // very local function to invoke for updating the name everywhere
+    if (vm.personEmail() !== VM.controlVm.personEmail()) 
+      return isEditEmail(true)
+    if (vm.isTeacher()) { // if the VM.role === teacher
+      if (_anyEmpty(vm.teacherPass(), vm.teacherConfPass()) || vm.teacherPass() !== vm.teacherConfPass()) 
+        return vm.updatingProfile(false),
+        VM.notify('Enter your password and ensure they match', 'warn')
+      sockets.emit('edit teacher', {
+        name: vm.personName(),
+        email: vm.personEmail(),
+        password: vm.teacherPass()
+      }, (data) => {
+        if (!data.status) 
+          return VM.notify('Problem editing teacher, could not reach Control Workstation', 'error', {
+            'try again': vm.editProfile()
+          }, 'retry edit teacher\'s profile')
+        else {
+          if (data.response) {
             VM
               .controlVm
-              .personName(data.name)
+              .personName(data.response.name)
             if (vm.isEditEmail()) {
               VM
                 .controlVm
-                .personEmail(data.email)
+                .personEmail(data.response.email)
               vm.isEditEmail(false)
             }
             VM.notify("Profile update successful")
             vm.shouldUpdateProfile(false)
             vm.updatingProfile(false)
-          }
-          if (vm.isEditEmail()) { // do an api call
-            let updateData = {
-              uid: VM.controlVm.schoolUid,
-              email: vm.personEmail()
-            }
-            api
-              .p('school/update-email', updateData)
-              .then(data => {
-                data = data.data
-                if (!data.status) 
-                  VM.notify(data.msg, 'error');
-                
-                sockets.emit('update profile', { // send to the socket ( update profile )
-                  'email': vm.profileEmail(),
-                  '_id': VM.controlVm.personId
-                }, data => {
-                  if (!data.status) { // no response really
-                    VM.notify("Error occured, email left unchanged", "warn")
-                    vm.updatingProfile(false)
-                  } else {
-                    if (!data.response) {
-                      VM.notify("Error occured, email left unchanged", "warn")
-                      vm.updatingProfile(false)
-                    } else 
-                      proceed(data.response)
-                  }
-                })
-              })
-              .catch(err => {
-                VM.notify('Unable to reach authentication servers, check your network connection. Email lef' +
-                    't unchanged',
-                'warn', {'try again': vm.editProfile})
-                vm.updatingProfile(false)
-              })
           } else 
-            proceed(data.response)
-        } else {
-          VM.notify("Profile update failed", "warn")
+            VM.notify("Unable to update profile", "error")
+          vm.shouldUpdateProfile(false)
           vm.updatingProfile(false)
         }
-      }
-    })
+      })
+    } else { // everyone else except teacher
+      if (vm.personEmail() !== VM.controlVm.personEmail()) 
+        return isEditEmail(true)
+      sockets.emit('update profile', { // send to the socket ( update profile )
+        'name': vm.personName(),
+        '_id': VM.controlVm.personId
+      }, (data) => { // response
+        if (!data.status) { // no response really
+          VM.notify("Profile update failed, no reponse from Control Workstation", "error")
+          vm.updatingProfile(false)
+        } else {
+          if (data.response) { // name update successful
+            function proceed(data) {
+              // every local function to invoke for updating the name everywhere
+              VM
+                .controlVm
+                .personName(data.name)
+              if (vm.isEditEmail()) {
+                VM
+                  .controlVm
+                  .personEmail(data.email)
+                vm.isEditEmail(false)
+              }
+              VM.notify("Profile update successful")
+              vm.shouldUpdateProfile(false)
+              vm.updatingProfile(false)
+            }
+            if (vm.isEditEmail()) { // do an api call
+              let updateData = {
+                uid: VM.controlVm.schoolUid,
+                email: vm.personEmail()
+              }
+              api
+                .p('school/update-email', updateData)
+                .then(data => {
+                  data = data.data
+                  if (!data.status) 
+                    VM.notify(data.msg, 'error');
+                  
+                  sockets.emit('update profile', { // send to the socket ( update profile )
+                    'email': vm.profileEmail(),
+                    '_id': VM.controlVm.personId
+                  }, data => {
+                    if (!data.status) { // no response really
+                      VM.notify("Error occured, email left unchanged", "warn")
+                      vm.updatingProfile(false)
+                    } else {
+                      if (!data.response) {
+                        VM.notify("Error occured, email left unchanged", "warn")
+                        vm.updatingProfile(false)
+                      } else 
+                        proceed(data.response)
+                    }
+                  })
+                })
+                .catch(err => {
+                  VM.notify('Unable to reach authentication servers, check your network connection. Email lef' +
+                      't unchanged',
+                  'warn', {'try again': vm.editProfile})
+                  vm.updatingProfile(false)
+                })
+            } else 
+              proceed(data.response)
+          } else {
+            VM.notify("Profile update failed", "warn")
+            vm.updatingProfile(false)
+          }
+        }
+      })
+
+    }
   }
 
   // computed
