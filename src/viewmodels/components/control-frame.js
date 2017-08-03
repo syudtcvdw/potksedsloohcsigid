@@ -34,6 +34,9 @@ var vm = function (params) {
             id: 'classteacher',
             label: 'Manage Class',
             kind: MENU_CLASSTEACHER
+        }, {
+            label: 'Logout',
+            action: VM.logout
         }
     ]
     vm.schoolUid = '' // what the school uid is
@@ -151,9 +154,11 @@ var vm = function (params) {
         m.label = config.label || ' '
         m.component = config.component || m.id + '-screen'
         m.kind = config.kind || MENU_GLOBAL
+        m.action = config.action || null
 
         // behaviours
         m.go = () => {
+            if (m.action) return m.action(), null
             if (m.component == VM.view()) 
                 return
             VM.loadView(m.component)
