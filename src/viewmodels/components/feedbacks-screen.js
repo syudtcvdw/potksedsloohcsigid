@@ -22,7 +22,7 @@ const vm = function (params) {
         message: vm.fbMsg()
       }
       api
-        .p('admin/feedback', postData)
+        .p('school/feedback', postData)
         .then(data => resolve(data))
         .catch(err => reject(err))
     }).then(d => {
