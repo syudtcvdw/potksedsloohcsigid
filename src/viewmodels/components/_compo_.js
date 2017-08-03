@@ -36,8 +36,8 @@ exports.Component = function (name) {
         } else {
             for (let o in options) 
                 _vm[o] = options[o]
-            _vm.dispose = _dispose
-            _vm.disposeOne = _disposeOne
+            // _vm.dispose = _dispose
+            // _vm.disposeOne = _disposeOne
         }
 
         this._defined = true
