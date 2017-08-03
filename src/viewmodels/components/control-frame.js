@@ -105,7 +105,7 @@ var vm = function (params) {
         vm
             .menu()
             .map(menu => {
-                let skip = (menu.kind == MENU_TEACHER && !vm.isTeacher()) /* only teachers see what only teachers should see */
+                let skip = ((menu.kind == MENU_TEACHER || menu.kind == MENU_CLASSTEACHER) && !vm.isTeacher()) /* only teachers see what only teachers should see */
                 ||
                 (!vm.superAdmin() && menu.kind == MENU_SUPER) /* only superadmin sees what only superadmin should see */
                 ||
