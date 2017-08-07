@@ -52,6 +52,13 @@ const schemas = {
             unique: true
         }
     },
+    students: {
+        surname: String,
+        lastname: String,
+        othername: String,
+        gender: String,
+        addDate: Number
+    },
     subjects: {
         title: String,
         addDate: Number,

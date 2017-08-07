@@ -1,13 +1,71 @@
-<div class="teachers-screen classteacher-screen">
+<div class="teachers-screen classteacher-screen sectionizr">
 
-    <div class="teacher-details">
-        <header>
-            <h3>JSS 2</h3>
-            <div class="about">
-                <label><i class="fa fa-male"></i> <span></span></label>
-                <label><i class="fa fa-fw fa-phone"></i> <span></span></label>
-                <label><i class="fa fa-fw fa-envelope"></i> <span></span></label>
-            </div>
-        </header>
+  <section>
+    <!-- ko ifnot: connected() || (!students().length && studentsFetchFailed()) -->
+    <div class="no-teachers">
+      <h5>Fetching students list, please wait</h5>
+      <img src="resx/images/balls.gif" alt="Loading...">
     </div>
+    <!-- /ko -->
+
+    <!-- ko if: connected -->
+
+    <!-- ko ifnot: students().length -->
+    <div class="no-teachers animated fadeInUp">
+      <h5>No students have been added yet</h5>
+      <a class="btn btn-orange" data-bind="click: addStudent">Get started</a>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: students().length -->
+    <div class="all-teachers animated fadeInUp flex" data-bind="css: {disabled: loadingStudents}">
+      <div class="content">
+        <h4 class="title no-underline">
+          All students (<span data-bind="text: students().length"></span>)
+          <i class="fa fa-fw fa-question-circle section-action orange" data-bind="attr: {title: info}" data-tooltip="{'class': 'mini white'}"></i>
+          <label class="section-action green" data-bind="click: addStudent">Add new</label></h4>
+        <ul class="teachers-list row scrollable" data-bind="foreach: student">
+          <li class="col span_1_of_3 signpost" data-bind="click: open, event: {contextmenu: contextmenu}">
+            <h5 data-bind="text: surname"></h5>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: newStudent -->
+    <div class="add-teacher animated fadeIn">
+      <form class="content animated fadeInDown" data-bind="with: newStudent,css: {disabled: newStudent().$saving}">
+        <h4 class="title">
+          Add New Student
+          <i class="fa fa-fw fa-close section-action orange animated slideInDown" title="Dismiss" data-bind="click: $parent.dismissAdd"
+            data-tooltip="{'class': 'mini white'}"></i></h4>
+        <input type="text" data-bind="textInput: surname" placeholder="Surname">
+        <input type="text" data-bind="textInput: lastname" placeholder="Last name">
+        <input type="text" data-bind="textInput: othername" placeholder="Other names">
+        <label class="dropdown">
+          <select name="gender" data-bind="value: gender">
+            <option value="" class="hidden">-- Choose student gender --</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: save">Save</button>
+      </form>
+    </div>
+    <!-- /ko -->
+    <!-- /ko -->
+  </section>
+  <!-- <section class="teacher-details" data-bind="with: subjectDetail">
+		<header data-bind="with: me">
+			<a data-bind="click: $parent.back" class="back-btn"></a>
+			<h3 data-bind="text: title"></h3>
+			<div class="about">
+				<label class="uppercase">Subject code: <span data-bind="text: code"></span></label>
+			</div>
+		</header>
+		<div class="content">
+			
+		</div>
+	</section> -->
 </div>
