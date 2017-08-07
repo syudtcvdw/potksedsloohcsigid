@@ -5,7 +5,7 @@
     <div class="all-teachers animated fadeInUp flex" data-bind="css: {disabled: sending}">
       <div class="content">
         <div class="row">
-          <form class="content animated fadeInDown col span_2_of_3">
+          <form class="content animated fadeInDown col span_2_of_3" data-bind="css: {disabled: sending}">
             <input type="text" placeholder="Subject" data-bind="textInput: fbTitle">
             <textarea rows="20" placeholder="Example: Digischools has enhanced our processes, thank you!" data-bind="textInput: fbMsg"></textarea>
             <button type="submit" class="btn btn-green btn-block btn-shift-down" data-bind="click: sendFeedback">Send feedback</button>

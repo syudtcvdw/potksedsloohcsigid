@@ -72,13 +72,24 @@ var vm = function (params) {
     let cur = menu.indexOf(menu.find(m => {
       return m.component == v
     }))
-    let nxt = backwards
-      ? (cur == 0
-        ? menu.length - 1
-        : cur - 1)
-      : (cur == menu.length - 1
-        ? 0
-        : cur + 1)
+
+    let nxt = null
+    function determineNxt() {
+      nxt = backwards
+        ? (cur == 0
+          ? menu.length - 1
+          : cur - 1)
+        : (cur == menu.length - 1
+          ? 0
+          : cur + 1)
+          
+      while (!menu[nxt].component) {
+        cur = nxt
+        determineNxt()
+      }
+    }
+
+    determineNxt()
     VM.loadView(menu[nxt].component)
   }
   vm.isTeacher = () => {
@@ -97,7 +108,8 @@ var vm = function (params) {
       null
 
     vm.updatingProfile(true) // processing has begun
-    if (vm.personEmail() !== VM.controlVm.personEmail()) return isEditEmail(true)
+    if (vm.personEmail() !== VM.controlVm.personEmail()) 
+      return isEditEmail(true)
     sockets.emit('update profile', { // send to the socket ( update profile )
       'name': vm.personName(),
       '_id': VM.controlVm.personId
@@ -232,9 +244,9 @@ var vm = function (params) {
     // observables
     m.id = config.id || config.component || config.label
     m.label = config.label || ' '
-    m.component = config.component || m.id + '-screen'
     m.kind = config.kind || MENU_GLOBAL
     m.action = config.action || null
+    m.component = m.action? null:config.component || m.id + '-screen'
 
     // behaviours
     m.go = () => {
