@@ -16,7 +16,7 @@
 <footer class="control-footer">
   <ul>
     <li data-bind="text: schoolName"></li>
-    <li data-tooltip="{ 'class': 'mini dark' }" title="Click to edit profile" data-bind="text: personName, click: toggleEditPane"></li>
+    <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: editPrompt }, text: personName, click: toggleEditPane"></li>
     <li data-bind="text: superAdmin()? 'Super Admin':$root.ROLE"></li>
     <!-- ko if: isServer -->
     <li data-tooltip="{ 'class': 'mini dark' }" data-bind="attr: { title: ipTooltip }, text: $root.connectionInfo().popuReport"></li>
@@ -50,6 +50,10 @@
     <form class="input-fa">
       <input type="text" data-bind="textInput: $parent.personName" placeholder="Enter your name">
       <input type="email" data-bind="textInput: $parent.personEmail" placeholder="Enter your email">
+      <!-- ko if: $parent.isTeacher() -->
+      <input type="password" data-bind="textInput: $parent.teacherPass" placeholder="Enter password">
+      <input type="password" data-bind="textInput: $parent.teacherConfPass" placeholder="Confirm password">
+      <!-- /ko -->
        <button type="submit" class="btn btn-block btn-green" data-bind="click: $parent.editProfile">Update</button> 
     </form>
   </div>
