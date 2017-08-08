@@ -46,7 +46,11 @@ var vm = function (params) {
     }
     vm.start = (data) => {
         vm.seen(false)
-        VM.ROLE(data.role == 'TEACHER'? (data.info.assignedClass? 'CLASS TEACHER':data.role):data.role)
+        VM.ROLE(data.role == 'TEACHER'
+            ? (data.info.assignedClass
+                ? 'CLASS TEACHER'
+                : data.role)
+            : data.role)
         VM
             .controlVm
             .personName(data.info.name)
@@ -57,6 +61,8 @@ var vm = function (params) {
             .controlVm
             .personEmail(data.info.email)
         VM.controlVm.personId = data.info._id
+        if (VM.controlVm.isClassTeacher()) 
+            VM.controlVm.teacherClass = data.info.assignedClass
 
         VM.loadView('home-screen')
     }

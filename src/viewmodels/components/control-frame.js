@@ -100,6 +100,10 @@ var vm = function (params) {
       .ROLE()
       .indexOf('TEACHER') >= 0
   }
+  vm.isClassTeacher = () => {
+    return VM.ROLE() && VM
+      .ROLE() == 'CLASS TEACHER'
+  }
   vm.toggleEditPane = () => {
     vm.shouldUpdateProfile(!vm.shouldUpdateProfile())
     vm.editPrompt(vm.shouldUpdateProfile()
