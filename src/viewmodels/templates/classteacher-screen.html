@@ -24,7 +24,7 @@
           All students (<span data-bind="text: students().length"></span>)
           <i class="fa fa-fw fa-question-circle section-action orange" data-bind="attr: {title: info}" data-tooltip="{'class': 'mini white'}"></i>
           <label class="section-action green" data-bind="click: addStudent">Add new</label></h4>
-        <ul class="teachers-list row scrollable" data-bind="foreach: student">
+        <ul class="teachers-list row scrollable" data-bind="foreach: students">
           <li class="col span_1_of_3 signpost" data-bind="click: open, event: {contextmenu: contextmenu}">
             <h5 data-bind="text: surname"></h5>
           </li>

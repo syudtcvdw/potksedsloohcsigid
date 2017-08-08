@@ -29,7 +29,9 @@ const vm = function (params) {
   }
   vm.loadStudents = () => {
     vm.loadingStudents(true)
-    sockets.emit('get all students', { class: VM.controlVm.teacherClass }, data => {
+    sockets.emit('get all students', {
+      class: VM.controlVm.teacherClass
+    }, data => {
       vm.loadingStudents(false)
       if (!data.status) {
         vm.studentsFetchFailed(true)
