@@ -70,7 +70,7 @@ const vm = function (params) {
       if (_anyEmpty(this.name(), this.code())) 
         return VM.notify("Do not leave any detail empty", "warn")
 
-      let _klass = this.export()
+      let _klass = this.keep('_id').export()
 
       if (this._new) {
         // add

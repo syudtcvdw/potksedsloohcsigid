@@ -66,18 +66,23 @@ const vm = function (params) {
 
     // behaviours
     save() {
-      if (_anyEmpty(this.surname(), this.lastname(), this.gender()))
+      if (_anyEmpty(this.surname(), this.firstname(), this.gender())) 
         return VM.notify("Do not leave any detail empty", "warn")
 
-      let _student = this.export()
+      let _student = this
+        .keep('_id')
+        .export()
+      _student.class = VM.controlVm.teacherClass
+      this.$saving(true)
       if (this._new) {
         // add
-        this.$saving(true)
-        _student.addDate = _student.addDate ? _student.addDate : _getUTCTime() / 1000 // to secs
-        _student.class = this
+        _student.addDate = _student.addDate
+          ? _student.addDate
+          : _getUTCTime() / 1000 // to secs
         sockets.emit('add student', _student, (data) => {
-          if (!data.status)
-            return this.$saving(false), VM.notify('Problem adding student, could not reach Control Workstation', 'error', {
+          if (!data.status) 
+            return this.$saving(false),
+            VM.notify('Problem adding student, could not reach Control Workstation', 'error', {
               'try again': this
                 .save
                 .bind(this)
@@ -89,29 +94,27 @@ const vm = function (params) {
                 .students
                 .push(new student(data.response))
               vm.addStudent()
-            } else if (data.response === false)
+            } else if (data.response === false) 
               VM.notify('Unable to add student', 'error')
-            else
+            else 
               VM.notify(data.response, 'error')
             this.$saving(false)
           }
         })
       } else {
         // edit
-        this.$saving(true)
-        _student.class = this
         sockets.emit('edit student', _student, data => {
-          if (!data.status)
+          if (!data.status) 
             return this.$saving(false),
-              VM.notify('Problem editing student, could not reach Control Workstation', 'error', {
-                'try again': this
-                  .save
-                  .bind(this)
-              }, 'retry edit student')
+            VM.notify('Problem editing student, could not reach Control Workstation', 'error', {
+              'try again': this
+                .save
+                .bind(this)
+            }, 'retry edit student')
           else {
-            if (data.response)
+            if (data.response) 
               VM.notify("Student updated successfully")
-            else
+            else 
               VM.notify("Unable to update student")
             this.$saving(false)
           }
@@ -144,20 +147,20 @@ const vm = function (params) {
       VM.notify('Are you sure you want to delete this student?', 'warn', {
         'yes': () => {
           sockets.emit('remove student', this._id, data => {
-            if (!data.status)
+            if (!data.status) 
               VM.notify('Problem deleting student, could not reach Control Workstation', 'error', {
                 'try again': this
                   .remove
                   .bind(this)
               }, 'retry remove student')
             else {
-              if (!data.response)
+              if (!data.response) 
                 VM.notify("Unable to delete student", "error")
-              else
+              else 
                 vm
-                .students
-                .remove(this)
-            }
+                  .students
+                  .remove(this)
+              }
           }) // end emit
         }
       }) // end notify

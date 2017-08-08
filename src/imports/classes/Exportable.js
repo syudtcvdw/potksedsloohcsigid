@@ -6,6 +6,15 @@ module.exports = class Exportable {
     constructor() {
         if (this.constructor == Exportable) 
             throw TypeError("Exportable is an abstract class, you cannot instantiate it")
+        this.__________preservedProps = []
+    }
+    /**
+     * Chained method for preserving certain properties during export
+     * @param {Array} preserved
+     */
+    keep(...preserved) {
+        this.__________preservedProps = preserved
+        return this
     }
     /**
      * Export this class as POJO, with only the public properties
@@ -14,9 +23,11 @@ module.exports = class Exportable {
      */
     export(...exclusions) {
         let o = ko.toJS(this)
-        for (let prop in o)
-            if (prop[0] == '_' || prop[0] == '$' || exclusions.indexOf(prop) != -1) 
+        for (let prop in o) {
+            if ((prop[0] == '_' || prop[0] == '$' || exclusions.indexOf(prop) != -1) && this.__________preservedProps.indexOf(prop) == -1) 
                 delete o[prop]
+        }
+        delete o.__________preservedProps
         return o
     }
 }

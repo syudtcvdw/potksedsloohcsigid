@@ -19,5 +19,8 @@ module.exports = class Subject extends Exportable {
 
         // init
         this._new = !this._id()
-    }
+        if (!this._new) 
+            delete this._id // because empty id prevents successful insert
+        console.log(this.keep('_id').export())
+        }
 }

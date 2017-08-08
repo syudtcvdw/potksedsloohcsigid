@@ -54,7 +54,7 @@ const schemas = {
     },
     students: {
         surname: String,
-        lastname: String,
+        firstname: String,
         othername: String,
         gender: String,
         addDate: Number

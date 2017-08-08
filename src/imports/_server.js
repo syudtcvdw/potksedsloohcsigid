@@ -776,6 +776,7 @@ module.exports = function (server, force = false) {
                 query = query.payload
                 db('students')
                     .find({class: query.class})
+                    .sort({surname: 1, firstname: 1, othername: 1})
                     .execAsync()
                     .then(d => cb(!d
                         ? false
@@ -787,6 +788,7 @@ module.exports = function (server, force = false) {
              * Adds new student
              */
             socket.on('add student', (query, cb) => { // success: doc
+                console.log(query)
                 if (expired(query)) 
                     return
                 query = query.payload || query
@@ -803,6 +805,7 @@ module.exports = function (server, force = false) {
                 if (expired(query)) 
                     return
                 query = query.payload || query
+                console.log(query)
                 // edit this student
                 db('students')
                     .iu(query)

@@ -68,10 +68,12 @@ const vm = function (params) {
       if (_anyEmpty(this.title(), this.code())) 
         return VM.notify("Do not leave any detail empty", "warn")
 
-      let _subject = this.export()
+      let _subject = this
+        .keep('_id')
+        .export()
+      this.$saving(true)
       if (this._new) {
         // add
-        this.$saving(true)
         _subject.addDate = _subject.addDate
           ? _subject.addDate
           : _getUTCTime() / 1000 // to secs
@@ -99,7 +101,6 @@ const vm = function (params) {
         })
       } else {
         // edit
-        this.$saving(true)
         sockets.emit('edit subject', _subject, data => {
           if (!data.status) 
             return this.$saving(false),

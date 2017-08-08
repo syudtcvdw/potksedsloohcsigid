@@ -73,13 +73,15 @@ const vm = function (params) {
                 : 'empty')) 
                 return VM.notify("Do not leave any detail empty", "warn")
 
-            let _teacher = this.export()
+            if (this.password() != vm.confirmPassword()) 
+                return VM.notify("Passwords do not match, use the reveal buttons to comfirm", "error")
+
+            let _teacher = this
+                .keep('_id')
+                .export()
+            this.$saving(true)
             if (this._new) {
                 // add
-                if (this.password() != vm.confirmPassword()) 
-                    return VM.notify("Passwords do not match, use the reveal buttons to comfirm", "error")
-
-                this.$saving(true)
                 _teacher.addDate = _teacher.addDate
                     ? _teacher.addDate
                     : _getUTCTime() / 1000 // to secs
@@ -109,9 +111,6 @@ const vm = function (params) {
                 })
             } else {
                 // edit
-                if (this.password() !== vm.confirmPassword()) 
-                    VM.notify("Passwords do not match, use the reveal buttons to confirm", "error")
-                this.$saving(true)
                 sockets.emit('edit teacher', _teacher, data => {
                     if (!data.status) 
                         return this.$saving(false),

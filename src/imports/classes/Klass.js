@@ -10,7 +10,7 @@ module.exports = class Klass extends Exportable {
         let args = argv.length > 0
             ? argv[0]
             : {}
-        
+
         // props
         this._id = ko.observable(args._id || '')
         this.name = ko.observable(args.name || '')
@@ -23,5 +23,7 @@ module.exports = class Klass extends Exportable {
 
         // init
         this._new = !this._id()
-    }
+        if (!this._new) 
+            delete this._id // because empty id prevents successful insert
+        }
 }
