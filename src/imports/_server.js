@@ -767,6 +767,63 @@ module.exports = function (server, force = false) {
                             }
                         )
 
+            /**
+			 * Returns list of all students for a class
+			 */
+            socket.on('get all students', (query, cb) => { // success: [docs]
+                if (expired(query)) 
+                    return
+                query = query.payload
+                db('students')
+                    .find({class: query.class})
+                    .execAsync()
+                    .then(d => cb(!d
+                        ? false
+                        : d))
+                    .catch(e => cb(false))
+            })
+
+            /**
+             * Adds new student
+             */
+            socket.on('add student', (query, cb) => { // success: doc
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                db('students')
+                    .i(query)
+                    .then(d => cb(d))
+                    .catch(() => cb(false))
+            })
+
+            /**
+             * Edits existing student
+             */
+            socket.on('edit student', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                // edit this student
+                db('students')
+                    .iu(query)
+                    .then(d => cb(true))
+                    .catch(() => cb(false))
+            })
+
+            /**
+			 * Deletes student identified by supplied id
+			 */
+            socket.on('remove student', (query, cb) => { // success: bool
+                if (expired(query)) 
+                    return
+                query = query.payload || query
+                db('students').remove({
+                    _id: query
+                }, {}, (err, num) => {
+                    cb(!err && num > 0)
+                })
+            })
+
             resolve(socket)
         }).then((socket) => {
             db('settings')
