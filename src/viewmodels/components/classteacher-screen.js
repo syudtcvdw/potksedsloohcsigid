@@ -28,7 +28,6 @@ const vm = function (params) {
     _tooltip()
   }
   vm.loadStudents = () => {
-    vm.studentsFetchFailed(false)
     vm.loadingStudents(true)
     sockets.emit('get all students', null, data => {
       vm.loadingStudents(false)
