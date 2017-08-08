@@ -15,7 +15,7 @@ const vm = function (params) {
   // states
   vm.connected = ko.observable(false)
   vm.studentsFetchFailed = ko.observable(false)
-  vm.loadingStudent = ko.observable(false)
+  vm.loadingStudents = ko.observable(false)
 
   // behaviours
   vm.addStudent = () => {
@@ -29,7 +29,32 @@ const vm = function (params) {
   }
   vm.loadStudents = () => {
     vm.studentsFetchFailed(false)
-    vm.loadingStudent(false)
+    vm.loadingStudents(true)
+    sockets.emit('get all students', null, data => {
+      vm.loadingStudents(false)
+      if (!data.status) {
+        vm.studentsFetchFailed(true)
+        VM.notify("Unable to fetch students list, could not reach Control Workstation", "error", {
+          'try again': vm.loadStudents
+        }, 'retry load students')
+      } else {
+        vm.studentsFetchFailed(false)
+        if (data.response) {
+          vm
+            .students
+            .removeAll()
+          data
+            .response
+            .map(s => {
+              vm
+                .students
+                .push(new student(s))
+            })
+          vm.connected(true)
+          _tooltip()
+        }
+      }
+    }, true)
   }
 
   // sub-vm
@@ -40,7 +65,7 @@ const vm = function (params) {
 
     // behaviours
     save() {
-      if (_anyEmpty(this.surname(), this.lastname(), this.othername(), this.gender()))
+      if (_anyEmpty(this.surname(), this.lastname(), this.gender()))
         return VM.notify("Do not leave any detail empty", "warn")
 
       let _student = this.export()
@@ -48,9 +73,48 @@ const vm = function (params) {
         // add
         this.$saving(true)
         _student.addDate = _student.addDate ? _student.addDate : _getUTCTime() / 1000 // to secs
+        _student.class = this
+        socket.emit('add student', _student, (data) => {
+          if (!data.status)
+            return this.$saving(false), VM.notify('Problem adding student, could not reach Control Workstation', 'error', {
+              'try again': this
+                .save
+                .bind(this)
+            }, 'retry add student')
+          else {
+            if (typeof data.response === 'object') {
+              VM.notify('Student added successfully.')
+              vm
+                .students
+                .push(new student(data.response))
+              vm.addStudent()
+            } else if (data.response === false)
+              VM.notify('Unable to add student', 'error')
+            else
+              VM.notify(data.response, 'error')
+            this.$saving(false)
+          }
+        })
       } else {
         // edit
         this.$saving(true)
+        _student.class = this
+        sockets.emit('edit student', _student, data => {
+          if (!data.status)
+            return this.$saving(false),
+              VM.notify('Problem editing student, could not reach Control Workstation', 'error', {
+                'try again': this
+                  .save
+                  .bind(this)
+              }, 'retry edit student')
+          else {
+            if (data.response)
+              VM.notify("Student updated successfully")
+            else
+              VM.notify("Unable to update student")
+            this.$saving(false)
+          }
+        })
       }
     }
     open() {}
@@ -71,8 +135,32 @@ const vm = function (params) {
           'Refresh list': vm.loadStudents
         })
     }
-    edit() {}
-    remove() {}
+    edit() {
+      vm.newStudentActionName('Edit Student')
+      vm.newStudent(this)
+    }
+    remove() {
+      VM.notify('Are you sure you want to delete this student?', 'warn', {
+        'yes': () => {
+          sockets.emit('remove student', this._id, data => {
+            if (!data.status)
+              VM.notify('Problem deleting student, could not reach Control Workstation', 'error', {
+                'try again': this
+                  .remove
+                  .bind(this)
+              }, 'retry remove student')
+            else {
+              if (!data.response)
+                VM.notify("Unable to delete student", "error")
+              else
+                vm
+                .students
+                .remove(this)
+            }
+          }) // end emit
+        }
+      }) // end notify
+    }
   }
 
   // init
