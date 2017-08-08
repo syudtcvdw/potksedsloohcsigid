@@ -17,13 +17,14 @@ module.exports = class Klass extends Exportable {
         this.code = ko.observable(args.code || '')
         this.addDate = ko.observable(args.addDate || null)
         this.classteacher = ko.observable(args.classteacher || null)
+        this.$teacher = args.teacher || null
 
         // states
         this.$saving = ko.observable(false)
 
         // init
         this._new = !this._id()
-        if (!this._new) 
+        if (this._new) 
             delete this._id // because empty id prevents successful insert
         }
 }

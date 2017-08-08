@@ -54,6 +54,9 @@
 			<h3 data-bind="text: name"></h3>
 			<div class="about">
 				<label class="uppercase">Class code: <span data-bind="text: code"></span></label>
+				<!-- ko if: $teacher -->
+				| <label class="uppercase">Class teacher: <span data-bind="text: $teacher.name"></span></label>
+				<!-- /ko -->
 			</div>
 		</header>
 		<div class="content sectionized" data-bind="css: {disabled: assigning}">

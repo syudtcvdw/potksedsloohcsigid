@@ -539,16 +539,20 @@ module.exports = function (server, force = false) {
                     return
                 let DbClasses = db('classes')
                 DbClasses
-                    .find({})
-                    .sort({name: 1})
-                    .execAsync()
-                    .then(d => {
-                        cb(!d
-                            ? false
-                            : d)
-                    })
-                    .catch(() => cb(false))
-            })
+                    .join({})
+                    .with ({
+                        $table: 'teachers',
+                        $as: 'teacher',
+                        $query: {
+                            email: '$r.classteacher'
+                        }
+                    }).sort({name: 1}).exec().then(d => {
+                            cb(!d
+                                ? false
+                                : d)
+                        }).catch(() => cb(false))
+                    }
+            )
 
             /**
              * Edits existing class
