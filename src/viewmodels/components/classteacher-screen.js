@@ -73,7 +73,7 @@ const vm = function (params) {
         this.$saving(true)
         _student.addDate = _student.addDate ? _student.addDate : _getUTCTime() / 1000 // to secs
         _student.class = this
-        socket.emit('add student', _student, (data) => {
+        sockets.emit('add student', _student, (data) => {
           if (!data.status)
             return this.$saving(false), VM.notify('Problem adding student, could not reach Control Workstation', 'error', {
               'try again': this
