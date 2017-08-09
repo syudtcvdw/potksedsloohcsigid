@@ -96,12 +96,17 @@ var VM = new function () {
                     .then(() => {
                         vm.skipModeSub = true
                         VM.MODE(SERVER)
-                        sockets.onIpReady((ip) => {console.log(`IP address gotten ${ip}`), vm.IP(ip)}).getIpAddress()
+                        sockets.onIpReady((ip) => {
+                            console.log(`IP address gotten ${ip}`),
+                            vm.IP(ip)
+                        }).getIpAddress()
                     })
                     .catch((e) => {
                         console.log(e)
                         vm.notify("Server still offline", "error", {
-                            "put online": vm.connectionInfo().reconnect
+                            "put online": vm
+                                .connectionInfo()
+                                .reconnect
                         }, 'server offline', true)
                     })
             }
@@ -156,11 +161,12 @@ var VM = new function () {
         }
         si.countDown = () => {
             si.population(si.population() - 1)
-            if (si.population() == 0) 
+            if (si.population() == 0) {
+                sockets.killServer()
                 vm.notify("Server offline", "error", {
                     "put online": si.reconnect
                 }, 'server offline', true)
-            else 
+            } else 
                 vm.notify("Someone disconnected", "warn")
         }
         si.reconnect = () => {
@@ -216,9 +222,7 @@ var VM = new function () {
                     })
                     .catch(e => {
                         console.log('reconnection', e)
-                        vm.notify("Unable to establish connection", "error", {
-                            "reconnect": ci.reconnect
-                        }, "connection lost", true)
+                        vm.notify("Unable to establish connection", "error")
                     })
             }
         }

@@ -20,8 +20,6 @@ module.exports = function (server, force = false) {
     if (running && !force) 
         return _self
 
-    if (force) console.log('FORCED')
-
     VM
         .connectionInfo()
         .connected(true)
