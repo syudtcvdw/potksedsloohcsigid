@@ -27,7 +27,7 @@ function getSockets() {
                 ? SERVER
                 : _mode
 
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 // attempt reconnection
                 if (_mode == SERVER) {
                     // _io_server.close(() => {
@@ -42,9 +42,10 @@ function getSockets() {
                     //     _server(_io_server, true) // start up the server leaflet, force renew
                     // resolve(_io_server) })
                     _reconnecting = true
-                    _io_server.close(() => {
-                        this.server().connect().then(resolve(_io_server))
-                    })
+                    this
+                        .server()
+                        .connect()
+                        .then(resolve(_io_server))
                 } else {
                     this
                         .client(ip)
@@ -248,6 +249,12 @@ function getSockets() {
                 if (!quiet) 
                     VM.loading(false) // remove the loading strip
                 })
+        },
+        killServer() {
+            _io_server.close(() => {
+                console.log("SERVER DEAD")
+                console.log(_io_server.sockets.sockets)
+            })
         }
     }
 }
