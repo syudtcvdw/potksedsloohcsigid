@@ -12,7 +12,8 @@ function getSockets() {
         _io_server,
         _io_client,
         _ipReadyCallback,
-        _ip
+        _ip,
+        _reconnecting = false
     return {
         /**
          * Usages:
@@ -28,14 +29,21 @@ function getSockets() {
 
             return new Promise((resolve) => {
                 // attempt reconnection
-                if (_mode == 'SERVER') {
-                    _io_server.close(() => {
+                if (_mode == SERVER) {
+                    // _io_server.close(() => {
+                    /* console.log('IO server', _io_server)
                         _control.close()
+                        console.log('Control', _control)
                         _control = require('http').Server()
+                        console.log('Control', _control)
                         _io_server = require('socket.io')(_control)
-                        _control.listen(9192)
-                        _server(_io_server, true) // start up the server leaflet, force renew
-                        resolve(_io_server)
+                        console.log('IO server', _io_server)
+                        _control.listen(9192) */
+                    //     _server(_io_server, true) // start up the server leaflet, force renew
+                    // resolve(_io_server) })
+                    _reconnecting = true
+                    _io_server.close(() => {
+                        this.server().connect().then(resolve(_io_server))
                     })
                 } else {
                     this
@@ -76,7 +84,7 @@ function getSockets() {
             if (_mode == 'SERVER') {
                 return new Promise((resolve, reject) => {
                     _control.listen(9192)
-                    _server(_io_server) // start up the server leaflet
+                    _server(_io_server, _reconnecting) // start up the server leaflet
                     resolve(_io_server)
                 })
             } else if (_mode == 'CLIENT') {
@@ -215,7 +223,7 @@ function getSockets() {
                     expiry: _getUTCTime() + VM.controlVm.timeOffset + wait,
                     payload: data
                 }
-                
+
                 VM
                     .socket
                     .emit(event, data, (response) => {

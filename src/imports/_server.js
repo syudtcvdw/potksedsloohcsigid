@@ -7,7 +7,8 @@
  */
 
 let _self,
-    running;
+    running,
+    _runningServer;
 
 /**
  * when force is true,
@@ -18,6 +19,8 @@ module.exports = function (server, force = false) {
     // single instance
     if (running && !force) 
         return _self
+
+    if (force) console.log('FORCED')
 
     VM
         .connectionInfo()
@@ -546,7 +549,7 @@ module.exports = function (server, force = false) {
                         $query: {
                             email: '$r.classteacher'
                         }
-                    }).sort({name: 1}).exec().then(d => {
+                    }) .sort({name: 1}).exec().then(d => {
                             cb(!d
                                 ? false
                                 : d)
@@ -831,6 +834,10 @@ module.exports = function (server, force = false) {
                 })
             })
 
+            socket.on('dump server', () => {
+                console.log(_runningServer)
+            })
+
             resolve(socket)
         }).then((socket) => {
             db('settings')
@@ -868,5 +875,6 @@ module.exports = function (server, force = false) {
     }
 
     _self = this
+    _runningServer = server
     running = true
 }

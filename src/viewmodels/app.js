@@ -96,11 +96,12 @@ var VM = new function () {
                     .then(() => {
                         vm.skipModeSub = true
                         VM.MODE(SERVER)
-                        sockets.onIpReady((ip) => vm.IP(ip)).getIpAddress()
+                        sockets.onIpReady((ip) => {console.log(`IP address gotten ${ip}`), vm.IP(ip)}).getIpAddress()
                     })
-                    .catch(() => {
+                    .catch((e) => {
+                        console.log(e)
                         vm.notify("Server still offline", "error", {
-                            "put online": si.reconnect
+                            "put online": vm.connectionInfo().reconnect
                         }, 'server offline', true)
                     })
             }
