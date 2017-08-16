@@ -532,24 +532,7 @@ var vm = function (params) {
         vm.promotionCutoff(VM.controlVm.schoolPromotionCutoff)
 
         // confirm logo from server
-        let DbSettings = db('settings')
-        DbSettings
-            .findOne({label: 'logoSalt'})
-            .execAsync()
-            .then(d => {
-                console.log(`salt: ${d.value}`)
-                sockets.emit('fetch school logo', {
-                    salt: d
-                        ? d.value
-                        : ''
-                }, d => {
-                    if (d.status && d.response && d.response.buf) {
-                        // buffer returned, meaning logo has changed
-                        _saveLogo(d.response)
-                    }
-                }, true, 10000)
-            })
-            .catch(() => {})
+        _confirmLogo()
     })
 }
 
