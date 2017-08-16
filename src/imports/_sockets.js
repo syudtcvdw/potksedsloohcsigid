@@ -30,17 +30,6 @@ function getSockets() {
             return new Promise((resolve, reject) => {
                 // attempt reconnection
                 if (_mode == SERVER) {
-                    // _io_server.close(() => {
-                    /* console.log('IO server', _io_server)
-                        _control.close()
-                        console.log('Control', _control)
-                        _control = require('http').Server()
-                        console.log('Control', _control)
-                        _io_server = require('socket.io')(_control)
-                        console.log('IO server', _io_server)
-                        _control.listen(9192) */
-                    //     _server(_io_server, true) // start up the server leaflet, force renew
-                    // resolve(_io_server) })
                     _reconnecting = true
                     this
                         .server()
@@ -130,6 +119,9 @@ function getSockets() {
                             DbSettings
                                 .iu(arr)
                                 .then(d => console.log(d))
+
+                            // confirm logo from server
+                            _confirmLogo()
                         })
 
                         /**
