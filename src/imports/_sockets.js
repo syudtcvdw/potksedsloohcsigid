@@ -122,9 +122,14 @@ function getSockets() {
                             VM.controlVm.schoolCurrentTerm = info.schoolCurrentTerm || null
                             VM.controlVm.schoolPromotionCutoff = info.schoolPromotionCutoff || null
                             let arr = []
-                            for (let s in info) 
+                            for (let s in info) {
+                                if (s == 'runMode' || s == 'lastEmail') 
+                                    continue
                                 arr.push({label: s, value: info[s]})
-                            DbSettings.iu(arr).then(d => console.log(d))
+                            }
+                            DbSettings
+                                .iu(arr)
+                                .then(d => console.log(d))
                         })
 
                         /**
