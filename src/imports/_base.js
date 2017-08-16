@@ -133,12 +133,12 @@ function _confirmLogo() {
         .findOne({label: 'logoSalt'})
         .execAsync()
         .then(d => {
+            console.log(d)
             sockets.emit('fetch school logo', {
                 salt: d
                     ? d.value
                     : ''
             }, d => {
-                console.log(`salt: ${d.value}`)
                 if (d.status && d.response && d.response.buf) {
                     // buffer returned, meaning logo has changed
                     _saveLogo(d.response)
