@@ -102,7 +102,6 @@ function getSockets() {
                             // confirm logo from server
                             _confirmLogo()
 
-                            console.log(info)
                             let DbSettings = db("settings")
                             VM.controlVm.schoolUid = info.schoolUid
                             VM.controlVm.schoolSlogan = info.schoolSlogan || ''

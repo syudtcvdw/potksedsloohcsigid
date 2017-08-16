@@ -128,13 +128,11 @@ function _saveLogo(data) {
  * Confirms logo from the server, and updates it if need be
  */
 function _confirmLogo() {
-    console.log('confirming logo')
     let DbSettings = db('settings')
     DbSettings
         .findOne({label: 'logoSalt'})
         .execAsync()
         .then(d => {
-            console.log(d)
             sockets.emit('fetch school logo', {
                 salt: d
                     ? d.value
