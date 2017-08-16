@@ -11,3 +11,6 @@ When Teachers
     Is class teacher? Do assign
     Assign Subjects
         Assign classes
+
+Fixes
+    On client reconnect, disable reconnection view

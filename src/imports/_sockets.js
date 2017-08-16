@@ -99,6 +99,9 @@ function getSockets() {
                          * Initializer payload delivered from the server
                          */
                         _io_client.on('init-payload', (info) => {
+                            // confirm logo from server
+                            _confirmLogo()
+
                             console.log(info)
                             let DbSettings = db("settings")
                             VM.controlVm.schoolUid = info.schoolUid
@@ -118,12 +121,6 @@ function getSockets() {
                             }
                             DbSettings
                                 .iu(arr)
-                                .then(d => {
-                                    console.log(d)
-                                    
-                                    // confirm logo from server
-                                    _confirmLogo()
-                                })
                         })
 
                         /**
