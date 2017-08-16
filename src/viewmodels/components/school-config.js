@@ -543,7 +543,6 @@ var vm = function (params) {
                         ? d.value
                         : ''
                 }, d => {
-                    console.log(`logo response`, d)
                     if (d.status && d.response && d.response.buf) {
                         // buffer returned, meaning logo has changed
                         _saveLogo(d.response)

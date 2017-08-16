@@ -121,39 +121,10 @@ function getSockets() {
                             VM.controlVm.schoolTermsPerSession = info.schoolTermsPerSession || null
                             VM.controlVm.schoolCurrentTerm = info.schoolCurrentTerm || null
                             VM.controlVm.schoolPromotionCutoff = info.schoolPromotionCutoff || null
-                            DbSettings.iu([
-                                {
-                                    label: 'schoolUid',
-                                    value: info.schoolUid
-                                }, {
-                                    label: 'schoolName',
-                                    value: info.schoolName
-                                }, {
-                                    label: 'schoolSlogan',
-                                    value: info.schoolSlogan || ''
-                                }, {
-                                    label: 'schoolAddress',
-                                    value: info.schoolAddress || ''
-                                }, {
-                                    label: 'schoolDisplaysPositions',
-                                    value: info.schoolDisplaysPositions || false
-                                }, {
-                                    label: 'schoolSubSession',
-                                    value: info.schoolSubSession || 'term'
-                                }, {
-                                    label: 'schoolSessionName',
-                                    value: info.schoolSessionName || ''
-                                }, {
-                                    label: 'schoolTermsPerSession',
-                                    value: info.schoolTermsPerSession || null
-                                }, {
-                                    label: 'schoolCurrentTerm',
-                                    value: info.schoolCurrentTerm || null
-                                }, {
-                                    label: 'schoolPromotionCutoff',
-                                    value: info.schoolPromotionCutoff || null
-                                }
-                            ])
+                            let arr = []
+                            for (let s in info) 
+                                arr.push({label: s, value: info[s]})
+                            DbSettings.iu(arr).then(d => console.log(d))
                         })
 
                         /**

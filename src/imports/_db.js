@@ -283,7 +283,8 @@ module.exports = (...name) => {
              * Limit parameter to use on the first query
              */
             pq.limit = (lim) => {
-                if (!isNaN(lim)) _limit = lim
+                if (!isNaN(lim)) 
+                    _limit = lim
                 return pq
             }
             /**
@@ -307,7 +308,9 @@ module.exports = (...name) => {
              */
             function performQuery() {
                 if (!pqQueries.length) 
-                    pq.promisedResult.resolve(pqResult.length == 0? null:pqResult)
+                    pq.promisedResult.resolve(pqResult.length == 0
+                        ? null
+                        : pqResult)
                 let _query = pqQueries.shift()
 
                 if (!firstQueryDone) {
