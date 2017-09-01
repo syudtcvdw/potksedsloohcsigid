@@ -24,5 +24,6 @@ TODO:
     Make password reveal buttons more intuitive
     Show current class for classteacher
     Show subject stats, on subjects-screen
+    Teacher phone number must be editable as part of profile
 
 ✅
