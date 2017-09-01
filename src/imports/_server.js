@@ -831,6 +831,13 @@ module.exports = function (server, force = false) {
                 })
             })
 
+            /**
+             * Gets classes a teacher teaches in
+             */
+            socket.on('get teacher classes', (query, cb) => { // success: [class]
+                console.log(query)
+            })
+
             socket.on('dump server', () => {
                 console.log(_runningServer)
             })

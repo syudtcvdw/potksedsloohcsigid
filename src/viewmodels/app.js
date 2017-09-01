@@ -15,6 +15,7 @@ require(COMPONENTS_PATH + 'classes-screen.js')
 require(COMPONENTS_PATH + 'feedbacks-screen.js')
 
 require(COMPONENTS_PATH + 'classteacher-screen.js')
+require(COMPONENTS_PATH + 'teacher-class-screen.js')
 
 // empty component
 ko

@@ -35,6 +35,10 @@ var vm = function (params) {
       label: 'Classteacher Role',
       kind: MENU_CLASSTEACHER
     }, {
+      id: 'teacher-class',
+      label: 'Manage Classes',
+      kind: MENU_TEACHER
+    }, {
       label: 'Logout',
       action: VM.logout
     }
