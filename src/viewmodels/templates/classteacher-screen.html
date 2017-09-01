@@ -28,7 +28,10 @@
         <p>You are the classteacher</p>
         <ul class="teachers-list row scrollable" data-bind="foreach: students">
           <li class="col span_1_of_3 signpost" data-bind="click: open, event: {contextmenu: contextmenu}">
-            <h5 data-bind="text: $fullname"></h5>
+            <h5 class="teacher-name" data-bind="css: {female: gender() == 'female'}">
+                <i class="fa fa-fw"></i>
+                <span data-bind="text: $fullname"></span>
+            </h5>
           </li>
         </ul>
       </div>
