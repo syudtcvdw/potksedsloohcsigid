@@ -86,6 +86,7 @@ const vm = function (params) {
                     ? _teacher.addDate
                     : _getUTCTime() / 1000 // to secs
 
+                delete _teacher._id // because empty id prevents successful insert
                 sockets.emit('add teacher', _teacher, data => {
                     if (!data.status) 
                         return this.$saving(false),

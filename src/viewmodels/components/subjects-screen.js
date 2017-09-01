@@ -77,6 +77,8 @@ const vm = function (params) {
         _subject.addDate = _subject.addDate
           ? _subject.addDate
           : _getUTCTime() / 1000 // to secs
+
+        delete _subject._id
         sockets.emit('add subject', _subject, data => {
           if (!data.status) 
             return this.$saving(false),

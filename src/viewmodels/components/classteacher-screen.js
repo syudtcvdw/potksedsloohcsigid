@@ -79,6 +79,8 @@ const vm = function (params) {
         _student.addDate = _student.addDate
           ? _student.addDate
           : _getUTCTime() / 1000 // to secs
+
+        delete _student._id
         sockets.emit('add student', _student, (data) => {
           if (!data.status) 
             return this.$saving(false),

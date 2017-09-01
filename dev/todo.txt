@@ -13,4 +13,11 @@ When Teachers
         Assign classes
 
 Fixes
-    On client reconnect, disable reconnection view
+    On client reconnect click, disable reconnection view
+
+Issues
+    Crash on `add teacher`
+    Crash on `add subject`
+    Crash on `add class`
+
+✅
