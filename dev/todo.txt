@@ -16,8 +16,11 @@ Fixes
     On client reconnect click, disable reconnection view
 
 Issues
-    Crash on `add teacher`
-    Crash on `add subject`
-    Crash on `add class`
+    Crash on `add teacher` ✅
+    Crash on `add subject` ✅
+    Crash on `add class` ✅
+
+TODO:
+    Make password reveal buttons more intuitive
 
 ✅
