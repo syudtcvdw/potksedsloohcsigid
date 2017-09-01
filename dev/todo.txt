@@ -22,5 +22,7 @@ Issues
 
 TODO:
     Make password reveal buttons more intuitive
+    Show current class for classteacher
+    Show subject stats, on subjects-screen
 
 ✅
