@@ -32,7 +32,7 @@ var vm = function (params) {
       kind: MENU_SUPER
     }, {
       id: 'classteacher',
-      label: 'Manage Class',
+      label: 'Classteacher Role',
       kind: MENU_CLASSTEACHER
     }, {
       label: 'Logout',
@@ -250,7 +250,7 @@ var vm = function (params) {
     vm
       .menu()
       .map(menu => {
-        let skip = ((menu.kind == MENU_TEACHER || menu.kind == MENU_CLASSTEACHER) && !vm.isTeacher())/* only teachers see what only teachers should see */ || (!vm.superAdmin() && menu.kind == MENU_SUPER)/* only superadmin sees what only superadmin should see */ || (vm.isTeacher() && menu.kind == MENU_ADMIN)/* teachers cannot see what belongs to the admins */
+        let skip = ((menu.kind == MENU_TEACHER || menu.kind == MENU_CLASSTEACHER) && !vm.isTeacher())/* only teachers see what only teachers should see */ || (!vm.superAdmin() && menu.kind == MENU_SUPER)/* only superadmin sees what only superadmin should see */ || (vm.isTeacher() && menu.kind == MENU_ADMIN)/* teachers cannot see what belongs to the admins */ || (!vm.isClassTeacher() && menu.kind == MENU_CLASSTEACHER)/* teachers cannot see what belongs to classteachers */
         if (skip) 
           return
         m.push(menu)
@@ -279,10 +279,7 @@ var vm = function (params) {
     })
   vm
     .serverTime
-    .subscribe(t => {
-      vm.timeOffset = t - _getUTCTime(),
-      console.log(vm.timeOffset)
-    })
+    .subscribe(t => vm.timeOffset = t - _getUTCTime())
 
   // sub vm
   function MenuItem(config) {

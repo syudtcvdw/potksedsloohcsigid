@@ -1,6 +1,7 @@
 <div class="teachers-screen classteacher-screen sectionizr">
 
   <section>
+    
     <!-- ko ifnot: connected() || (!students().length && studentsFetchFailed()) -->
     <div class="no-teachers">
       <h5>Fetching students list, please wait</h5>
@@ -12,7 +13,7 @@
 
     <!-- ko ifnot: students().length -->
     <div class="no-teachers animated fadeInUp">
-      <h5>No students have been added yet</h5>
+      <h5>No student records found for <span data-bind="text: $root.controlVm.teacherClass"></span>. You are the class teacher</h5>
       <a class="btn btn-orange" data-bind="click: addStudent">Get started</a>
     </div>
     <!-- /ko -->
@@ -21,9 +22,10 @@
     <div class="all-teachers animated fadeInUp flex" data-bind="css: {disabled: loadingStudents}">
       <div class="content">
         <h4 class="title no-underline">
-          All students (<span data-bind="text: students().length"></span>)
+          <span data-bind="text: $root.controlVm.teacherClass"></span> students (<span data-bind="text: students().length"></span>)
           <i class="fa fa-fw fa-question-circle section-action orange" data-bind="attr: {title: info}" data-tooltip="{'class': 'mini white'}"></i>
           <label class="section-action green" data-bind="click: addStudent">Add new</label></h4>
+        <p>You are the classteacher</p>
         <ul class="teachers-list row scrollable" data-bind="foreach: students">
           <li class="col span_1_of_3 signpost" data-bind="click: open, event: {contextmenu: contextmenu}">
             <h5 data-bind="text: $fullname"></h5>

@@ -810,7 +810,6 @@ module.exports = function (server, force = false) {
                 if (expired(query)) 
                     return
                 query = query.payload || query
-                console.log(query)
                 // edit this student
                 db('students')
                     .iu(query)
@@ -868,7 +867,6 @@ module.exports = function (server, force = false) {
     function expired(packet) {
         if (!packet.expiry) 
             return false
-        console.log(_getUTCTime(), packet.expiry)
         return _getUTCTime() >= packet.expiry
     }
 
